@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Projektor og linse – HAPT verktøy</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+<style>
+table.linser { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+table.linser th { text-align: left; font-weight: 400; color: var(--muted); padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line2); }
+table.linser td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.linser tr { cursor: pointer; }
+table.linser tr:hover td { color: var(--accent); }
+table.linser tr.valgt td { color: var(--fg); background: rgba(26,143,209,.12); }
+table.linser td.tall { text-align: right; white-space: nowrap; }
+table.linser .ut { color: var(--muted); }
+.tabell { overflow-x: auto; }
+.st { font-size: 12px; color: var(--muted); }
+.st.estimert, .st.ikke_bekreftet, .st.sekundaerkilde, .st.delvis { color: var(--warn); }
+.ok { color: #4cc38a; } .nei { color: #d9576b; }
+.kilder a { color: var(--muted); word-break: break-all; }
+details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <nav><a href="../led/">LED-vegg</a><a href="./" aria-current="page">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
+  </header>
+
+  <h1>Projektor og linse</h1>
+  <p class="lead">Faktisk kasteavstand fra produsentenes egne formler (avstand = a × bredde + b), ikke bare det avrundede kastforholdet. Med linseforskyvning, lysstyrke og alle linser som passer.</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Utstyr</h2>
+        <div class="field"><label for="proj">Projektor</label><select id="proj"></select></div>
+        <div class="field"><label for="linse">Linse</label><select id="linse"></select></div>
+        <div class="field"><label for="ref">Mål avstanden fra</label>
+          <select id="ref"><option value="linse">Linsefront (som produsenten)</option><option value="kabinett">Kabinettfront</option></select>
+        </div>
+        <p class="note" id="refTekst" style="margin-top:-6px"></p>
+      </div>
+
+      <div class="card">
+        <h2>Bilde</h2>
+        <div class="seg" role="group" aria-label="Regn ut">
+          <button type="button" data-modus="avstand" aria-pressed="true">Bilde → avstand</button>
+          <button type="button" data-modus="bilde" aria-pressed="false">Avstand → bilde</button>
+        </div>
+        <div id="m-avstand">
+          <div class="row">
+            <div class="field"><label for="malType">Jeg vet</label>
+              <select id="malType"><option value="b">Bredde</option><option value="h">Høyde</option><option value="d">Diagonal</option></select>
+            </div>
+            <div class="field"><label for="mal">Mål (m)</label><input id="mal" type="number" min="0.1" step="0.01" value="6"></div>
+          </div>
+        </div>
+        <div id="m-bilde" hidden>
+          <div class="field"><label for="avstand">Avstand (m)</label><input id="avstand" type="number" min="0.1" step="0.01" value="10"></div>
+          <div class="field"><label for="zoom">Zoom</label><input id="zoom" type="range" min="0" max="100" value="50" style="width:100%"></div>
+        </div>
+        <div class="field"><label for="format">Innholdsformat</label>
+          <select id="format">
+            <option value="0">Projektorens eget</option>
+            <option value="1.7778">16:9</option><option value="1.6">16:10</option><option value="1.3333">4:3</option>
+            <option value="1.8963">1,9:1 (DCI)</option><option value="2.39">2,39:1</option>
+          </select>
+        </div>
+        <p class="note" style="margin-top:-6px">Er innholdet smalere eller bredere enn brikken, får bildet sorte felt, og avstanden regnes fra hele det projiserte feltet.</p>
+      </div>
+
+      <div class="card">
+        <h2>Plassering</h2>
+        <div class="row">
+          <div class="field"><label for="linseH">Linsesenter over gulv (m)</label><input id="linseH" type="number" step="0.01" value="1.2"></div>
+          <div class="field"><label for="underkant">Underkant bilde over gulv (m)</label><input id="underkant" type="number" step="0.01" value="1.5"></div>
+        </div>
+        <div class="field"><label for="sideveis">Linse til siden for bildesenter (m)</label><input id="sideveis" type="number" step="0.01" value="0"></div>
+        <p class="note" style="margin-top:-6px">Takmontert opp ned: skriv linsehøyden som den er, verktøyet regner bare med forskjellen.</p>
+      </div>
+
+      <div class="card">
+        <h2>Lys</h2>
+        <div class="row">
+          <div class="field"><label for="lumen">Lumen per projektor</label><input id="lumen" type="number" min="0" step="100"></div>
+          <div class="field"><label for="stack">Antall i stack</label><input id="stack" type="number" min="1" max="8" value="1"></div>
+        </div>
+        <div class="field"><label for="gain">Duk (gain)</label>
+          <select id="gain">
+            <option value="1">1,0 (matt hvit)</option>
+            <option value="1.02">1,02 Stumpfl Flex White CI</option>
+            <option value="1.18">1,18 Stumpfl Flex Rear CI</option>
+            <option value="2.25">2,25 Stumpfl Flex Rear MO</option>
+            <option value="0.7">0,7 (grå / bakprojeksjon diffus)</option>
+            <option value="1.3">1,3</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="kpis">
+        <div class="kpi"><b id="k1">–</b><span id="k1t">avstand</span></div>
+        <div class="kpi"><b id="k2">–</b><span id="k2t">bilde</span></div>
+        <div class="kpi"><b id="k3">–</b><span>linseforskyvning</span></div>
+        <div class="kpi"><b id="k4">–</b><span>lysstyrke på duken</span></div>
+      </div>
+      <div class="card">
+        <svg id="tegning" viewBox="0 0 800 300" style="width:100%;height:auto;display:block"></svg>
+      </div>
+      <div class="card">
+        <table class="res" id="res"></table>
+        <p class="warn" id="varsel" hidden></p>
+        <p class="note" id="linseNote"></p>
+      </div>
+      <div class="card">
+        <h2>Alle linser for denne projektoren</h2>
+        <div class="tabell"><table class="linser" id="alle"></table></div>
+        <p class="note">Trykk på en linse for å velge den. Grått = passer ikke dette bildet eller denne avstanden.</p>
+      </div>
+      <div class="card">
+        <details>
+          <summary>Om tallene og kildene</summary>
+          <p class="note">Epson og Panasonic oppgir kastforhold som avstand delt på bredde ved ca. 100", med offset inkludert. Den virkelige stigningen er 1–3 % høyere og offset b er negativ, så ren «kastforhold × bredde» bommer mer jo større bildet er. Her brukes produsentenes formler direkte. Barco publiserer bare kastforhold, så for Barco er b satt til 0 og avstanden er mer usikker. Alle produsentene oppgir ±5 % toleranse.</p>
+          <p class="note">Panasonic måler fra linsefronten (bekreftet). Epson oppgir det ikke; formlene tyder på linsefronten (utledet). Linsefremspring er hentet fra databladene og bør måles på eget utstyr.</p>
+          <div class="note kilder" id="kilder"></div>
+        </details>
+      </div>
+      <div class="btns" style="margin-top:16px"><button class="btn ghost" type="button" id="kopier">Kopier oppsummering</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var D = window.HaptProjektorData, P = D.P, L = D.L;
+  var tall = function (v, d) { return v.toLocaleString('nb-NO', { minimumFractionDigits: d, maximumFractionDigits: d }); };
+  var m2 = function (v) { return tall(v, 2) + ' m'; };
+  var STATUS = { bekreftet: 'bekreftet', delvis: 'delvis bekreftet', estimert: 'anslått', sekundaerkilde: 'fra forhandler', ikke_bekreftet: 'ikke bekreftet' };
+  var modus = 'avstand';
+  var trTekst = function (t) { return t ? String(t).replace(/(\d)\.(\d)/g, '$1,$2').replace(/(\d)-(\d)/g, '$1–$2') : ''; };
+
+  // Projektorliste gruppert per merke
+  ['Epson', 'Panasonic', 'Barco'].forEach(function (merke) {
+    var og = document.createElement('optgroup'); og.label = merke;
+    P.forEach(function (p, i) { if (p.m === merke) { var o = document.createElement('option'); o.value = i; o.textContent = p.n + ' · ' + p.lm.toLocaleString('nb-NO') + ' lm'; og.appendChild(o); } });
+    $('proj').appendChild(og);
+  });
+
+  function linserFor(p) { var ut = []; L.forEach(function (l, i) { if (l.f[p.g]) ut.push(i); }); return ut; }
+  function fyllLinser(behold) {
+    var p = P[+$('proj').value], liste = linserFor(p), sel = $('linse'), forrige = behold ? sel.value : null;
+    sel.innerHTML = '';
+    liste.forEach(function (i) { var o = document.createElement('option'); o.value = i; o.textContent = L[i].n + ' · ' + trTekst(L[i].f[p.g].tr); sel.appendChild(o); });
+    if (forrige && liste.indexOf(+forrige) >= 0) sel.value = forrige;
+    else {
+      // Standardlinse: den med kastforhold nærmest 1,6 (vanlig standardzoom)
+      var best = liste[0], bd = 9;
+      liste.forEach(function (i) { var f = L[i].f[p.g], mid = ((f.a0 || 0) + (f.a1 || f.a0 || 0)) / 2, dd = Math.abs(mid - 1.6); if (dd < bd) { bd = dd; best = i; } });
+      sel.value = best;
+    }
+  }
+  function panelAsp(p) { return p.res[0] / p.res[1]; }
+
+  // Avstand fra referansepunkt til linsens målepunkt (m) når man måler fra kabinettfronten
+  function fremspring(p, l) {
+    if (l.L1 != null) return l.L1;
+    if (l.frem && p.frem && l.frem[p.frem] != null) return l.frem[p.frem] / 1000;
+    return null;
+  }
+  function formel(p, l) {
+    var f = l.f[p.g];
+    return { a0: f.a0, b0: f.b0 == null ? 0 : f.b0, a1: f.a1 == null ? f.a0 : f.a1, b1: (f.b1 == null ? (f.b0 == null ? 0 : f.b0) : f.b1), bKjent: f.b0 != null, f: f };
+  }
+  // Projisert felt (hele brikken) for et innhold med mål bxh
+  function felt(p, b, h) {
+    var pa = panelAsp(p);
+    return b / h >= pa ? { b: b, h: b / pa } : { b: h * pa, h: h };
+  }
+  function innhold(p) { var v = +$('format').value; return v || panelAsp(p); }
+
+  function regn() {
+    var p = P[+$('proj').value], li = +$('linse').value, l = L[li];
+    var F = formel(p, l), ia = innhold(p);
+    var kab = $('ref').value === 'kabinett', fr = fremspring(p, l), tillegg = kab ? (fr || 0) : 0;
+    var res = [], varsel = [];
+    var ib, ih, Lmin, Lmax, fe;
+    if (modus === 'avstand') {
+      var v = Math.max(0.01, +$('mal').value || 0), t = $('malType').value;
+      if (t === 'b') { ib = v; ih = v / ia; } else if (t === 'h') { ih = v; ib = v * ia; } else { ih = v / Math.sqrt(1 + ia * ia); ib = ih * ia; }
+      fe = felt(p, ib, ih);
+      Lmin = F.a0 * fe.b + F.b0 + tillegg; Lmax = F.a1 * fe.b + F.b1 + tillegg;
+    } else {
+      var dist = Math.max(0.05, +$('avstand').value || 0), z = +$('zoom').value / 100, lr = dist - tillegg;
+      var bv = (lr - F.b0) / F.a0, bt = (lr - F.b1) / F.a1;   // vid og tele
+      var fb = bv + (bt - bv) * z;
+      fe = { b: fb, h: fb / panelAsp(p) };
+      var pa = panelAsp(p);
+      if (ia >= pa) { ib = fe.b; ih = ib / ia; } else { ih = fe.h; ib = ih * ia; }
+      Lmin = Lmax = dist;
+      res.push(['Bredde ved denne avstanden', m2(Math.min(bv, bt)) + ' – ' + m2(Math.max(bv, bt)) + ' (hele feltet)']);
+    }
+    var diag = Math.sqrt(ib * ib + ih * ih);
+    // KPI
+    if (modus === 'avstand') {
+      $('k1').textContent = Math.abs(Lmax - Lmin) < 0.005 ? m2(Lmin) : tall(Lmin, 2) + '–' + tall(Lmax, 2) + ' m';
+      $('k1t').textContent = p.m === 'Barco' ? 'avstand (Barco oppgir ikke målepunkt)' : 'avstand fra ' + (kab ? 'kabinettfront' : 'linsefront');
+    } else { $('k1').textContent = m2(Lmin); $('k1t').textContent = 'avstand (oppgitt)'; }
+    $('k2').textContent = tall(ib, 2) + ' × ' + tall(ih, 2) + ' m';
+    $('k2t').textContent = 'bilde, ' + tall(diag / 0.0254, 0) + '" diagonal';
+
+    res.push(['Bilde (innhold)', tall(ib, 2) + ' × ' + tall(ih, 2) + ' m, diagonal ' + m2(diag)]);
+    if (Math.abs(fe.b - ib) > 0.005 || Math.abs(fe.h - ih) > 0.005) res.push(['Hele projisert felt', tall(fe.b, 2) + ' × ' + tall(fe.h, 2) + ' m (sorte felt)']);
+    if (modus === 'avstand') {
+      res.push(['Avstand, vid', m2(Lmin) + (l.f[p.g].a0 !== l.f[p.g].a1 ? '' : ' (fast linse)')]);
+      if (Math.abs(Lmax - Lmin) >= 0.005) res.push(['Avstand, tele', m2(Lmax)]);
+      res.push(['Med ±5 % toleranse', m2(Math.min(Lmin, Lmax) * 0.95) + ' – ' + m2(Math.max(Lmin, Lmax) * 1.05)]);
+      var rent = (l.f[p.g].a0) * fe.b;
+      if (F.bKjent && Math.abs(F.b0) > 0.001) res.push(['Til sammenligning: oppgitt kastforhold × bredde', m2(Number(l.f[p.g].tr ? parseFloat(String(l.f[p.g].tr).replace(',', '.')) * fe.b : rent)) + ' (oppgitt kastforhold ' + trTekst(l.f[p.g].tr) + ')']);
+    }
+    var dL = (Lmin + Lmax) / 2;
+    if (modus === 'avstand') res.push(['Faktisk kastforhold', Math.abs(Lmax - Lmin) < 0.005 ? tall((Lmin - tillegg) / fe.b, 3) : tall((Lmin - tillegg) / fe.b, 3) + ' (vid) – ' + tall((Lmax - tillegg) / fe.b, 3) + ' (tele) ved denne bredden']);
+    else res.push(['Faktisk kastforhold', tall((dL - tillegg) / fe.b, 3) + ' (avstand / bredde på feltet)']);
+    if (kab) res.push(['Linsefremspring', fr != null ? tall(fr * 1000, 0) + ' mm lagt til' : 'ukjent for denne linsen, ikke lagt til']);
+    res.push(['Piksel på duken', tall(fe.b * 1000 / p.res[0], 1) + ' mm (' + p.res[0] + ' × ' + p.res[1] + ')']);
+
+    // Linseforskyvning: hvor mye bildesenteret ligger over/under og til siden for linsesenteret, i % av bildehøyde/-bredde
+    var lh = +$('linseH').value || 0, uk = +$('underkant').value || 0, sx = +$('sideveis').value || 0;
+    var vReq = ((uk + fe.h / 2) - lh) / fe.h * 100, hReq = Math.abs(sx) / fe.b * 100;
+    var sh = p.ls[li] || l.shift || p.shift || {}, barco = p.m === 'Barco';
+    var tekstShift = (vReq >= 0 ? '+' : '−') + tall(Math.abs(vReq), 0) + ' % V' + (hReq > 0.5 ? ', ' + tall(hReq, 0) + ' % H' : '');
+    $('k3').textContent = tekstShift;
+    var tilgj = [];
+    if (sh.opp != null) tilgj.push('opp ' + sh.opp + ' %');
+    if (sh.ned != null) tilgj.push('ned ' + sh.ned + ' %');
+    if (sh.h != null) tilgj.push('side ±' + sh.h + ' %');
+    var ok = null;
+    if (sh.opp != null && sh.ned != null) {
+      var vMaks = vReq >= 0 ? sh.opp : sh.ned;
+      if (hReq > 0.5 && sh.vh != null && sh.h != null && hReq >= sh.h * 0.9) vMaks = Math.min(vMaks, sh.vh);
+      ok = Math.abs(vReq) <= vMaks && (sh.h == null || hReq <= sh.h);
+    }
+    res.push(['Linseforskyvning som trengs', tekstShift + ' (av bildehøyde/-bredde fra midtstilling)']);
+    res.push(['Linsen/projektoren klarer', (tilgj.length ? tilgj.join(', ') : 'ikke oppgitt') + (sh.vh != null ? '; ved full sideforskyvning maks ' + sh.vh + ' % V' : '') + (sh.txt ? '. ' + sh.txt : '')]);
+    if (ok === false) varsel.push('Linseforskyvningen holder ikke. Flytt projektoren opp/ned eller til siden, eller velg en annen linse.');
+    if (barco && ok !== null) varsel.push('Barco oppgir forskyvning på prosjektornivå og definerer ikke prosenten likt; sjekk i Barcos lens calculator.');
+    $('k3').className = ok === null ? '' : ok ? 'ok' : 'nei';
+
+    // Lys
+    var lm = (+$('lumen').value || p.lm) * Math.max(1, +$('stack').value || 1), areal = fe.b * fe.h;
+    var lux = lm / areal, nits = lux * (+$('gain').value) / Math.PI;
+    $('k4').textContent = tall(nits, 0) + ' nits';
+    res.push(['Lys', tall(lm, 0) + ' lm på ' + tall(areal, 1) + ' m² = ' + tall(lux, 0) + ' lux, ' + tall(nits, 0) + ' nits (' + tall(nits / 3.426, 0) + ' fL) med gain ' + $('gain').value.replace('.', ',')]);
+    if (p.lmNote) res.push(['Lumen', p.lmNote]);
+
+    $('res').innerHTML = res.map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+    if (!F.bKjent) varsel.push('Produsenten oppgir bare kastforhold for denne linsen, ikke offset. Avstanden kan bomme noen titalls cm; mål opp eller sjekk i produsentens kalkulator.');
+    if (l.st && l.st !== 'bekreftet') varsel.push('Linsedataene er ' + (STATUS[l.st] || l.st) + '.');
+    $('varsel').hidden = !varsel.length; $('varsel').textContent = varsel.join(' ');
+    $('linseNote').textContent = [l.type ? 'Type: ' + l.type + '.' : '', l.ref ? 'Avstand måles fra: ' + l.ref : '', l.f[p.g].note || ''].filter(Boolean).join(' ');
+    $('refTekst').textContent = kab ? (fr != null ? 'Linsen stikker ' + tall(fr * 1000, 0) + ' mm ut fra kabinettet (datablad; mål gjerne selv).' : 'Fremspring er ikke oppgitt for denne linsen, så avstanden gjelder linsefronten.') : '';
+
+    tegnSide(dL, lh, uk, fe.h, kab);
+    alleLinser(p, li, fe, ia, tillegg);
+    regn.tekst = p.m + ' ' + p.n + ' med ' + l.n + '\n' + res.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n');
+    lagre();
+  }
+
+  function alleLinser(p, valgt, fe, ia, tillegg) {
+    var rader = linserFor(p).map(function (i) {
+      var l = L[i], F = formel(p, l), tekst, passer = true;
+      if (modus === 'avstand') {
+        var a = F.a0 * fe.b + F.b0 + tillegg, b = F.a1 * fe.b + F.b1 + tillegg;
+        tekst = Math.abs(a - b) < 0.005 ? m2(a) : tall(Math.min(a, b), 2) + ' – ' + m2(Math.max(a, b));
+      } else {
+        var dist = +$('avstand').value || 0, lr = dist - tillegg;
+        var bv = (lr - F.b0) / F.a0, bt = (lr - F.b1) / F.a1;
+        passer = Math.min(bv, bt) > 0;
+        tekst = passer ? (Math.abs(bv - bt) < 0.005 ? m2(bv) : tall(Math.min(bv, bt), 2) + ' – ' + m2(Math.max(bv, bt))) + ' bredt' : 'for nær';
+      }
+      return '<tr data-i="' + i + '" class="' + (i === valgt ? 'valgt' : '') + '"><td>' + l.n + ' <span class="st ' + (l.st || '') + '">' + (l.st && l.st !== 'bekreftet' ? STATUS[l.st] || l.st : '') + '</span></td><td class="tall">' + (l.f[p.g].tr || '') + '</td><td class="tall' + (passer ? '' : ' ut') + '">' + tekst + '</td></tr>';
+    });
+    $('alle').innerHTML = '<tr><th>Linse</th><th style="text-align:right">Kastforhold</th><th style="text-align:right">' + (modus === 'avstand' ? 'Avstand' : 'Bilde') + '</th></tr>' + rader.join('');
+    Array.prototype.forEach.call($('alle').querySelectorAll('tr[data-i]'), function (tr) { tr.onclick = function () { $('linse').value = tr.dataset.i; regn(); }; });
+  }
+
+  // Sidetegning: lerret til venstre, projektor til høyre, gulv nederst
+  function tegnSide(dist, lh, uk, h, kab) {
+    var svg = $('tegning'), W = 800, H = 300, pad = 40;
+    var maxY = Math.max(uk + h, lh, 1) * 1.15, maxX = dist * 1.12 + 0.5;
+    var s = Math.min((W - pad * 2) / maxX, (H - pad * 1.6) / maxY);
+    var X = function (x) { return pad + x * s; }, Y = function (y) { return H - pad * 0.8 - y * s; };
+    var g = '';
+    g += '<line x1="0" y1="' + Y(0) + '" x2="' + W + '" y2="' + Y(0) + '" stroke="#2a2e33"/>';
+    g += '<line x1="' + X(0) + '" y1="' + Y(uk) + '" x2="' + X(0) + '" y2="' + Y(uk + h) + '" stroke="#ecedee" stroke-width="4"/>';
+    g += '<polygon points="' + X(dist) + ',' + Y(lh) + ' ' + X(0) + ',' + Y(uk) + ' ' + X(0) + ',' + Y(uk + h) + '" fill="rgba(26,143,209,.15)" stroke="#1a8fd1" stroke-width="1"/>';
+    var pb = Math.max(18, 0.5 * s), ph = Math.max(10, 0.2 * s);
+    g += '<rect x="' + X(dist) + '" y="' + (Y(lh) - ph / 2) + '" width="' + pb + '" height="' + ph + '" fill="#7d828a" rx="2"/>';
+    g += '<line x1="' + X(0) + '" y1="' + (Y(0) + 14) + '" x2="' + X(dist) + '" y2="' + (Y(0) + 14) + '" stroke="#7d828a"/>';
+    g += '<text x="' + ((X(0) + X(dist)) / 2) + '" y="' + (Y(0) + 28) + '" fill="#ecedee" font-size="13" text-anchor="middle" font-family="Barlow, sans-serif">' + m2(dist) + (kab ? ' fra kabinettfront' : ' fra linsefront') + '</text>';
+    g += '<text x="' + (X(0) + 8) + '" y="' + (Y(uk + h) - 6) + '" fill="#7d828a" font-size="12" font-family="Barlow, sans-serif">Bilde ' + m2(h) + ' høyt, underkant ' + m2(uk) + '</text>';
+    g += '<text x="' + (X(dist) + pb + 6) + '" y="' + (Y(lh) + 4) + '" fill="#7d828a" font-size="12" font-family="Barlow, sans-serif">' + m2(lh) + '</text>';
+    svg.innerHTML = g;
+  }
+
+  // Kilder
+  function visKilder() {
+    var p = P[+$('proj').value], l = L[+$('linse').value];
+    var ids = []; (p.k || []).concat(l.k || []).forEach(function (k) { if (ids.indexOf(k) < 0) ids.push(k); });
+    $('kilder').innerHTML = ids.map(function (k) { return D.K[k] ? '<div><a href="' + D.K[k] + '" target="_blank" rel="noopener">' + D.K[k] + '</a></div>' : ''; }).join('');
+  }
+
+  // Lagring og hendelser
+  var felter = ['proj', 'linse', 'ref', 'malType', 'mal', 'avstand', 'zoom', 'format', 'linseH', 'underkant', 'sideveis', 'lumen', 'stack', 'gain'];
+  function lagre() {
+    var o = { modus: modus }; felter.forEach(function (id) { o[id] = $(id).value; });
+    try { localStorage.setItem('hapt-projektor', JSON.stringify(o)); } catch (e) {}
+  }
+  function settModus(m) {
+    modus = m;
+    document.querySelectorAll('[data-modus]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.modus === m ? 'true' : 'false'); });
+    $('m-avstand').hidden = m !== 'avstand'; $('m-bilde').hidden = m !== 'bilde';
+  }
+  document.querySelectorAll('[data-modus]').forEach(function (b) { b.onclick = function () { settModus(b.dataset.modus); regn(); }; });
+  $('proj').addEventListener('change', function () { fyllLinser(false); $('lumen').value = P[+this.value].lm; visKilder(); regn(); });
+  $('linse').addEventListener('change', function () { visKilder(); regn(); });
+  felter.forEach(function (id) { if (id !== 'proj' && id !== 'linse') $(id).addEventListener('input', regn); });
+  $('kopier').onclick = function () {
+    var k = this;
+    if (navigator.clipboard) navigator.clipboard.writeText(regn.tekst).then(function () { k.textContent = 'Kopiert'; setTimeout(function () { k.textContent = 'Kopier oppsummering'; }, 1500); });
+  };
+
+  var lagret = null;
+  try { lagret = JSON.parse(localStorage.getItem('hapt-projektor') || 'null'); } catch (e) {}
+  if (lagret && P[+lagret.proj]) {
+    $('proj').value = lagret.proj; fyllLinser(false);
+    felter.forEach(function (id) { if (id !== 'proj' && lagret[id] !== undefined) $(id).value = lagret[id]; });
+    if (!L[+$('linse').value] || !L[+$('linse').value].f[P[+$('proj').value].g]) fyllLinser(false);
+    settModus(lagret.modus === 'bilde' ? 'bilde' : 'avstand');
+  } else {
+    var std = 0; P.forEach(function (p, i) { if (p.n === 'EB-PU2220B') std = i; });
+    $('proj').value = std; fyllLinser(false); $('lumen').value = P[std].lm;
+  }
+  if (!$('lumen').value) $('lumen').value = P[+$('proj').value].lm;
+  visKilder(); regn();
+})();
+</script>
+</body>
+</html>
