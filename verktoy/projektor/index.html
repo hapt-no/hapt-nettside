@@ -285,7 +285,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
         passer = Math.min(bv, bt) > 0;
         tekst = passer ? (Math.abs(bv - bt) < 0.005 ? m2(bv) : tall(Math.min(bv, bt), 2) + ' – ' + m2(Math.max(bv, bt))) + ' bredt' : 'for nær';
       }
-      return '<tr data-i="' + i + '" class="' + (i === valgt ? 'valgt' : '') + '"><td>' + l.n + ' <span class="st ' + (l.st || '') + '">' + (l.st && l.st !== 'bekreftet' ? STATUS[l.st] || l.st : '') + '</span></td><td class="tall">' + (l.f[p.g].tr || '') + '</td><td class="tall' + (passer ? '' : ' ut') + '">' + tekst + '</td></tr>';
+      return '<tr data-i="' + i + '" class="' + (i === valgt ? 'valgt' : '') + '"><td>' + l.n + ' <span class="st ' + (l.st || '') + '">' + (l.st && l.st !== 'bekreftet' ? STATUS[l.st] || l.st : '') + '</span></td><td class="tall">' + trTekst(l.f[p.g].tr) + '</td><td class="tall' + (passer ? '' : ' ut') + '">' + tekst + '</td></tr>';
     });
     $('alle').innerHTML = '<tr><th>Linse</th><th style="text-align:right">Kastforhold</th><th style="text-align:right">' + (modus === 'avstand' ? 'Avstand' : 'Bilde') + '</th></tr>' + rader.join('');
     Array.prototype.forEach.call($('alle').querySelectorAll('tr[data-i]'), function (tr) { tr.onclick = function () { $('linse').value = tr.dataset.i; regn(); }; });
