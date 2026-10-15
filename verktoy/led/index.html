@@ -114,6 +114,7 @@ details[open] summary { margin-bottom: 14px; }
           <select id="prosessor">
             <option value="nova" selected>NovaStar, 1G-porter</option>
             <option value="nova-pro">NovaStar med A10s/A8s Pro-kort</option>
+            <option value="colorlight">Colorlight, 1G-porter</option>
             <option value="brompton">Brompton Tessera, 1G-porter</option>
             <option value="egen">Egendefinert</option>
           </select>
@@ -154,8 +155,8 @@ details[open] summary { margin-bottom: 14px; }
 
       <div class="card">
         <details id="egetPanel">
-          <summary>Legg til eget panel (f.eks. Glux)</summary>
-          <div class="field"><label for="ep-navn">Navn</label><input id="ep-navn" type="text" placeholder="Glux P2.6"></div>
+          <summary>Legg til eget panel</summary>
+          <div class="field"><label for="ep-navn">Navn</label><input id="ep-navn" type="text" placeholder="F.eks. ROE CB5"></div>
           <div class="row">
             <div class="field"><label for="ep-b">Bredde (mm)</label><input id="ep-b" type="number" value="500"></div>
             <div class="field"><label for="ep-h">Høyde (mm)</label><input id="ep-h" type="number" value="500"></div>
@@ -283,6 +284,7 @@ details[open] summary { margin-bottom: 14px; }
   var prosessorer = {
     nova: { kap: 655360, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'NovaStar: 655 360 px per port ved 60 Hz og 8 bit (nyere MX-serie: ca. 659 000). 10 og 12 bit halverer kapasiteten.' },
     'nova-pro': { kap: 659722, ppp: 20, bit: { 8: 1, 10: 0.75, 12: 0.5 }, note: 'NovaStar MX med A10s/A8s Pro-kort: 659 722 px ved 8 bit og 494 792 px ved 10 bit (60 Hz). 12 bit er regnet som halv kapasitet.' },
+    colorlight: { kap: 650000, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'Colorlight: ca. 650 000 px per 1G-port ved 60 Hz og 8 bit (X- og Z-serien). Porter per prosessor: X8 = 8, X16 = 16. 10 og 12 bit er regnet som halv kapasitet; sjekk i LEDVISION.' },
     brompton: { kap: 525000, ppp: 8, bit: { 8: 1, 10: 1, 12: 1 }, note: 'Brompton Tessera: ca. 525 000 px per 1G-port ved 60 Hz. Bitdybde er ikke regnet inn her, så sjekk portlasten i Tessera.' },
     egen: { note: 'Skriv inn kapasitet per port ved 60 Hz og 8 bit. 10 og 12 bit er regnet som halv kapasitet.' , bit: { 8: 1, 10: 0.5, 12: 0.5 } }
   };

@@ -6,7 +6,9 @@
   var innebygd = [
     { id: 'uni-xs26', navn: 'Unilumin XS 2.6', b: 500, h: 500, px: 192, py: 192, kg: 7.7, maks: 150, snitt: 45, pitch: 2.6 },
     { id: 'uni-xs39', navn: 'Unilumin XS 3.9', b: 500, h: 500, px: 128, py: 128, kg: 7.7, maks: 150, snitt: 45, pitch: 3.9 },
-    { id: 'uni-upad4-26', navn: 'Unilumin Upad IV 2.6', b: 500, h: 500, px: 192, py: 192, kg: 7.2, maks: 160, snitt: 55, pitch: 2.6 }
+    { id: 'uni-upad4-26', navn: 'Unilumin Upad IV 2.6', b: 500, h: 500, px: 192, py: 192, kg: 7.2, maks: 160, snitt: 55, pitch: 2.6 },
+    // Glux BAtn 6: oppløsning bekreftet av Martin; vekt fra BAtn-serien, effekt anslått fra BAtn 10-databladet (270/135 W per panel)
+    { id: 'glux-batn6', navn: 'Glux BAtn 6', b: 500, h: 1000, px: 72, py: 144, kg: 4.8, maks: 270, snitt: 135, pitch: 6.94 }
   ];
 
   function hentEgne() {
