@@ -15,6 +15,7 @@
 .kartflate { display: grid; grid-template-columns: 1fr 64px 64px; gap: 6px; align-items: end; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .kartflate input { padding: 6px 7px; font-size: 15px; }
 .kartflate label { font-size: 12px; }
+.kartmal { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .kartflate small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
 </style>
 </head>
@@ -196,9 +197,12 @@
       });
     }
 
-    var midtH = m * 0.12;
+    // Høye, smale flater (tårn): la midtpartiet bruke mer av høyden, og krymp tekst som ikke får plass i bredden
+    var mk = H > W * 1.6 ? Math.min(H / 1.1, W * 2.6) : m;
+    var pass = function (t, str, vekt) { ctx.font = font(str, vekt); var b = ctx.measureText(t).width; if (b > W * 0.9) { str *= W * 0.9 / b; ctx.font = font(str, vekt); } return str; };
+    var midtH = mk * 0.12;
     if ($('o-farger').checked) {
-      var bw = Math.min(W * 0.7, m * 1.2), bx = (W - bw) / 2, by = H / 2 + m * 0.06;
+      var bw = Math.min(W * 0.7, mk * 1.2), bx = (W - bw) / 2, by = H / 2 + mk * 0.06;
       ['#ffffff', '#ffff00', '#00ffff', '#00ff00', '#ff00ff', '#ff0000', '#0000ff', '#000000'].forEach(function (f, i) {
         ctx.fillStyle = f; ctx.fillRect(Math.round(bx + i * bw / 8), by, Math.ceil(bw / 8), midtH);
       });
@@ -211,8 +215,8 @@
     }
 
     if ($('o-logo').checked && logoKlar) {
-      var lh = m * 0.075, lwid = lh * (763.5 / 275.5);
-      ctx.drawImage(logo, (W - lwid) / 2, H / 2 - m * 0.26, lwid, lh);
+      var lh = mk * 0.075, lwid = lh * (763.5 / 275.5);
+      ctx.drawImage(logo, (W - lwid) / 2, H / 2 - mk * 0.26, lwid, lh);
     }
 
     // Prosjektnavn og fritekst øverst i sirkelen, likt på alle flater
@@ -220,14 +224,14 @@
     if (prosjekt || fritekst) {
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       var linjer = [];
-      if (prosjekt) linjer.push([prosjekt, m * 0.042, 500, '#fff']);
-      if (fritekst) linjer.push([fritekst, m * 0.027, 400, '#d6d8db']);
-      var ytop = H / 2 - m * (linjer.length === 2 ? 0.385 : 0.345);
+      if (prosjekt) linjer.push([prosjekt, mk * 0.042, 500, '#fff']);
+      if (fritekst) linjer.push([fritekst, mk * 0.027, 400, '#d6d8db']);
+      var ytop = H / 2 - mk * (linjer.length === 2 ? 0.385 : 0.345);
       linjer.forEach(function (l) {
         ctx.font = font(l[1], l[2]);
-        var maksB = Math.min(W * 0.9, m * 0.95), bredde = ctx.measureText(l[0]).width;
+        var maksB = Math.min(W * 0.9, mk * 0.95), bredde = ctx.measureText(l[0]).width;
         if (bredde > maksB) { ctx.font = font(l[1] * maksB / bredde, l[2]); bredde = maksB; }
-        ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - bredde / 2 - m * 0.015, ytop - l[1] * 0.7, bredde + m * 0.03, l[1] * 1.4);
+        ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - bredde / 2 - mk * 0.015, ytop - l[1] * 0.7, bredde + mk * 0.03, l[1] * 1.4);
         ctx.fillStyle = l[3]; ctx.fillText(l[0], W / 2, ytop);
         ytop += l[1] * 1.55;
       });
@@ -235,24 +239,25 @@
 
     if ($('o-tekst').checked) {
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.font = font(m * 0.06, 300);
-      var ty = H / 2 - m * 0.1;
+      var ty = H / 2 - mk * 0.1;
       var tekst = W + ' × ' + H;
-      var tbw = ctx.measureText(tekst).width + m * 0.06;
-      ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - tbw / 2, ty - m * 0.05, tbw, m * 0.1);
+      pass(tekst, mk * 0.06, 300);
+      var tbw = ctx.measureText(tekst).width + mk * 0.06;
+      ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - tbw / 2, ty - mk * 0.05, tbw, mk * 0.1);
       ctx.fillStyle = '#fff'; ctx.fillText(tekst, W / 2, ty);
       var under = [];
       if (tittel) under.push(tittel);
       if (harPaneler) under.push(kol + ' × ' + rad + ' paneler à ' + pw + ' × ' + ph + ' px');
       if (kart) under.push('Posisjon ' + ox + ', ' + oy);
       if (under.length) {
-        ctx.font = font(m * 0.03, 400);
-        var y2 = $('o-farger').checked ? H / 2 + m * 0.06 + midtH * 1.45 + m * 0.06 : H / 2 + m * 0.06;
+        ctx.font = font(mk * 0.03, 400);
+        var y2 = $('o-farger').checked ? H / 2 + mk * 0.06 + midtH * 1.45 + mk * 0.06 : H / 2 + mk * 0.06;
         under.forEach(function (t, i) {
-          var w2 = ctx.measureText(t).width + m * 0.04;
-          ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - w2 / 2, y2 + i * m * 0.05 - m * 0.022, w2, m * 0.044);
+          pass(t, mk * 0.03, 400);
+          var w2 = Math.min(W, ctx.measureText(t).width + mk * 0.04);
+          ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - w2 / 2, y2 + i * mk * 0.05 - mk * 0.022, w2, mk * 0.044);
           ctx.fillStyle = i === 0 && tittel ? '#fff' : '#b9bdc3';
-          ctx.fillText(t, W / 2, y2 + i * m * 0.05);
+          ctx.fillText(t, W / 2, y2 + i * mk * 0.05);
         });
       }
     }
@@ -304,11 +309,11 @@
     var boks = $('kartFlater'); boks.innerHTML = '';
     kart.flater.forEach(function (f) {
       var d = document.createElement('div'); d.className = 'kartflate';
-      d.innerHTML = '<div><label>Navn</label><input type="text" data-k="navn"></div><div><label>Panel b</label><input type="number" min="0" data-k="pw"></div><div><label>Panel h</label><input type="number" min="0" data-k="ph"></div><small></small>';
-      d.querySelector('small').textContent = f.b + ' × ' + f.h + ' px på ' + f.x + ', ' + f.y;
+      d.innerHTML = '<div><label>Navn</label><input type="text" data-k="navn"></div><div><label>Panel b</label><input type="number" min="0" data-k="pw"></div><div><label>Panel h</label><input type="number" min="0" data-k="ph"></div>' +
+        '<div class="kartmal"><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>Bredde</label><input type="number" min="1" data-k="b"></div><div><label>Høyde</label><input type="number" min="1" data-k="h"></div></div>';
       d.querySelectorAll('[data-k]').forEach(function (inp) {
         inp.value = f[inp.dataset.k];
-        inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(0, Math.round(+inp.value || 0)) : inp.value; tegn(); });
+        inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(+inp.min, Math.round(+inp.value || 0)) : inp.value; tegn(); });
       });
       boks.appendChild(d);
     });
@@ -370,17 +375,40 @@
         if (i >= k.flater.length) { visKart(); status.textContent = grunn + ' Navnene er lest fra bildet; sjekk dem.'; return; }
         var f = k.flater[i];
         status.textContent = grunn + ' Leser navn ' + (i + 1) + ' av ' + k.flater.length + ' …';
-        var skala = Math.min(2, Math.max(1, 1200 / Math.max(f.b, f.h)));
-        var c = document.createElement('canvas'); c.width = Math.round(f.b * skala); c.height = Math.round(f.h * skala);
-        var cx = c.getContext('2d'); cx.imageSmoothingEnabled = true;
-        cx.drawImage(kilde, f.x, f.y, f.b, f.h, 0, 0, c.width, c.height);
-        w.recognize(c).then(function (r) {
-          var linjer = (r.data.lines || []).map(function (l) {
+        // Navnet står som regel midt på flaten: les et utsnitt rundt midten først, så hele flaten om det ikke gir noe
+        var forsok = function (helt) {
+          var ub = helt ? f.b : Math.min(f.b, 1600), uh = helt ? f.h : Math.min(f.h, 600);
+          var ux = f.x + Math.round((f.b - ub) / 2), uy = f.y + Math.round((f.h - uh) / 2);
+          var skala = Math.min(helt ? 2 : 4, Math.max(1, 1600 / Math.max(ub, uh)));
+          var c = document.createElement('canvas'); c.width = Math.round(ub * skala); c.height = Math.round(uh * skala);
+          var cx = c.getContext('2d'); cx.imageSmoothingEnabled = true;
+          cx.drawImage(kilde, ux, uy, ub, uh, 0, 0, c.width, c.height);
+          return w.recognize(c);
+        };
+        var tolk = function (r) {
+          var alle = (r.data.lines || []).map(function (l) {
             var t = l.text.replace(/[|_~^`´¨"“”]+/g, '').replace(/\s+/g, ' ').trim();
             return { t: t, h: l.bbox.y1 - l.bbox.y0, c: l.confidence };
-          }).filter(function (l) { return l.c >= 45 && (l.t.match(/[A-Za-zÆØÅæøå]/g) || []).length >= 2 && l.t.length <= 60; });
+          });
+          // Mange kart skriver også «x, y // b x h» under navnet; da brukes de målene hvis de stemmer med flaten
+          alle.forEach(function (l) {
+            var m = l.t.replace(/[oO]/g, '0').match(/(\d{1,5})\s*[,.]\s*(\d{1,5})\s*\S{1,3}\s*(\d{1,5})\s*[xX×]\s*(\d{1,5})/);
+            if (!m) return;
+            var n = { x: +m[1], y: +m[2], b: +m[3], h: +m[4] };
+            if (n.b < 1 || n.h < 1 || n.x + n.b > k.bredde || n.y + n.h > k.hoyde) return;
+            var ox = Math.min(n.x + n.b, f.x + f.b) - Math.max(n.x, f.x), oy = Math.min(n.y + n.h, f.y + f.h) - Math.max(n.y, f.y);
+            if (ox > 0 && oy > 0 && ox * oy > 0.8 * f.b * f.h && ox * oy > 0.6 * n.b * n.h) { f.x = n.x; f.y = n.y; f.b = n.b; f.h = n.h; }
+          });
+          var linjer = alle.filter(function (l) { return l.c >= 45 && (l.t.match(/[A-Za-zÆØÅæøå]/g) || []).length >= 2 && l.t.length <= 60; });
           linjer.sort(function (a, b) { return b.h - a.h; });
-          if (linjer[0]) f.navn = linjer[0].t;
+          return linjer[0] ? linjer[0].t : null;
+        };
+        forsok(false).then(function (r) {
+          var t = tolk(r);
+          if (t) return t;
+          return forsok(true).then(tolk);
+        }).then(function (t) {
+          if (t) f.navn = t;
           i++; neste();
         }, function () { i++; neste(); });
       };

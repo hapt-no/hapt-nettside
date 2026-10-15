@@ -125,27 +125,57 @@
   // data = ImageData. Returnerer [{x, y, b, h}] sortert fra venstre-topp.
   function finnFlater(data) {
     var W = data.width, H = data.height, px = data.data, N = W * H;
-    var merke = new Int32Array(N), ko = new Int32Array(N), bokser = [];
-    var lys = function (i) { var o = i * 4; return px[o + 3] > 128 && px[o] + px[o + 1] + px[o + 2] > 45; };
-    var lik = function (i, j) {
-      var a = i * 4, b = j * 4;
-      return Math.abs(px[a] - px[b]) + Math.abs(px[a + 1] - px[b + 1]) + Math.abs(px[a + 2] - px[b + 2]) < 100;
+    // Hver piksel får en klasse: 0 = bakgrunn (svart/gjennomsiktig), 1 = fargeløs (hvit/grå tekst og linjer), 2 = farget.
+    // Fargede piksler grupperes etter fargetone, så sjakkruter i lys og mørk utgave av samme farge blir én flate.
+    var klasse = new Uint8Array(N), tone = new Float32Array(N);
+    for (var i = 0; i < N; i++) {
+      var o = i * 4, r = px[o], g = px[o + 1], bl = px[o + 2];
+      if (px[o + 3] <= 128 || r + g + bl <= 45) continue;
+      var mx = Math.max(r, g, bl), mn = Math.min(r, g, bl);
+      if (mx < 40 || (mx - mn) / mx < 0.25) { klasse[i] = 1; continue; }
+      var d = mx - mn, t = mx === r ? ((g - bl) / d + 6) % 6 : mx === g ? (bl - r) / d + 2 : (r - g) / d + 4;
+      klasse[i] = 2; tone[i] = t * 60;
+    }
+    var naer = function (a, b) { var d = Math.abs(a - b); return Math.min(d, 360 - d) < 25; };
+    // Tynne hvite streker (diagonaler, sirkel, rutenett) deler ellers flaten i biter: en fargeløs piksel med
+    // samme farge på begge sider innen 3 piksler regnes som en del av flaten rundt.
+    var tynn = function (i, steg, maks) {
+      for (var a = 1; a <= 3; a++) {
+        var p = i - a * steg; if (p < 0 || !maks(a, -1)) return -1;
+        if (klasse[p] === 2) { for (var b = 1; b <= 3; b++) { var q = i + b * steg; if (q >= N || !maks(b, 1)) return -1;
+          if (klasse[q] === 2) return naer(tone[p], tone[q]) ? p : -1; if (klasse[q] !== 1) return -1; } return -1; }
+        if (klasse[p] !== 1) return -1;
+      }
+      return -1;
     };
+    var fiks = [];
+    for (var i2 = 0; i2 < N; i2++) {
+      if (klasse[i2] !== 1) continue;
+      var x2 = i2 % W;
+      var p2 = tynn(i2, 1, function (a, r) { var x = x2 + a * r; return x >= 0 && x < W; });
+      if (p2 < 0) p2 = tynn(i2, W, function () { return true; });
+      if (p2 >= 0) fiks.push(i2, p2);
+    }
+    for (var f = 0; f < fiks.length; f += 2) { klasse[fiks[f]] = 2; tone[fiks[f]] = tone[fiks[f + 1]]; }
+    var merke = new Int32Array(N), ko = new Int32Array(N), bokser = [];
     for (var s = 0; s < N; s++) {
-      if (merke[s] || !lys(s)) continue;
-      var id = bokser.length + 1, hode = 0, hale = 0;
-      var bo = { x0: W, y0: H, x1: 0, y1: 0 };
+      if (merke[s] || !klasse[s]) continue;
+      var id = bokser.length + 1, hode = 0, hale = 0, k = klasse[s], t0 = tone[s];
+      var bo = { x0: W, y0: H, x1: 0, y1: 0, farget: k === 2 };
+      var ok = function (j) { return !merke[j] && klasse[j] === k && (k === 1 || naer(tone[j], t0)); };
       ko[hale++] = s; merke[s] = id;
       while (hode < hale) {
         var c = ko[hode++], cx = c % W, cy = (c / W) | 0;
         if (cx < bo.x0) bo.x0 = cx; if (cx > bo.x1) bo.x1 = cx; if (cy < bo.y0) bo.y0 = cy; if (cy > bo.y1) bo.y1 = cy;
-        if (cx > 0 && !merke[c - 1] && lys(c - 1) && lik(c, c - 1)) { merke[c - 1] = id; ko[hale++] = c - 1; }
-        if (cx < W - 1 && !merke[c + 1] && lys(c + 1) && lik(c, c + 1)) { merke[c + 1] = id; ko[hale++] = c + 1; }
-        if (cy > 0 && !merke[c - W] && lys(c - W) && lik(c, c - W)) { merke[c - W] = id; ko[hale++] = c - W; }
-        if (cy < H - 1 && !merke[c + W] && lys(c + W) && lik(c, c + W)) { merke[c + W] = id; ko[hale++] = c + W; }
+        if (cx > 0 && ok(c - 1)) { merke[c - 1] = id; ko[hale++] = c - 1; }
+        if (cx < W - 1 && ok(c + 1)) { merke[c + 1] = id; ko[hale++] = c + 1; }
+        if (cy > 0 && ok(c - W)) { merke[c - W] = id; ko[hale++] = c - W; }
+        if (cy < H - 1 && ok(c + W)) { merke[c + W] = id; ko[hale++] = c + W; }
       }
       bokser.push(bo);
     }
+    // Finnes det fargede flater, er hvit tekst, rammer og hjørnemerker bare pynt og tas ikke med
+    if (bokser.some(function (b) { return b.farget; })) bokser = bokser.filter(function (b) { return b.farget; });
     var areal = function (b) { return (b.x1 - b.x0 + 1) * (b.y1 - b.y0 + 1); };
     bokser = bokser.filter(function (b) { return areal(b) >= 400; }); // bokstaver og støy
     bokser.sort(function (a, b) { return areal(b) - areal(a); });
@@ -162,6 +192,18 @@
         }
       }
     }
+    // Ta med en tynn kantlinje rundt flaten (ofte hvit) så målene blir hele
+    var fylt = function (x0, y0, x1, y1) {
+      if (x0 < 0 || y0 < 0 || x1 >= W || y1 >= H) return false;
+      var n = 0, t = 0; for (var y = y0; y <= y1; y++) for (var x = x0; x <= x1; x++) { t++; if (klasse[y * W + x] === 1) n++; }
+      return n > 0.4 * t;
+    };
+    bokser.forEach(function (b) {
+      for (var g = 0; g < 3 && fylt(b.x0 - 1, b.y0, b.x0 - 1, b.y1); g++) b.x0--;
+      for (g = 0; g < 3 && fylt(b.x1 + 1, b.y0, b.x1 + 1, b.y1); g++) b.x1++;
+      for (g = 0; g < 3 && fylt(b.x0, b.y0 - 1, b.x1, b.y0 - 1); g++) b.y0--;
+      for (g = 0; g < 3 && fylt(b.x0, b.y1 + 1, b.x1, b.y1 + 1); g++) b.y1++;
+    });
     var minAreal = N * 0.001;
     return bokser.filter(function (b) { return areal(b) >= minAreal; }).map(function (b) {
       return { x: b.x0, y: b.y0, b: b.x1 - b.x0 + 1, h: b.y1 - b.y0 + 1 };
