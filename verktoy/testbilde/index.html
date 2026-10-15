@@ -70,6 +70,13 @@
       </div>
 
       <div class="card">
+        <h2>Tekst på alle flater</h2>
+        <div class="field"><label for="prosjekt">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026"></div>
+        <div class="field"><label for="fritekst">Fritekst</label><input id="fritekst" type="text" placeholder="F.eks. Sal A · 15. oktober"></div>
+        <p class="note" style="margin-top:-4px">Kommer øverst på hvert testbilde, over logoen.</p>
+      </div>
+
+      <div class="card">
         <h2>Innhold</h2>
         <label class="check"><input type="checkbox" id="o-paneler" checked> Panelkart med nummer</label>
         <label class="check"><input type="checkbox" id="o-rutenett" checked> Rutenett</label>
@@ -208,6 +215,24 @@
       ctx.drawImage(logo, (W - lwid) / 2, H / 2 - m * 0.26, lwid, lh);
     }
 
+    // Prosjektnavn og fritekst øverst i sirkelen, likt på alle flater
+    var prosjekt = $('prosjekt').value.trim(), fritekst = $('fritekst').value.trim();
+    if (prosjekt || fritekst) {
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      var linjer = [];
+      if (prosjekt) linjer.push([prosjekt, m * 0.042, 500, '#fff']);
+      if (fritekst) linjer.push([fritekst, m * 0.027, 400, '#d6d8db']);
+      var ytop = H / 2 - m * (linjer.length === 2 ? 0.385 : 0.345);
+      linjer.forEach(function (l) {
+        ctx.font = font(l[1], l[2]);
+        var maksB = Math.min(W * 0.9, m * 0.95), bredde = ctx.measureText(l[0]).width;
+        if (bredde > maksB) { ctx.font = font(l[1] * maksB / bredde, l[2]); bredde = maksB; }
+        ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - bredde / 2 - m * 0.015, ytop - l[1] * 0.7, bredde + m * 0.03, l[1] * 1.4);
+        ctx.fillStyle = l[3]; ctx.fillText(l[0], W / 2, ytop);
+        ytop += l[1] * 1.55;
+      });
+    }
+
     if ($('o-tekst').checked) {
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.font = font(m * 0.06, 300);
@@ -327,6 +352,10 @@
     var d = this.value.split('x'); $('w').value = d[0]; $('h').value = d[1]; tegn();
   });
   ['w', 'h'].forEach(function (id) { $(id).addEventListener('input', function () { oppdaterMal(); tegn(); }); });
+  ['prosjekt', 'fritekst'].forEach(function (id) {
+    try { $(id).value = localStorage.getItem('hapt-testbilde-' + id) || ''; } catch (e) {}
+    $(id).addEventListener('input', function () { try { localStorage.setItem('hapt-testbilde-' + id, this.value); } catch (e) {} tegn(); });
+  });
   document.querySelectorAll('#enkelt input, .card input[type=checkbox], #ruter, #farge').forEach(function (el) {
     if (el.id !== 'w' && el.id !== 'h') el.addEventListener('input', tegn);
   });
@@ -335,7 +364,7 @@
     tegn();
     cv.toBlob(function (blob) {
       var a = document.createElement('a');
-      var navn = ((kart ? kart.navn : $('tittel').value).trim() || 'testbilde').replace(/[^\wæøåÆØÅ-]+/g, '-');
+      var navn = ($('prosjekt').value.trim() || (kart ? kart.navn : $('tittel').value).trim() || 'testbilde').replace(/[^\wæøåÆØÅ-]+/g, '-');
       a.download = 'HAPT-' + navn + '-' + cv.width + 'x' + cv.height + '.png';
       a.href = URL.createObjectURL(blob);
       document.body.appendChild(a); a.click(); a.remove();
