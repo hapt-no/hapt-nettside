@@ -21,6 +21,12 @@ details[open] summary { margin-bottom: 14px; }
 .forslag button { text-align: left; background: var(--bg); border: 1px solid var(--line2); border-radius: 4px; color: var(--fg); padding: 8px 10px; font: inherit; font-size: 14px; cursor: pointer; }
 .forslag button:hover, .forslag button.valgt { border-color: var(--accent); }
 .forslag small { color: var(--muted); }
+.kabling h3 { font-weight: 400; font-size: 15px; color: var(--muted); margin: 18px 0 6px; }
+.kabling h3:first-child { margin-top: 0; }
+.kabling ul { margin: 0; padding: 0; list-style: none; font-size: 15px; }
+.kabling li { padding: 5px 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: baseline; }
+.kabling li i { flex: none; width: 10px; height: 10px; border-radius: 50%; display: inline-block; transform: translateY(1px); }
+.kabling p { margin: 6px 0 0; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -140,6 +146,9 @@ details[open] summary { margin-bottom: 14px; }
             </select>
           </div>
         </div>
+        <div class="field"><label for="start">Kablene kommer fra</label>
+          <select id="start"><option value="nede" selected>Nede (bakkestablet)</option><option value="oppe">Oppe (hengt)</option></select>
+        </div>
         <p class="note" id="data-note"></p>
       </div>
 
@@ -175,7 +184,16 @@ details[open] summary { margin-bottom: 14px; }
         <div class="kpi"><b id="k-vekt">–</b><span>Vekt, bare paneler</span></div>
       </div>
       <div class="card">
+        <div class="seg" role="group" aria-label="Vis" id="visning" style="max-width:340px">
+          <button type="button" data-vis-tegning="paneler" aria-pressed="true">Paneler</button>
+          <button type="button" data-vis-tegning="data">Data</button>
+          <button type="button" data-vis-tegning="strom">Strøm</button>
+        </div>
         <div class="preview" style="background:none;border:0"><svg id="vegg" role="img" aria-label="Tegning av veggen"></svg></div>
+      </div>
+      <div class="card">
+        <h2>Kablingsforslag</h2>
+        <div id="kabling-ut" class="kabling"></div>
       </div>
       <div class="card">
         <table class="res" id="tabell"></table>
@@ -307,6 +325,9 @@ details[open] summary { margin-bottom: 14px; }
     var perKurs = Math.max(1, Math.floor(kurs * 230 * margin / p.maks));
     var kurser = Math.ceil(n / perKurs);
     var d = data(p, c, r, n);
+    // Kurser etter kablingsforslaget (hele kolonner kan gi én kurs mer enn rent regnestykke)
+    var kj = kablingsforslag(p, c, r, d, perKurs, kurs, nett);
+    kurser = kj.strom.length;
     var pitch = p.pitch || (p.b / p.px);
 
     $('k-maal').textContent = nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m';
@@ -350,7 +371,7 @@ details[open] summary { margin-bottom: 14px; }
     $('advarsler').innerHTML = adv.map(function (s) { return '<p class="warn"></p>'; }).join('');
     Array.prototype.forEach.call($('advarsler').children, function (el, i) { el.textContent = adv[i]; });
 
-    tegn(p, c, r);
+    tegn(p, c, r, kj);
     var q = new URLSearchParams({ w: W, h: H, pw: p.px, ph: p.py, navn: p.navn });
     $('tilTestbilde').href = '../testbilde/?' + q.toString();
 
@@ -367,7 +388,115 @@ details[open] summary { margin-bottom: 14px; }
     lagreTilstand();
   }
 
-  function tegn(p, c, r) {
+  var kjedeFarger = ['#1a8fd1', '#e0a43a', '#4cc38a', '#d9576b', '#a678e0', '#3fc1c9', '#e07a3a', '#c9c94c', '#7d9be0', '#e078b8', '#8ad14c', '#c98a5a'];
+  var visTegning = 'paneler';
+
+  // Lager kjeder (data eller strøm) som slanger gjennom veggen. Panel = [kolonne, rad] med rad 0 øverst.
+  // modus: 'kol' = hele kolonner per kjede, 'rad' = hele rader, 'fri' = fortløpende slange.
+  function kjeder(c, r, str, modus, fraBunn) {
+    var A = modus === 'rad' ? r : c;   // antall «striper» vi går gjennom
+    var B = modus === 'rad' ? c : r;   // paneler per stripe
+    // Stripe a, posisjon b (0 = startsiden) -> [kolonne, rad]
+    var pos = function (a, b) {
+      if (modus === 'rad') { var rad = fraBunn ? r - 1 - a : a; return [b, rad]; }
+      return [a, fraBunn ? r - 1 - b : b];
+    };
+    var ut = [];
+    if (modus === 'fri') {
+      var alle = [];
+      for (var a = 0; a < A; a++) for (var i = 0; i < B; i++) alle.push(pos(a, a % 2 ? B - 1 - i : i));
+      var k = Math.ceil(alle.length / str), per = Math.ceil(alle.length / k);
+      for (var j = 0; j < alle.length; j += per) ut.push(alle.slice(j, j + per));
+      return ut;
+    }
+    if (str >= B) {
+      var striper = Math.floor(str / B), antall = Math.ceil(A / striper);
+      striper = Math.ceil(A / antall);
+      for (var s0 = 0; s0 < A; s0 += striper) {
+        var kj = [];
+        for (var a2 = s0; a2 < Math.min(A, s0 + striper); a2++) {
+          var opp = (a2 - s0) % 2 === 0;
+          for (var b = 0; b < B; b++) kj.push(pos(a2, opp ? b : B - 1 - b));
+        }
+        ut.push(kj);
+      }
+    } else {
+      var biter = Math.ceil(B / str), lengde = Math.ceil(B / biter);
+      for (var a3 = 0; a3 < A; a3++) for (var b0 = 0; b0 < B; b0 += lengde) {
+        var kj2 = [];
+        for (var b2 = b0; b2 < Math.min(B, b0 + lengde); b2++) kj2.push(pos(a3, b2));
+        ut.push(kj2);
+      }
+    }
+    return ut;
+  }
+
+  function beskriv(kj, modus) {
+    var navn = function (pn) { return (pn[0] + 1) + '.' + (pn[1] + 1); };
+    var kol = {}, rad = {};
+    kj.forEach(function (pn) { kol[pn[0] + 1] = 1; rad[pn[1] + 1] = 1; });
+    var kl = Object.keys(kol).map(Number), rl = Object.keys(rad).map(Number);
+    var spenn = function (l, en, flere) { var a = Math.min.apply(null, l), b = Math.max.apply(null, l); return a === b ? en + ' ' + a : flere + ' ' + a + '–' + b; };
+    var hva = modus === 'rad' ? spenn(rl, 'rad', 'rader') : spenn(kl, 'kolonne', 'kolonner') + (rl.length < r0 ? ', ' + spenn(rl, 'rad', 'rader') : '');
+    return hva + ', ' + kj.length + ' paneler, inn i ' + navn(kj[0]) + ', ut i ' + navn(kj[kj.length - 1]);
+  }
+  var r0 = 0;
+
+  function kablingsforslag(p, c, r, d, perKurs, kurs, nett) {
+    r0 = r;
+    var fraBunn = $('start').value === 'nede';
+    var modus = $('kabling').value;
+    var dk = d.perPort ? kjeder(c, r, d.perPort, modus, fraBunn) : [];
+    var sk = kjeder(c, r, perKurs, modus === 'fri' ? 'kol' : modus, fraBunn);
+    var fasenavn = nett === '1' ? ['L1'] : nett === '3it' ? ['L1-L2', 'L2-L3', 'L3-L1'] : ['L1', 'L2', 'L3'];
+    var esc = function (t) { return String(t).replace(/[&<>]/g, function (x) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[x]; }); };
+    var h = '<h3>Data (' + dk.length + ' port' + (dk.length === 1 ? '' : 'er') + (d.backupPorter ? ', med backup' : '') + ')</h3><ul>';
+    dk.forEach(function (kj, i) {
+      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>Port ' + (i + 1) + ': ' + esc(beskriv(kj, modus)) + (d.backupPorter ? '. Backup-port ' + (i + 1) + ' inn i ' + (kj[kj.length - 1][0] + 1) + '.' + (kj[kj.length - 1][1] + 1) : '') + '</span></li>';
+    });
+    h += '</ul>';
+
+    var fasestrom = fasenavn.map(function () { return 0; });
+    h += '<h3>Strøm (' + sk.length + ' kurs' + (sk.length === 1 ? '' : 'er') + ' à ' + kurs + ' A)</h3><ul>';
+    sk.forEach(function (kj, i) {
+      var f = i % fasenavn.length;
+      fasestrom[f] += kj.length * p.maks / 230;
+      var soca = kurs === 16 ? ', Soca ' + (Math.floor(i / 6) + 1) + ' kurs ' + (i % 6 + 1) : '';
+      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>Kurs ' + (i + 1) + ' (' + fasenavn[f] + soca + '): ' + esc(beskriv(kj, modus === 'fri' ? 'kol' : modus)) + ', maks ' + nf(kj.length * p.maks / 230, 1) + ' A</span></li>';
+    });
+    h += '</ul>';
+
+    h += '<h3>Fordeling og inntak</h3>';
+    if (kurs === 16) {
+      var soca = Math.ceil(sk.length / 6);
+      h += '<p>' + soca + ' Socapex-breakout' + (soca === 1 ? '' : 's') + ' (6 kurser à 16 A per Soca' + (nett === '1' ? '' : ', to kurser per fase') + ').' + (sk.length % 6 ? ' Siste Soca har ' + (sk.length % 6) + ' kurs' + (sk.length % 6 === 1 ? '' : 'er') + ' i bruk.' : '') + '</p>';
+    } else {
+      h += '<p>Kurser på ' + kurs + ' A går ikke i Socapex (den er for 16 A-kurser). Bruk CEE eller egne fordelinger.</p>';
+    }
+    var maksFase;
+    if (nett === '3tn' || nett === '1') {
+      maksFase = Math.max.apply(null, fasestrom);
+      h += '<p>Maks strøm ' + (nett === '1' ? '' : 'per fase: ' + fasestrom.map(function (a, i) { return fasenavn[i] + ' ' + nf(a, 1) + ' A'; }).join(', ') + '. Høyeste ') + nf(maksFase, 1) + ' A.</p>';
+    } else {
+      // IT: hver kurs ligger mellom to faser (trekant). Linjestrømmen er vektorsummen av de to kursgruppene som deler fasen:
+      // I = √(a² + b² + ab), som blir √3 · a når lasten er lik.
+      var par = [0, 0, 0];
+      sk.forEach(function (kj, i) { par[i % 3] += kj.length * p.maks / 230; });
+      var linje = function (a, b) { return Math.sqrt(a * a + b * b + a * b); };
+      var lin = [linje(par[0], par[2]), linje(par[0], par[1]), linje(par[1], par[2])];
+      maksFase = Math.max.apply(null, lin);
+      h += '<p>IT-nett: kursene fordeles på L1-L2, L2-L3 og L3-L1. Linjestrøm: ' + lin.map(function (a, i) { return 'L' + (i + 1) + ' ' + nf(a, 1) + ' A'; }).join(', ') + '.</p>';
+    }
+    var inntak = [16, 32, 63, 125, 250].filter(function (a) { return a >= maksFase; })[0];
+    h += '<p>Inntak: ' + (inntak ? 'minst ' + inntak + ' A CEE' + (nett === '1' ? ' enfase' : ' 3-fase') : 'mer enn 250 A, del på flere inntak') + ', regnet med maks effekt på alle paneler.</p>';
+
+    h += '<h3>Kabler</h3><p>Data: ' + dk.length + ' hjemkabler' + (d.backupPorter ? ' + ' + dk.length + ' backup' : '') + ' og ' + (c * r - dk.length) + ' panelkabler. Strøm: ' + sk.length + ' tilførsler og ' + (c * r - sk.length) + ' panelkabler.</p>';
+    h += '<p class="note">Forslaget går i slange ' + (modus === 'rad' ? 'rad for rad' : 'kolonne for kolonne') + ' fra ' + (fraBunn ? 'bunnen' : 'toppen') + ', så kjedene blir korte og like. Sjekk at panelene tåler så lange strømkjeder (maks antall gjennom powerCON står i databladet).</p>';
+    $('kabling-ut').innerHTML = h;
+    return { data: dk, strom: sk };
+  }
+
+  function tegn(p, c, r, kj) {
     var svg = $('vegg');
     var pad = 60, cw = p.b, ch = p.h;
     var Wt = c * cw, Ht = r * ch;
@@ -379,7 +508,7 @@ details[open] summary { margin-bottom: 14px; }
     for (var y = 0; y < r; y++) for (var x = 0; x < c; x++) {
       var mork = (x + y) % 2 === 0;
       s += '<rect x="' + (x * cw) + '" y="' + (y * ch) + '" width="' + cw + '" height="' + ch + '" fill="' + (mork ? '#15181c' : '#1c2026') + '" stroke="#2f343a" stroke-width="' + ln + '"/>';
-      if (visNr && cw / skala > 24) s += '<text x="' + (x * cw + cw / 2) + '" y="' + (y * ch + ch / 2) + '" fill="#7d828a" font-size="' + Math.min(fs, cw * 0.28) + '" text-anchor="middle" dominant-baseline="central">' + (x + 1) + '.' + (y + 1) + '</text>';
+      if (visNr && visTegning === 'paneler' && cw / skala > 24) s += '<text x="' + (x * cw + cw / 2) + '" y="' + (y * ch + ch / 2) + '" fill="#7d828a" font-size="' + Math.min(fs, cw * 0.28) + '" text-anchor="middle" dominant-baseline="central">' + (x + 1) + '.' + (y + 1) + '</text>';
     }
     s += '<rect x="0" y="0" width="' + Wt + '" height="' + Ht + '" fill="none" stroke="#1a8fd1" stroke-width="' + (ln * 2) + '"/>';
     // Mållinjer
@@ -389,6 +518,20 @@ details[open] summary { margin-bottom: 14px; }
     var lx = -26 * skala;
     s += '<line x1="' + lx + '" y1="0" x2="' + lx + '" y2="' + Ht + '" stroke="#7d828a" stroke-width="' + ln + '"/>';
     s += '<text transform="translate(' + (lx - fs * 0.5) + ' ' + (Ht / 2) + ') rotate(-90)" fill="#ecedee" font-size="' + fs + '" text-anchor="middle">' + nf(Ht / 1000, 2) + ' m · ' + (r * p.py) + ' px</text>';
+    var liste = kj && (visTegning === 'data' ? kj.data : visTegning === 'strom' ? kj.strom : null);
+    if (liste) {
+      var sw = Math.min(cw, ch) * 0.06;
+      liste.forEach(function (k, i) {
+        var f = kjedeFarger[i % kjedeFarger.length];
+        var pts = k.map(function (pn) { return (pn[0] * cw + cw / 2) + ',' + (pn[1] * ch + ch / 2); }).join(' ');
+        s += '<polyline points="' + pts + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '" stroke-linejoin="round" stroke-linecap="round"/>';
+        var a = k[0], z = k[k.length - 1];
+        var rr = Math.min(cw, ch) * 0.2;
+        s += '<circle cx="' + (a[0] * cw + cw / 2) + '" cy="' + (a[1] * ch + ch / 2) + '" r="' + rr + '" fill="' + f + '"/>';
+        s += '<text x="' + (a[0] * cw + cw / 2) + '" y="' + (a[1] * ch + ch / 2) + '" fill="#0c0d0f" font-size="' + rr * 1.1 + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + (visTegning === 'data' ? 'P' : 'K') + (i + 1) + '</text>';
+        if (k.length > 1) s += '<circle cx="' + (z[0] * cw + cw / 2) + '" cy="' + (z[1] * ch + ch / 2) + '" r="' + rr * 0.45 + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '"/>';
+      });
+    }
     svg.innerHTML = s;
   }
 
@@ -398,7 +541,7 @@ details[open] summary { margin-bottom: 14px; }
         panel: $('panel').value, modus: modus, kol: $('kol').value, rad: $('rad').value,
         mb: $('mb').value, mh: $('mh').value, fb: $('fb').value, ff: $('ff').value,
         nett: $('nett').value, kurs: $('kurs').value, margin: $('margin').value,
-        prosessor: $('prosessor').value, kap: $('kap').value, ppp: $('ppp').value, hz: $('hz').value, bit: $('bit').value, kabling: $('kabling').value, backup: $('backup').value
+        prosessor: $('prosessor').value, kap: $('kap').value, ppp: $('ppp').value, hz: $('hz').value, bit: $('bit').value, kabling: $('kabling').value, backup: $('backup').value, start: $('start').value, vis: visTegning
       }));
     } catch (e) {}
   }
@@ -406,20 +549,26 @@ details[open] summary { margin-bottom: 14px; }
     try {
       var s = JSON.parse(localStorage.getItem('hapt-led') || 'null');
       if (!s) return;
-      ['kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'prosessor', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup'].forEach(function (k) { if (s[k] != null) $(k).value = s[k]; });
+      ['kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'prosessor', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup', 'start'].forEach(function (k) { if (s[k] != null) $(k).value = s[k]; });
       if (s.panel && HaptPaneler.finn(s.panel)) $('panel').value = s.panel;
       if (s.modus) settModus(s.modus);
+      if (s.vis) settVisning(s.vis);
     } catch (e) {}
   }
 
   function settModus(m) {
     modus = m; valgtForslag = 0;
-    document.querySelectorAll('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.modus === m ? 'true' : 'false'); });
+    document.querySelectorAll('.seg button[data-modus]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.modus === m ? 'true' : 'false'); });
     document.querySelectorAll('[data-vis]').forEach(function (el) { el.hidden = el.dataset.vis.split(' ').indexOf(m) < 0; });
   }
 
-  document.querySelectorAll('.seg button').forEach(function (b) { b.onclick = function () { settModus(b.dataset.modus); regn(); }; });
-  ['panel', 'kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup'].forEach(function (id) {
+  document.querySelectorAll('.seg button[data-modus]').forEach(function (b) { b.onclick = function () { settModus(b.dataset.modus); regn(); }; });
+  function settVisning(v) {
+    visTegning = v;
+    document.querySelectorAll('[data-vis-tegning]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.visTegning === v ? 'true' : 'false'); });
+  }
+  document.querySelectorAll('[data-vis-tegning]').forEach(function (b) { b.onclick = function () { settVisning(b.dataset.visTegning); regn(); }; });
+  ['panel', 'kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup', 'start'].forEach(function (id) {
     $(id).addEventListener('input', function () { if (['kol', 'rad', 'mb', 'mh', 'fb', 'ff'].indexOf(id) >= 0) valgtForslag = 0; regn(); });
   });
 
