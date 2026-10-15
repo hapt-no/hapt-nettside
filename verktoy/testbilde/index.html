@@ -40,7 +40,7 @@
           <div id="kartFlater"></div>
           <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart">Fjern pixelmap</button></div>
         </div>
-        <p class="note">Fra et bilde finner verktøyet flatene selv: alt som ikke er svart, delt opp etter farge. Sjekk og rett navn og panelstørrelse etterpå.</p>
+        <p class="note">Fra et bilde finner verktøyet flatene selv (alt som ikke er svart, delt opp etter farge) og leser navnet som står på hver flate. Første gang lastes tekstgjenkjenningen ned (ca. 6 MB). Sjekk og rett navn og panelstørrelse etterpå.</p>
       </div>
 
       <div class="card" id="enkelt">
@@ -335,11 +335,59 @@
         if (!flater.length) { alert('Fant ingen flater i bildet. Bakgrunnen må være svart.'); return; }
         kart = { bredde: c2.width, hoyde: c2.height, navn: fil.name.replace(/\.[^.]+$/, ''), flater: flater.map(function (f, i) { return { navn: 'Flate ' + (i + 1), x: f.x, y: f.y, b: f.b, h: f.h, pw: 0, ph: 0 }; }) };
         visKart();
+        lesNavn(c2, kart);
       }, 30);
     };
     img.onerror = function () { alert('Klarte ikke å åpne bildet.'); };
     img.src = URL.createObjectURL(fil);
   });
+  // Tekstgjenkjenning (Tesseract, lagt i ../ocr/ så det virker uten eksterne tjenester). Lastes først når den trengs.
+  var ocrLaster = null;
+  function hentOcr() {
+    if (ocrLaster) return ocrLaster;
+    ocrLaster = new Promise(function (ok, feil) {
+      var sc = document.createElement('script'); sc.src = '../ocr/tesseract.min.js';
+      sc.onload = function () {
+        var base = new URL('../ocr/', location.href).href;
+        Tesseract.createWorker('nor', 1, { workerPath: base + 'worker.min.js', corePath: base, langPath: base, gzip: true })
+          .then(function (w) { return w.setParameters({ tessedit_pageseg_mode: '11' }).then(function () { return w; }); })
+          .then(ok, feil);
+      };
+      sc.onerror = feil;
+      document.head.appendChild(sc);
+    });
+    return ocrLaster;
+  }
+
+  // Les navnet på hver flate: største tekstlinje med bokstaver i den flata
+  function lesNavn(kilde, k) {
+    var status = $('kartTekst'), grunn = status.textContent;
+    status.textContent = grunn + ' Leser navn fra bildet …';
+    hentOcr().then(function (w) {
+      var i = 0;
+      var neste = function () {
+        if (k !== kart) return; // brukeren har lastet noe annet
+        if (i >= k.flater.length) { visKart(); status.textContent = grunn + ' Navnene er lest fra bildet; sjekk dem.'; return; }
+        var f = k.flater[i];
+        status.textContent = grunn + ' Leser navn ' + (i + 1) + ' av ' + k.flater.length + ' …';
+        var skala = Math.min(2, Math.max(1, 1200 / Math.max(f.b, f.h)));
+        var c = document.createElement('canvas'); c.width = Math.round(f.b * skala); c.height = Math.round(f.h * skala);
+        var cx = c.getContext('2d'); cx.imageSmoothingEnabled = true;
+        cx.drawImage(kilde, f.x, f.y, f.b, f.h, 0, 0, c.width, c.height);
+        w.recognize(c).then(function (r) {
+          var linjer = (r.data.lines || []).map(function (l) {
+            var t = l.text.replace(/[|_~^`´¨"“”]+/g, '').replace(/\s+/g, ' ').trim();
+            return { t: t, h: l.bbox.y1 - l.bbox.y0, c: l.confidence };
+          }).filter(function (l) { return l.c >= 45 && (l.t.match(/[A-Za-zÆØÅæøå]/g) || []).length >= 2 && l.t.length <= 60; });
+          linjer.sort(function (a, b) { return b.h - a.h; });
+          if (linjer[0]) f.navn = linjer[0].t;
+          i++; neste();
+        }, function () { i++; neste(); });
+      };
+      neste();
+    }, function () { status.textContent = grunn + ' Klarte ikke å starte tekstgjenkjenning, så navnene må skrives inn.'; });
+  }
+
   $('fraPixelmap').onclick = function () {
     var k = HaptPixelmap.hent();
     if (!k || !k.flater.length) { alert('Fant ikke noe kart. Lag et på Pixelmap-siden først.'); return; }
