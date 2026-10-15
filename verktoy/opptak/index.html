@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Opptak og stream – HAPT verktøy</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <nav><a href="../led/">LED-vegg</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="./" aria-current="page">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
+  </header>
+
+  <h1>Opptak og stream</h1>
+  <p class="lead">Hvor mye plass tar opptaket, hvor lenge holder kortet, hvor rask må disken være, og hvor mye opplink trenger strømmen.</p>
+
+  <div class="seg" role="group" aria-label="Velg" style="max-width:360px">
+    <button type="button" data-fane="opptak" aria-pressed="true">Opptak</button>
+    <button type="button" data-fane="stream" aria-pressed="false">Stream</button>
+  </div>
+
+  <!-- Opptak -->
+  <div class="grid" id="fane-opptak">
+    <div>
+      <div class="card">
+        <h2>Bilde</h2>
+        <div class="field"><label for="o-format">Format</label>
+          <select id="o-format">
+            <option value="1280x720">1280 × 720</option>
+            <option value="1920x1080" selected>1920 × 1080</option>
+            <option value="2048x1080">2048 × 1080 (DCI 2K)</option>
+            <option value="3840x2160">3840 × 2160 (UHD)</option>
+            <option value="4096x2160">4096 × 2160 (DCI 4K)</option>
+            <option value="egen">Egen</option>
+          </select>
+        </div>
+        <div class="row" id="o-egen" hidden>
+          <div class="field"><label for="o-w">Bredde (px)</label><input id="o-w" type="number" min="16" value="1920"></div>
+          <div class="field"><label for="o-h">Høyde (px)</label><input id="o-h" type="number" min="16" value="1080"></div>
+        </div>
+        <div class="field"><label for="o-fps">Bilder per sekund</label>
+          <select id="o-fps">
+            <option value="23.976">23,976</option><option value="24">24</option><option value="25">25</option>
+            <option value="29.97">29,97</option><option value="30">30</option>
+            <option value="50" selected>50</option><option value="59.94">59,94</option><option value="60">60</option>
+          </select>
+        </div>
+        <div class="field"><label for="o-kodek">Kodek</label>
+          <select id="o-kodek">
+            <optgroup label="Apple ProRes">
+              <option value="pr-proxy">ProRes 422 Proxy</option>
+              <option value="pr-lt">ProRes 422 LT</option>
+              <option value="pr-422">ProRes 422</option>
+              <option value="pr-hq" selected>ProRes 422 HQ</option>
+              <option value="pr-4444">ProRes 4444</option>
+              <option value="pr-xq">ProRes 4444 XQ</option>
+            </optgroup>
+            <optgroup label="Avid DNxHR">
+              <option value="dn-lb">DNxHR LB</option>
+              <option value="dn-sq">DNxHR SQ</option>
+              <option value="dn-hq">DNxHR HQ</option>
+              <option value="dn-hqx">DNxHR HQX</option>
+              <option value="dn-444">DNxHR 444</option>
+            </optgroup>
+            <optgroup label="Annet">
+              <option value="ukomp10">Ukomprimert 10 bit 4:2:2</option>
+              <option value="ukomp8">Ukomprimert 8 bit 4:2:2</option>
+              <option value="egen">H.264 / H.265 / egen bitrate</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="field" id="o-bitrate-felt" hidden><label for="o-bitrate">Videobitrate (Mbit/s)</label><input id="o-bitrate" type="number" min="0.1" step="0.1" value="50"></div>
+      </div>
+
+      <div class="card">
+        <h2>Lyd og antall</h2>
+        <div class="row">
+          <div class="field"><label for="o-kanaler">Lydkanaler</label><input id="o-kanaler" type="number" min="0" max="64" value="2"></div>
+          <div class="field"><label for="o-bit">Lyd</label>
+            <select id="o-bit"><option value="24">PCM 48 kHz 24 bit</option><option value="16">PCM 48 kHz 16 bit</option><option value="32">PCM 48 kHz 32 bit</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="o-antall">Samtidige opptak</label><input id="o-antall" type="number" min="1" max="64" value="1"></div>
+          <div class="field"><label for="o-timer">Opptakstid (timer)</label><input id="o-timer" type="number" min="0" step="0.25" value="2"></div>
+        </div>
+        <p class="note" style="margin-top:-4px">Samtidige opptak: for eksempel ISO-opptak av fire kameraer til samme disk.</p>
+      </div>
+
+      <div class="card">
+        <h2>Lagring</h2>
+        <div class="field"><label for="o-medie">Kort eller disk</label>
+          <select id="o-medie">
+            <option value="64">64 GB</option><option value="128">128 GB</option><option value="256">256 GB</option>
+            <option value="512" selected>512 GB</option><option value="1000">1 TB</option><option value="2000">2 TB</option>
+            <option value="4000">4 TB</option><option value="8000">8 TB</option><option value="egen">Egen</option>
+          </select>
+        </div>
+        <div class="field" id="o-medie-egen-felt" hidden><label for="o-medie-egen">Størrelse (GB)</label><input id="o-medie-egen" type="number" min="1" value="500"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="kpis">
+        <div class="kpi"><b id="k-rate">–</b><span>per opptak</span></div>
+        <div class="kpi"><b id="k-sum">–</b><span>til sammen</span></div>
+        <div class="kpi"><b id="k-plass">–</b><span id="k-plass-tekst">plass</span></div>
+        <div class="kpi"><b id="k-tid">–</b><span>på kortet / disken</span></div>
+      </div>
+      <div class="card">
+        <table class="res" id="o-tabell"></table>
+        <p class="warn" id="o-varsel" hidden></p>
+        <p class="note">ProRes og DNxHR er regnet fra produsentenes tabeller (Apple og Avid) og skalert med oppløsning og bildetakt, så tallene er gode anslag. H.264 og H.265 bruker bitraten du skriver inn. GB er 1 000 000 000 byte, slik kort og disker selges. Litt av plassen går til filsystemet, så regn med ca. 5 % mindre i praksis.</p>
+      </div>
+      <div class="card">
+        <h2>Skrivehastighet</h2>
+        <table class="res" id="o-medier"></table>
+        <p class="note">Minste vedvarende skrivehastighet, typiske tall. Sjekk alltid at opptakeren godkjenner kortet; mange krever bestemte modeller.</p>
+      </div>
+      <div class="btns" style="margin-top:16px"><button class="btn ghost" type="button" id="o-kopier">Kopier oppsummering</button></div>
+    </div>
+  </div>
+
+  <!-- Stream -->
+  <div class="grid" id="fane-stream" hidden>
+    <div>
+      <div class="card">
+        <h2>Sending</h2>
+        <div class="field"><label for="s-mal">Kvalitet</label>
+          <select id="s-mal">
+            <option value="2.5">720p30 · 2,5 Mbit/s</option>
+            <option value="4">720p50/60 · 4 Mbit/s</option>
+            <option value="6" selected>1080p25/30 · 6 Mbit/s</option>
+            <option value="9">1080p50/60 · 9 Mbit/s</option>
+            <option value="20">2160p25/30 · 20 Mbit/s</option>
+            <option value="35">2160p50/60 · 35 Mbit/s</option>
+            <option value="egen">Egen</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="field"><label for="s-video">Video (Mbit/s)</label><input id="s-video" type="number" min="0.1" step="0.1" value="6"></div>
+          <div class="field"><label for="s-lyd">Lyd (kbit/s)</label><input id="s-lyd" type="number" min="0" step="32" value="192"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="s-mottakere">Mål samtidig</label><input id="s-mottakere" type="number" min="1" max="20" value="1"></div>
+          <div class="field"><label for="s-margin">Margin på opplink</label>
+            <select id="s-margin"><option value="1.5">1,5 ×</option><option value="2" selected>2 ×</option><option value="3">3 ×</option></select>
+          </div>
+        </div>
+        <p class="note" style="margin-top:-4px">Mål samtidig: hvor mange strømmer som sendes ut fra stedet, for eksempel både til egen sendingsside og YouTube. Sender du én strøm til en tjeneste som deler den videre, er det 1.</p>
+        <div class="field"><label for="s-timer">Varighet (timer)</label><input id="s-timer" type="number" min="0" step="0.25" value="2"></div>
+      </div>
+
+      <div class="card">
+        <h2>Seere</h2>
+        <div class="row">
+          <div class="field"><label for="s-seere">Seere samtidig</label><input id="s-seere" type="number" min="0" value="200"></div>
+          <div class="field"><label for="s-sett">Snitt sett (minutter)</label><input id="s-sett" type="number" min="0" value="90"></div>
+        </div>
+        <div class="field"><label for="s-pris">Pris per 1000 minutter levert (USD)</label><input id="s-pris" type="number" min="0" step="0.1" value="1"></div>
+        <p class="note" style="margin-top:-4px">Cloudflare Stream tar betalt per levert minutt (sjekk gjeldende pris). Seerne får gjerne lavere kvalitet automatisk ved dårlig nett, så båndbredden ut er et øvre anslag.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="kpis">
+        <div class="kpi"><b id="s-k-ut">–</b><span>sendes ut</span></div>
+        <div class="kpi"><b id="s-k-link">–</b><span>anbefalt opplink</span></div>
+        <div class="kpi"><b id="s-k-data">–</b><span>data brukt</span></div>
+        <div class="kpi"><b id="s-k-min">–</b><span>minutter levert</span></div>
+      </div>
+      <div class="card">
+        <table class="res" id="s-tabell"></table>
+        <p class="note">Det som sendes er video + lyd + ca. 5 % til pakking (RTMP/SRT). Anbefalt opplink er det ganger marginen, fordi mobil- og delt nett svinger. Med LiveU og annen bonding er det summen av alle linjene som teller, men hver linje svinger mer.</p>
+      </div>
+      <div class="btns" style="margin-top:16px"><button class="btn ghost" type="button" id="s-kopier">Kopier oppsummering</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var tall = function (v, d) { return v.toLocaleString('nb-NO', { maximumFractionDigits: d === undefined ? 1 : d, minimumFractionDigits: 0 }); };
+
+  // Faner
+  document.querySelectorAll('[data-fane]').forEach(function (b) {
+    b.onclick = function () {
+      document.querySelectorAll('[data-fane]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); $('fane-' + x.dataset.fane).hidden = x !== b; });
+      try { localStorage.setItem('hapt-opptak-fane', b.dataset.fane); } catch (e) {}
+    };
+  });
+
+  // Mbit/s ved 1920 × 1080 og 29,97 bilder/s. Apple ProRes White Paper og Avid DNxHR-tabell; skaleres med piksler og bildetakt.
+  var KODEK = {
+    'pr-proxy': ['ProRes 422 Proxy', 45], 'pr-lt': ['ProRes 422 LT', 102], 'pr-422': ['ProRes 422', 147],
+    'pr-hq': ['ProRes 422 HQ', 220], 'pr-4444': ['ProRes 4444', 330], 'pr-xq': ['ProRes 4444 XQ', 500],
+    'dn-lb': ['DNxHR LB', 45], 'dn-sq': ['DNxHR SQ', 145], 'dn-hq': ['DNxHR HQ', 220], 'dn-hqx': ['DNxHR HQX', 220], 'dn-444': ['DNxHR 444', 440]
+  };
+  var MEDIER = [
+    ['SD UHS-I V30', 30], ['SD V60', 60], ['SD V90', 90], ['CFast 2.0', 350], ['CFexpress type B', 800],
+    ['SSD SATA (2,5")', 400], ['NVMe SSD', 1500], ['Harddisk 7200 rpm', 120]
+  ];
+
+  function opptak() {
+    var f = $('o-format').value, W, H;
+    $('o-egen').hidden = f !== 'egen';
+    if (f === 'egen') { W = +$('o-w').value || 1920; H = +$('o-h').value || 1080; } else { var d = f.split('x'); W = +d[0]; H = +d[1]; }
+    var fps = +$('o-fps').value, k = $('o-kodek').value;
+    $('o-bitrate-felt').hidden = k !== 'egen';
+    var video, navn;
+    if (KODEK[k]) { navn = KODEK[k][0]; video = KODEK[k][1] * (W * H) / (1920 * 1080) * fps / 29.97; }
+    else if (k === 'ukomp10') { navn = 'Ukomprimert 10 bit 4:2:2'; video = W * H * 20 * fps / 1e6; }
+    else if (k === 'ukomp8') { navn = 'Ukomprimert 8 bit 4:2:2'; video = W * H * 16 * fps / 1e6; }
+    else { navn = 'Egen bitrate'; video = Math.max(0.1, +$('o-bitrate').value || 0); }
+    var kan = Math.max(0, +$('o-kanaler').value || 0), lyd = kan * 48000 * (+$('o-bit').value) / 1e6;
+    var per = video + lyd, ant = Math.max(1, +$('o-antall').value || 1), sum = per * ant;
+    var MBs = sum / 8, timer = Math.max(0, +$('o-timer').value || 0);
+    var GBtime = MBs * 3600 / 1000, plass = GBtime * timer;
+    var medie = $('o-medie').value; $('o-medie-egen-felt').hidden = medie !== 'egen';
+    var mGB = medie === 'egen' ? Math.max(1, +$('o-medie-egen').value || 1) : +medie;
+    var tidPaMedie = mGB / GBtime; // timer
+    var hm = function (t) { var h = Math.floor(t), m = Math.round((t - h) * 60); if (m === 60) { h++; m = 0; } return h ? h + ' t ' + m + ' min' : m + ' min'; };
+    var gb = function (v) { return v >= 1000 ? tall(v / 1000, 2) + ' TB' : tall(v, v < 10 ? 1 : 0) + ' GB'; };
+
+    $('k-rate').textContent = tall(per, per < 10 ? 1 : 0) + ' Mbit/s';
+    $('k-sum').textContent = tall(MBs, MBs < 10 ? 1 : 0) + ' MB/s';
+    $('k-plass').textContent = gb(plass); $('k-plass-tekst').textContent = 'for ' + tall(timer, 2) + ' t';
+    $('k-tid').textContent = hm(tidPaMedie);
+    var rader = [
+      ['Format', W + ' × ' + H + ', ' + $('o-fps').options[$('o-fps').selectedIndex].text + ' bilder/s'],
+      ['Kodek', navn],
+      ['Video', tall(video, video < 10 ? 1 : 0) + ' Mbit/s'],
+      ['Lyd', kan ? kan + ' kanaler, ' + tall(lyd, 2) + ' Mbit/s' : 'ingen'],
+      ['Per opptak', tall(per, per < 10 ? 1 : 0) + ' Mbit/s = ' + tall(per / 8, 1) + ' MB/s'],
+      ['Antall opptak', ant],
+      ['Per time', gb(GBtime)],
+      ['Per minutt', gb(GBtime / 60)],
+      ['Opptak på ' + tall(timer, 2) + ' t', gb(plass)],
+      ['Plass på ' + gb(mGB), hm(tidPaMedie) + ' (ca. ' + hm(tidPaMedie * 0.95) + ' i praksis)']
+    ];
+    $('o-tabell').innerHTML = rader.map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+    var varsel = [];
+    if (plass > mGB * 0.95) varsel.push('Opptaket får ikke plass på ' + gb(mGB) + '. Du trenger ' + Math.ceil(plass / (mGB * 0.95)) + ' stk., eller bytt underveis.');
+    $('o-varsel').hidden = !varsel.length; $('o-varsel').textContent = varsel.join(' ');
+    // Medier: krev 1,5 × margin på skrivehastighet
+    $('o-medier').innerHTML = MEDIER.map(function (m) {
+      var ok = m[1] >= MBs * 1.5, knapt = !ok && m[1] >= MBs;
+      return '<tr><td>' + m[0] + ' (' + m[1] + ' MB/s)</td><td style="color:' + (ok ? '#4cc38a' : knapt ? 'var(--warn)' : '#d9576b') + '">' + (ok ? 'Holder' : knapt ? 'Knapt' : 'For treg') + '</td></tr>';
+    }).join('');
+    opptak.tekst = rader.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n') + '\nTil sammen: ' + tall(MBs, 1) + ' MB/s';
+    lagre();
+  }
+
+  function stream() {
+    var v = Math.max(0, +$('s-video').value || 0), a = Math.max(0, +$('s-lyd').value || 0) / 1000;
+    var en = (v + a) * 1.05, mott = Math.max(1, +$('s-mottakere').value || 1), ut = en * mott;
+    var link = ut * (+$('s-margin').value), timer = Math.max(0, +$('s-timer').value || 0);
+    var data = ut / 8 * 3600 * timer / 1000; // GB
+    var seere = Math.max(0, +$('s-seere').value || 0), sett = Math.max(0, +$('s-sett').value || 0);
+    var minutter = seere * sett, pris = minutter / 1000 * Math.max(0, +$('s-pris').value || 0);
+    var seerUt = seere * en, seerData = seere * en / 8 * sett * 60 / 1000;
+    var gb = function (x) { return x >= 1000 ? tall(x / 1000, 2) + ' TB' : tall(x, x < 10 ? 2 : 0) + ' GB'; };
+    $('s-k-ut').textContent = tall(ut, 1) + ' Mbit/s';
+    $('s-k-link').textContent = tall(link, 0) + ' Mbit/s';
+    $('s-k-data').textContent = gb(data);
+    $('s-k-min').textContent = tall(minutter, 0);
+    var rader = [
+      ['Per strøm', tall(v, 1) + ' + ' + tall(a * 1000, 0) + ' kbit/s lyd + pakking = ' + tall(en, 1) + ' Mbit/s'],
+      ['Strømmer ut', mott],
+      ['Sendes ut fra stedet', tall(ut, 1) + ' Mbit/s'],
+      ['Anbefalt opplink', 'minst ' + tall(link, 0) + ' Mbit/s'],
+      ['Data brukt på ' + tall(timer, 2) + ' t', gb(data) + (data > 0 ? ' (viktig på mobilabonnement)' : '')],
+      ['Til seerne, toppfart', seere ? tall(seerUt / 1000, 2) + ' Gbit/s' : '–'],
+      ['Til seerne, data', seere ? gb(seerData) : '–'],
+      ['Minutter levert', tall(minutter, 0)],
+      ['Pris levering', seere ? 'ca. ' + tall(pris, 2) + ' USD' : '–']
+    ];
+    $('s-tabell').innerHTML = rader.map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+    stream.tekst = rader.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n');
+    lagre();
+  }
+  $('s-mal').addEventListener('change', function () { if (this.value !== 'egen') { $('s-video').value = this.value; stream(); } });
+  $('s-video').addEventListener('input', function () {
+    var v = this.value, fins = false;
+    Array.prototype.forEach.call($('s-mal').options, function (o) { if (o.value === v) fins = true; });
+    $('s-mal').value = fins ? v : 'egen';
+  });
+
+  var felter = ['o-format', 'o-w', 'o-h', 'o-fps', 'o-kodek', 'o-bitrate', 'o-kanaler', 'o-bit', 'o-antall', 'o-timer', 'o-medie', 'o-medie-egen',
+    's-mal', 's-video', 's-lyd', 's-mottakere', 's-margin', 's-timer', 's-seere', 's-sett', 's-pris'];
+  function lagre() {
+    var o = {}; felter.forEach(function (id) { o[id] = $(id).value; });
+    try { localStorage.setItem('hapt-opptak', JSON.stringify(o)); } catch (e) {}
+  }
+  try {
+    var lagret = JSON.parse(localStorage.getItem('hapt-opptak') || 'null');
+    if (lagret) felter.forEach(function (id) { if (lagret[id] !== undefined) $(id).value = lagret[id]; });
+    var fane = localStorage.getItem('hapt-opptak-fane');
+    if (fane === 'stream') document.querySelector('[data-fane=stream]').click();
+  } catch (e) {}
+  felter.forEach(function (id) {
+    var el = $(id), fn = id[0] === 'o' ? opptak : stream;
+    el.addEventListener('input', fn); el.addEventListener('change', fn);
+  });
+  var kopier = function (tekst, knapp) {
+    if (navigator.clipboard) navigator.clipboard.writeText(tekst).then(function () { var t = knapp.textContent; knapp.textContent = 'Kopiert'; setTimeout(function () { knapp.textContent = t; }, 1500); });
+  };
+  $('o-kopier').onclick = function () { kopier(opptak.tekst, this); };
+  $('s-kopier').onclick = function () { kopier(stream.tekst, this); };
+  opptak(); stream();
+})();
+</script>
+</body>
+</html>
