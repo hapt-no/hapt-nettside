@@ -161,11 +161,11 @@
     for (var s = 0; s < N; s++) {
       if (merke[s] || !klasse[s]) continue;
       var id = bokser.length + 1, hode = 0, hale = 0, k = klasse[s], t0 = tone[s];
-      var bo = { x0: W, y0: H, x1: 0, y1: 0, farget: k === 2 };
+      var bo = { x0: W, y0: H, x1: 0, y1: 0, n: 0, farget: k === 2 };
       var ok = function (j) { return !merke[j] && klasse[j] === k && (k === 1 || naer(tone[j], t0)); };
       ko[hale++] = s; merke[s] = id;
       while (hode < hale) {
-        var c = ko[hode++], cx = c % W, cy = (c / W) | 0;
+        var c = ko[hode++], cx = c % W, cy = (c / W) | 0; bo.n++;
         if (cx < bo.x0) bo.x0 = cx; if (cx > bo.x1) bo.x1 = cx; if (cy < bo.y0) bo.y0 = cy; if (cy > bo.y1) bo.y1 = cy;
         if (cx > 0 && ok(c - 1)) { merke[c - 1] = id; ko[hale++] = c - 1; }
         if (cx < W - 1 && ok(c + 1)) { merke[c + 1] = id; ko[hale++] = c + 1; }
@@ -175,6 +175,11 @@
       bokser.push(bo);
     }
     // Finnes det fargede flater, er hvit tekst, rammer og hjørnemerker bare pynt og tas ikke med
+    // Hvite, fylte rektangler er ofte merkelapper med navn eller mål; de tas vare på så teksten kan leses
+    var etiketter = bokser.filter(function (b) {
+      var bb = b.x1 - b.x0 + 1, hh = b.y1 - b.y0 + 1;
+      return !b.farget && hh >= 5 && bb >= 2 * hh && hh <= 300 && b.n > 0.6 * bb * hh;
+    }).map(function (b) { return { x: b.x0, y: b.y0, b: b.x1 - b.x0 + 1, h: b.y1 - b.y0 + 1 }; });
     if (bokser.some(function (b) { return b.farget; })) bokser = bokser.filter(function (b) { return b.farget; });
     var areal = function (b) { return (b.x1 - b.x0 + 1) * (b.y1 - b.y0 + 1); };
     bokser = bokser.filter(function (b) { return areal(b) >= 400; }); // bokstaver og støy
@@ -205,9 +210,11 @@
       for (g = 0; g < 3 && fylt(b.x0, b.y1 + 1, b.x1, b.y1 + 1); g++) b.y1++;
     });
     var minAreal = N * 0.001;
-    return bokser.filter(function (b) { return areal(b) >= minAreal; }).map(function (b) {
+    var ut = bokser.filter(function (b) { return areal(b) >= minAreal; }).map(function (b) {
       return { x: b.x0, y: b.y0, b: b.x1 - b.x0 + 1, h: b.y1 - b.y0 + 1 };
     }).sort(function (p, q) { return p.y - q.y || p.x - q.x; });
+    ut.etiketter = etiketter;
+    return ut;
   }
 
   var api = { farge: farge, hent: hent, lagre: lagre, les: les, overlapp: overlapp, pakk: pakk, fest: fest, tegn: tegn, finnFlater: finnFlater };
