@@ -33,7 +33,7 @@ details[open] summary { margin-bottom: 14px; }
 <div class="wrap">
   <header class="site">
     <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
-    <nav><a href="./" aria-current="page">LED-vegg</a><a href="../testbilde/">Testbilde</a><a href="../edid/">EDID</a></nav>
+    <nav><a href="./" aria-current="page">LED-vegg</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
   <h1>LED-vegg</h1>
@@ -201,6 +201,7 @@ details[open] summary { margin-bottom: 14px; }
         <div id="advarsler"></div>
         <div class="btns" style="margin-top:16px">
           <a class="btn" id="tilTestbilde" href="../testbilde/">Lag testbilde for denne veggen</a>
+          <a class="btn ghost" id="tilPixelmap" href="../pixelmap/">Legg til i pixelmap</a>
           <button class="btn ghost" type="button" id="kopier">Kopier oppsummering</button>
         </div>
       </div>
@@ -376,6 +377,7 @@ details[open] summary { margin-bottom: 14px; }
     tegn(p, c, r, kj);
     var q = new URLSearchParams({ w: W, h: H, pw: p.px, ph: p.py, navn: p.navn });
     $('tilTestbilde').href = '../testbilde/?' + q.toString();
+    $('tilPixelmap').href = '../pixelmap/?' + new URLSearchParams({ legg: p.navn + ' ' + c + '×' + r, b: W, h: H, pw: p.px, ph: p.py }).toString();
 
     sisteTekst = 'LED-vegg: ' + p.navn + '\n' +
       c + ' × ' + r + ' = ' + n + ' paneler\n' +

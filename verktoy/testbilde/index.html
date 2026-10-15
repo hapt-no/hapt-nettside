@@ -12,22 +12,38 @@
 @font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(../../fonts/barlow-latin-500-normal.woff2) format('woff2');}
 .preview { background: repeating-conic-gradient(#16181b 0% 25%, #101214 0% 50%) 50% / 20px 20px; }
-.preview canvas { image-rendering: auto; }
+.kartflate { display: grid; grid-template-columns: 1fr 64px 64px; gap: 6px; align-items: end; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kartflate input { padding: 6px 7px; font-size: 15px; }
+.kartflate label { font-size: 12px; }
+.kartflate small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="site">
     <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
-    <nav><a href="../led/">LED-vegg</a><a href="./" aria-current="page">Testbilde</a><a href="../edid/">EDID</a></nav>
+    <nav><a href="../led/">LED-vegg</a><a href="./" aria-current="page">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
   <h1>Testbilde</h1>
-  <p class="lead">Lag et testbilde i riktig oppløsning. Med panelstørrelse får du panelkart med nummer på hvert panel.</p>
+  <p class="lead">Lag et testbilde i riktig oppløsning, med panelkart og nummer på hvert panel. Har du et pixelmap, får hver flate sitt eget testbilde på riktig plass.</p>
 
   <div class="grid">
     <div>
       <div class="card">
+        <h2>Pixelmap</h2>
+        <label class="slipp btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px">Last inn pixelmap (PNG eller kartfil)</label>
+        <input id="kartfil" type="file" accept="image/png,image/jpeg,image/webp,.json,application/json" hidden>
+        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap">Bruk kartet fra Pixelmap-siden</button></div>
+        <div id="kartInfo" hidden>
+          <p class="note" id="kartTekst"></p>
+          <div id="kartFlater"></div>
+          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart">Fjern pixelmap</button></div>
+        </div>
+        <p class="note">Fra et bilde finner verktøyet flatene selv: alt som ikke er svart, delt opp etter farge. Sjekk og rett navn og panelstørrelse etterpå.</p>
+      </div>
+
+      <div class="card" id="enkelt">
         <div class="field">
           <label for="mal">Oppløsning</label>
           <select id="mal">
@@ -60,13 +76,13 @@
         <label class="check"><input type="checkbox" id="o-sirkel" checked> Sirkel og kryss</label>
         <label class="check"><input type="checkbox" id="o-diag"> Diagonaler</label>
         <label class="check"><input type="checkbox" id="o-farger" checked> Fargestriper og gråtrapp</label>
-        <label class="check"><input type="checkbox" id="o-kant" checked> Kantlinje og hjørnepiler</label>
+        <label class="check"><input type="checkbox" id="o-kant" checked> Kantlinje og piler</label>
         <label class="check"><input type="checkbox" id="o-logo" checked> HAPT-logo</label>
         <label class="check"><input type="checkbox" id="o-tekst" checked> Oppløsning og tekst</label>
         <div class="row" style="margin-top:10px">
           <div class="field"><label for="ruter">Rutenett hver (px)</label><input id="ruter" type="number" min="8" value="120"></div>
           <div class="field"><label for="farge">Linjefarge</label>
-            <select id="farge"><option value="#1a8fd1">HAPT-blå</option><option value="#ffffff">Hvit</option><option value="#ffd400">Gul</option><option value="#00ff00">Grønn</option></select>
+            <select id="farge"><option value="#1a8fd1">HAPT-blå</option><option value="#ffffff">Hvit</option><option value="#ffd400">Gul</option><option value="#00ff00">Grønn</option><option value="flate">Ulik per flate</option></select>
           </div>
         </div>
       </div>
@@ -83,6 +99,7 @@
   </div>
 </div>
 
+<script src="../pixelmap/pixelmap.js"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -90,8 +107,9 @@
   var logo = new Image(), logoKlar = false;
   logo.onload = function () { logoKlar = true; tegn(); };
   logo.src = '../hapt-ordmerke-hvit.svg';
+  var kart = null; // { bredde, hoyde, navn, flater: [...] } når et pixelmap er lastet
 
-  // Fyll inn fra adressen (fra LED-kalkulatoren): ?w=&h=&pw=&ph=&navn=
+  // Fyll inn fra adressen (fra LED-kalkulatoren): ?w=&h=&pw=&ph=
   var q = new URLSearchParams(location.search);
   if (q.get('w')) {
     $('w').value = q.get('w'); $('h').value = q.get('h');
@@ -106,54 +124,51 @@
   }
   oppdaterMal();
 
-  function tegn() {
-    var W = Math.max(16, Math.min(16384, Math.round(+$('w').value || 1920)));
-    var H = Math.max(16, Math.min(16384, Math.round(+$('h').value || 1080)));
-    var pw = Math.round(+$('pw').value || 0), ph = Math.round(+$('ph').value || 0);
-    var linje = $('farge').value;
-    cv.width = W; cv.height = H;
+  var font = function (px, vekt) { return (vekt || 400) + ' ' + Math.max(1, Math.round(px)) + 'px Barlow, Helvetica, Arial, sans-serif'; };
+
+  // Tegner ett komplett testbilde i rektangelet (ox, oy, W, H)
+  function tegnTest(ox, oy, W, H, pw, ph, tittel, linje) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(ox, oy, W, H); ctx.clip();
+    ctx.translate(ox, oy);
     var m = Math.min(W, H);
     var lw = Math.max(1, Math.round(m / 540));
-    var font = function (px, vekt) { return (vekt || 400) + ' ' + Math.round(px) + 'px Barlow, Helvetica, Arial, sans-serif'; };
-
     ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
 
     var harPaneler = $('o-paneler').checked && pw > 0 && ph > 0;
-    // Panelkart: annenhver mørk flate så panelkanter synes, med nummer kolonne.rad
+    var kol = 0, rad = 0;
     if (harPaneler) {
-      var kol = Math.ceil(W / pw), rad = Math.ceil(H / ph);
-      var nr = 0;
+      kol = Math.ceil(W / pw); rad = Math.ceil(H / ph);
       for (var y = 0; y < rad; y++) for (var x = 0; x < kol; x++) {
         ctx.fillStyle = (x + y) % 2 ? '#1b1f24' : '#0f1114';
         ctx.fillRect(x * pw, y * ph, pw, ph);
       }
       ctx.strokeStyle = linje; ctx.lineWidth = 1;
       ctx.beginPath();
-      for (x = 0; x <= kol; x++) { var xx = Math.min(W, x * pw) + 0.5 - (x * pw >= W ? 1 : 0); ctx.moveTo(xx, 0); ctx.lineTo(xx, H); }
-      for (y = 0; y <= rad; y++) { var yy = Math.min(H, y * ph) + 0.5 - (y * ph >= H ? 1 : 0); ctx.moveTo(0, yy); ctx.lineTo(W, yy); }
+      for (x = 1; x < kol; x++) { ctx.moveTo(x * pw + 0.5, 0); ctx.lineTo(x * pw + 0.5, H); }
+      for (y = 1; y < rad; y++) { ctx.moveTo(0, y * ph + 0.5); ctx.lineTo(W, y * ph + 0.5); }
       ctx.stroke();
-      var fs = Math.max(9, Math.min(pw, ph) * 0.16);
-      ctx.fillStyle = 'rgba(236,237,238,0.55)'; ctx.font = font(fs, 500); ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      var fs = Math.max(9, Math.min(pw, ph) * 0.16), nr = 0;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
       for (y = 0; y < rad; y++) for (x = 0; x < kol; x++) {
         nr++;
+        ctx.fillStyle = 'rgba(236,237,238,0.55)'; ctx.font = font(fs, 500);
         ctx.fillText((x + 1) + '.' + (y + 1), x * pw + fs * 0.4, y * ph + fs * 0.35);
         if (Math.min(pw, ph) >= 96) {
-          ctx.save(); ctx.font = font(fs * 0.6); ctx.fillStyle = 'rgba(125,130,138,0.7)';
-          ctx.fillText('#' + nr, x * pw + fs * 0.4, y * ph + fs * 1.45); ctx.restore();
+          ctx.font = font(fs * 0.6); ctx.fillStyle = 'rgba(125,130,138,0.7)';
+          ctx.fillText('#' + nr, x * pw + fs * 0.4, y * ph + fs * 1.45);
         }
       }
     } else if ($('o-rutenett').checked) {
       ctx.fillStyle = '#0d0e10'; ctx.fillRect(0, 0, W, H);
     }
 
-    // Rutenett, sentrert slik at en linje alltid går gjennom midten
     if ($('o-rutenett').checked) {
       var g = Math.max(8, +$('ruter').value || 120);
       ctx.strokeStyle = harPaneler ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.28)'; ctx.lineWidth = 1;
       ctx.beginPath();
-      var x0 = (W / 2) % g, y0 = (H / 2) % g;
-      for (var gx = x0; gx < W; gx += g) { ctx.moveTo(Math.round(gx) + 0.5, 0); ctx.lineTo(Math.round(gx) + 0.5, H); }
-      for (var gy = y0; gy < H; gy += g) { ctx.moveTo(0, Math.round(gy) + 0.5); ctx.lineTo(W, Math.round(gy) + 0.5); }
+      for (var gx = (W / 2) % g; gx < W; gx += g) { ctx.moveTo(Math.round(gx) + 0.5, 0); ctx.lineTo(Math.round(gx) + 0.5, H); }
+      for (var gy = (H / 2) % g; gy < H; gy += g) { ctx.moveTo(0, Math.round(gy) + 0.5); ctx.lineTo(W, Math.round(gy) + 0.5); }
       ctx.stroke();
     }
 
@@ -165,9 +180,8 @@
     if ($('o-sirkel').checked) {
       ctx.strokeStyle = '#fff'; ctx.lineWidth = lw;
       ctx.beginPath(); ctx.arc(W / 2, H / 2, m / 2 - lw, 0, Math.PI * 2); ctx.stroke();
-      ctx.strokeStyle = linje; ctx.lineWidth = lw;
+      ctx.strokeStyle = linje;
       ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
-      // Små sirkler i hjørnene for å se om bildet er strukket
       var r2 = m / 10;
       ctx.strokeStyle = '#fff';
       [[r2 * 1.3, r2 * 1.3], [W - r2 * 1.3, r2 * 1.3], [r2 * 1.3, H - r2 * 1.3], [W - r2 * 1.3, H - r2 * 1.3]].forEach(function (p) {
@@ -178,8 +192,9 @@
     var midtH = m * 0.12;
     if ($('o-farger').checked) {
       var bw = Math.min(W * 0.7, m * 1.2), bx = (W - bw) / 2, by = H / 2 + m * 0.06;
-      var farger = ['#ffffff', '#ffff00', '#00ffff', '#00ff00', '#ff00ff', '#ff0000', '#0000ff', '#000000'];
-      farger.forEach(function (f, i) { ctx.fillStyle = f; ctx.fillRect(Math.round(bx + i * bw / 8), by, Math.ceil(bw / 8), midtH); });
+      ['#ffffff', '#ffff00', '#00ffff', '#00ff00', '#ff00ff', '#ff0000', '#0000ff', '#000000'].forEach(function (f, i) {
+        ctx.fillStyle = f; ctx.fillRect(Math.round(bx + i * bw / 8), by, Math.ceil(bw / 8), midtH);
+      });
       for (var i = 0; i <= 10; i++) {
         var v = Math.round(i * 25.5);
         ctx.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
@@ -194,62 +209,133 @@
     }
 
     if ($('o-tekst').checked) {
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.font = font(m * 0.06, 300);
       var ty = H / 2 - m * 0.1;
-      // Mørk bakgrunn bak teksten så den kan leses over rutenettet
       var tekst = W + ' × ' + H;
       var tbw = ctx.measureText(tekst).width + m * 0.06;
       ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - tbw / 2, ty - m * 0.05, tbw, m * 0.1);
       ctx.fillStyle = '#fff'; ctx.fillText(tekst, W / 2, ty);
       var under = [];
-      if ($('tittel').value.trim()) under.push($('tittel').value.trim());
-      if (harPaneler) under.push(Math.ceil(W / pw) + ' × ' + Math.ceil(H / ph) + ' paneler à ' + pw + ' × ' + ph + ' px');
+      if (tittel) under.push(tittel);
+      if (harPaneler) under.push(kol + ' × ' + rad + ' paneler à ' + pw + ' × ' + ph + ' px');
+      if (kart) under.push('Posisjon ' + ox + ', ' + oy);
       if (under.length) {
         ctx.font = font(m * 0.03, 400);
         var y2 = $('o-farger').checked ? H / 2 + m * 0.06 + midtH * 1.45 + m * 0.06 : H / 2 + m * 0.06;
         under.forEach(function (t, i) {
           var w2 = ctx.measureText(t).width + m * 0.04;
           ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - w2 / 2, y2 + i * m * 0.05 - m * 0.022, w2, m * 0.044);
-          ctx.fillStyle = i === 0 && $('tittel').value.trim() ? '#fff' : '#b9bdc3';
+          ctx.fillStyle = i === 0 && tittel ? '#fff' : '#b9bdc3';
           ctx.fillText(t, W / 2, y2 + i * m * 0.05);
         });
       }
     }
 
     if ($('o-kant').checked) {
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#fff'; ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
       ctx.strokeStyle = '#ff0000'; ctx.strokeRect(1.5, 1.5, W - 3, H - 3);
-      // Piler som peker ut mot hver kant
       var a = m * 0.035;
       ctx.fillStyle = linje;
       var pil = function (x, y, dx, dy) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
+        ctx.beginPath(); ctx.moveTo(x, y);
         ctx.lineTo(x - dx * a - dy * a * 0.6, y - dy * a - dx * a * 0.6);
         ctx.lineTo(x - dx * a + dy * a * 0.6, y - dy * a + dx * a * 0.6);
         ctx.closePath(); ctx.fill();
       };
       pil(W / 2, 3, 0, -1); pil(W / 2, H - 3, 0, 1); pil(3, H / 2, -1, 0); pil(W - 3, H / 2, 1, 0);
     }
-
-    $('info').textContent = W + ' × ' + H + ' px' + (harPaneler ? ', ' + Math.ceil(W / pw) + ' × ' + Math.ceil(H / ph) + ' paneler' : '') + '. Lagres som PNG i full oppløsning.';
+    ctx.restore();
   }
+
+  function linjeFarge(i) {
+    var v = $('farge').value;
+    return v === 'flate' ? HaptPixelmap.farge(i) : v;
+  }
+
+  function tegn() {
+    if (kart) {
+      cv.width = kart.bredde; cv.height = kart.hoyde;
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
+      kart.flater.forEach(function (f, i) { tegnTest(f.x, f.y, f.b, f.h, f.pw, f.ph, f.navn, linjeFarge(i)); });
+      $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px med ' + kart.flater.length + ' flater. Lagres som PNG i full oppløsning.';
+      return;
+    }
+    var W = Math.max(16, Math.min(16384, Math.round(+$('w').value || 1920)));
+    var H = Math.max(16, Math.min(16384, Math.round(+$('h').value || 1080)));
+    var pw = Math.round(+$('pw').value || 0), ph = Math.round(+$('ph').value || 0);
+    cv.width = W; cv.height = H;
+    tegnTest(0, 0, W, H, pw, ph, $('tittel').value.trim(), linjeFarge(0));
+    var harP = $('o-paneler').checked && pw > 0 && ph > 0;
+    $('info').textContent = W + ' × ' + H + ' px' + (harP ? ', ' + Math.ceil(W / pw) + ' × ' + Math.ceil(H / ph) + ' paneler' : '') + '. Lagres som PNG i full oppløsning.';
+  }
+
+  function visKart() {
+    $('enkelt').hidden = !!kart;
+    $('kartInfo').hidden = !kart;
+    if (!kart) { tegn(); return; }
+    $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + ' flater funnet.';
+    var boks = $('kartFlater'); boks.innerHTML = '';
+    kart.flater.forEach(function (f) {
+      var d = document.createElement('div'); d.className = 'kartflate';
+      d.innerHTML = '<div><label>Navn</label><input type="text" data-k="navn"></div><div><label>Panel b</label><input type="number" min="0" data-k="pw"></div><div><label>Panel h</label><input type="number" min="0" data-k="ph"></div><small></small>';
+      d.querySelector('small').textContent = f.b + ' × ' + f.h + ' px på ' + f.x + ', ' + f.y;
+      d.querySelectorAll('[data-k]').forEach(function (inp) {
+        inp.value = f[inp.dataset.k];
+        inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(0, Math.round(+inp.value || 0)) : inp.value; tegn(); });
+      });
+      boks.appendChild(d);
+    });
+    tegn();
+  }
+
+  $('kartfil').addEventListener('change', function () {
+    var fil = this.files[0]; if (!fil) return;
+    this.value = '';
+    if (/json$/i.test(fil.name) || fil.type === 'application/json') {
+      fil.text().then(function (t) {
+        try { kart = HaptPixelmap.les(JSON.parse(t)); visKart(); } catch (e) { alert('Klarte ikke å lese kartfilen.'); }
+      });
+      return;
+    }
+    var img = new Image();
+    img.onload = function () {
+      var c2 = document.createElement('canvas'); c2.width = img.naturalWidth; c2.height = img.naturalHeight;
+      var x2 = c2.getContext('2d'); x2.drawImage(img, 0, 0);
+      $('info').textContent = 'Leter etter flater …';
+      setTimeout(function () {
+        var flater = HaptPixelmap.finnFlater(x2.getImageData(0, 0, c2.width, c2.height));
+        URL.revokeObjectURL(img.src);
+        if (!flater.length) { alert('Fant ingen flater i bildet. Bakgrunnen må være svart.'); return; }
+        kart = { bredde: c2.width, hoyde: c2.height, navn: fil.name.replace(/\.[^.]+$/, ''), flater: flater.map(function (f, i) { return { navn: 'Flate ' + (i + 1), x: f.x, y: f.y, b: f.b, h: f.h, pw: 0, ph: 0 }; }) };
+        visKart();
+      }, 30);
+    };
+    img.onerror = function () { alert('Klarte ikke å åpne bildet.'); };
+    img.src = URL.createObjectURL(fil);
+  });
+  $('fraPixelmap').onclick = function () {
+    var k = HaptPixelmap.hent();
+    if (!k || !k.flater.length) { alert('Fant ikke noe kart. Lag et på Pixelmap-siden først.'); return; }
+    kart = k; visKart();
+  };
+  $('fjernKart').onclick = function () { kart = null; visKart(); };
 
   $('mal').addEventListener('change', function () {
     if (this.value === 'egen') return;
     var d = this.value.split('x'); $('w').value = d[0]; $('h').value = d[1]; tegn();
   });
   ['w', 'h'].forEach(function (id) { $(id).addEventListener('input', function () { oppdaterMal(); tegn(); }); });
-  document.querySelectorAll('input, select').forEach(function (el) {
-    if (el.id !== 'mal' && el.id !== 'w' && el.id !== 'h') el.addEventListener('input', tegn);
+  document.querySelectorAll('#enkelt input, .card input[type=checkbox], #ruter, #farge').forEach(function (el) {
+    if (el.id !== 'w' && el.id !== 'h') el.addEventListener('input', tegn);
   });
 
   $('last').onclick = function () {
     tegn();
     cv.toBlob(function (blob) {
       var a = document.createElement('a');
-      var navn = ($('tittel').value.trim() || 'testbilde').replace(/[^\wæøåÆØÅ-]+/g, '-');
+      var navn = ((kart ? kart.navn : $('tittel').value).trim() || 'testbilde').replace(/[^\wæøåÆØÅ-]+/g, '-');
       a.download = 'HAPT-' + navn + '-' + cv.width + 'x' + cv.height + '.png';
       a.href = URL.createObjectURL(blob);
       document.body.appendChild(a); a.click(); a.remove();
