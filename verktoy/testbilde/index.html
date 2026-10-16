@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Testbilde – HAPT verktøy</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
+<style>
+@font-face{font-family:'Barlow';font-style:normal;font-weight:300;font-display:swap;src:url(../../fonts/barlow-latin-300-normal.woff2) format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(../../fonts/barlow-latin-500-normal.woff2) format('woff2');}
+.preview { background: repeating-conic-gradient(#16181b 0% 25%, #101214 0% 50%) 50% / 20px 20px; }
+.kartflate { display: grid; grid-template-columns: 1fr 64px 64px; gap: 6px; align-items: end; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kartflate input { padding: 6px 7px; font-size: 15px; }
+.kartflate label { font-size: 12px; }
+.kartmal { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.kartflate small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
+    <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="./" aria-current="page">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
+  </header>
+
+  <h1>Testbilde</h1>
+  <p class="lead">Lag et testbilde i riktig oppløsning, med panelkart og nummer på hvert panel. Har du et pixelmap, får hver flate sitt eget testbilde på riktig plass.</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Pixelmap</h2>
+        <label class="slipp btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px">Last inn pixelmap (PNG eller kartfil)</label>
+        <input id="kartfil" type="file" accept="image/png,image/jpeg,image/webp,.json,application/json" hidden>
+        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap">Bruk kartet fra Pixelmap-siden</button></div>
+        <div id="kartInfo" hidden>
+          <p class="note" id="kartTekst"></p>
+          <div id="kartFlater"></div>
+          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart">Fjern pixelmap</button></div>
+        </div>
+        <p class="note">Fra et bilde finner verktøyet flatene selv (alt som ikke er svart, delt opp etter farge) og leser navnet som står på hver flate. Første gang lastes tekstgjenkjenningen ned (ca. 6 MB). Sjekk og rett navn og panelstørrelse etterpå.</p>
+      </div>
+
+      <div class="card" id="enkelt">
+        <div class="field">
+          <label for="mal">Oppløsning</label>
+          <select id="mal">
+            <option value="1920x1080">1920 × 1080 (Full HD)</option>
+            <option value="3840x2160">3840 × 2160 (UHD)</option>
+            <option value="1280x720">1280 × 720</option>
+            <option value="1920x1200">1920 × 1200</option>
+            <option value="2560x1440">2560 × 1440</option>
+            <option value="4096x2160">4096 × 2160 (DCI 4K)</option>
+            <option value="1080x1920">1080 × 1920 (stående)</option>
+            <option value="egen">Egen</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="field"><label for="w">Bredde (px)</label><input id="w" type="number" min="16" max="16384" value="1920"></div>
+          <div class="field"><label for="h">Høyde (px)</label><input id="h" type="number" min="16" max="16384" value="1080"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="pw">Panel bredde (px)</label><input id="pw" type="number" min="0" value="0"></div>
+          <div class="field"><label for="ph">Panel høyde (px)</label><input id="ph" type="number" min="0" value="0"></div>
+        </div>
+        <p class="note" style="margin-top:-6px">0 = uten panelkart. Kom du fra LED-kalkulatoren, er dette fylt ut.</p>
+        <div class="field"><label for="tittel">Tekst</label><input id="tittel" type="text" placeholder="F.eks. Hovedskjerm"></div>
+      </div>
+
+      <div class="card">
+        <h2>Tekst på alle flater</h2>
+        <div class="field"><label for="prosjekt">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026"></div>
+        <div class="field"><label for="fritekst">Fritekst</label><input id="fritekst" type="text" placeholder="F.eks. Sal A · 15. oktober"></div>
+        <p class="note" style="margin-top:-4px">Kommer øverst på hvert testbilde, over logoen.</p>
+      </div>
+
+      <div class="card">
+        <h2>Innhold</h2>
+        <label class="check"><input type="checkbox" id="o-paneler" checked> Panelkart med nummer</label>
+        <label class="check"><input type="checkbox" id="o-rutenett" checked> Rutenett</label>
+        <label class="check"><input type="checkbox" id="o-sirkel" checked> Sirkel og kryss</label>
+        <label class="check"><input type="checkbox" id="o-diag"> Diagonaler</label>
+        <label class="check"><input type="checkbox" id="o-farger" checked> Fargestriper og gråtrapp</label>
+        <label class="check"><input type="checkbox" id="o-kant" checked> Kantlinje og piler</label>
+        <label class="check"><input type="checkbox" id="o-logo" checked> HAPT-logo</label>
+        <label class="check"><input type="checkbox" id="o-tekst" checked> Oppløsning og tekst</label>
+        <div class="row" style="margin-top:10px">
+          <div class="field"><label for="ruter">Rutenett hver (px)</label><input id="ruter" type="number" min="8" value="120"></div>
+          <div class="field"><label for="farge">Linjefarge</label>
+            <select id="farge"><option value="#1a8fd1">HAPT-blå</option><option value="#ffffff">Hvit</option><option value="#ffd400">Gul</option><option value="#00ff00">Grønn</option><option value="flate">Ulik per flate</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn" type="button" id="last">Last ned PNG</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="preview luft"><canvas id="c" width="1920" height="1080"></canvas></div>
+      <p class="note" id="info"></p>
+    </div>
+  </div>
+</div>
+
+<script src="../pixelmap/pixelmap.js"></script>
+<script src="../pixelmap/leskart.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var cv = $('c'), ctx = cv.getContext('2d');
+  var logo = new Image(), logoKlar = false;
+  logo.onload = function () { logoKlar = true; tegn(); };
+  logo.src = '../hapt-ordmerke-hvit.svg';
+  var kart = null; // { bredde, hoyde, navn, flater: [...] } når et pixelmap er lastet
+
+  // Fyll inn fra adressen (fra LED-kalkulatoren): ?w=&h=&pw=&ph=
+  var q = new URLSearchParams(location.search);
+  if (q.get('w')) {
+    $('w').value = q.get('w'); $('h').value = q.get('h');
+    $('pw').value = q.get('pw') || 0; $('ph').value = q.get('ph') || 0;
+    var tekst = q.get('tekst') || q.get('navn'); if (tekst) $('tittel').value = tekst;  // navn: panelnavnet fra LED-siden
+    if (+q.get('pw') > 0) $('o-rutenett').checked = false; // panelkartet er rutenett nok
+  }
+  function oppdaterMal() {
+    var v = $('w').value + 'x' + $('h').value, fins = false;
+    Array.prototype.forEach.call($('mal').options, function (o) { if (o.value === v) fins = true; });
+    $('mal').value = fins ? v : 'egen';
+  }
+  oppdaterMal();
+
+  var font = function (px, vekt) { return (vekt || 400) + ' ' + Math.max(1, Math.round(px)) + 'px Barlow, Helvetica, Arial, sans-serif'; };
+
+  // Tegner ett komplett testbilde i rektangelet (ox, oy, W, H)
+  function tegnTest(ox, oy, W, H, pw, ph, tittel, linje) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(ox, oy, W, H); ctx.clip();
+    ctx.translate(ox, oy);
+    var m = Math.min(W, H);
+    var lw = Math.max(1, Math.round(m / 540));
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+
+    var harPaneler = $('o-paneler').checked && pw > 0 && ph > 0;
+    var kol = 0, rad = 0;
+    if (harPaneler) {
+      kol = Math.ceil(W / pw); rad = Math.ceil(H / ph);
+      for (var y = 0; y < rad; y++) for (var x = 0; x < kol; x++) {
+        ctx.fillStyle = (x + y) % 2 ? '#1b1f24' : '#0f1114';
+        ctx.fillRect(x * pw, y * ph, pw, ph);
+      }
+      ctx.strokeStyle = linje; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (x = 1; x < kol; x++) { ctx.moveTo(x * pw + 0.5, 0); ctx.lineTo(x * pw + 0.5, H); }
+      for (y = 1; y < rad; y++) { ctx.moveTo(0, y * ph + 0.5); ctx.lineTo(W, y * ph + 0.5); }
+      ctx.stroke();
+      var fs = Math.max(9, Math.min(pw, ph) * 0.16), nr = 0;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      for (y = 0; y < rad; y++) for (x = 0; x < kol; x++) {
+        nr++;
+        ctx.fillStyle = 'rgba(236,237,238,0.55)'; ctx.font = font(fs, 500);
+        ctx.fillText((x + 1) + '.' + (y + 1), x * pw + fs * 0.4, y * ph + fs * 0.35);
+        if (Math.min(pw, ph) >= 96) {
+          ctx.font = font(fs * 0.6); ctx.fillStyle = 'rgba(125,130,138,0.7)';
+          ctx.fillText('#' + nr, x * pw + fs * 0.4, y * ph + fs * 1.45);
+        }
+      }
+    } else if ($('o-rutenett').checked) {
+      ctx.fillStyle = '#0d0e10'; ctx.fillRect(0, 0, W, H);
+    }
+
+    if ($('o-rutenett').checked) {
+      var g = Math.max(8, +$('ruter').value || 120);
+      ctx.strokeStyle = harPaneler ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.28)'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var gx = (W / 2) % g; gx < W; gx += g) { ctx.moveTo(Math.round(gx) + 0.5, 0); ctx.lineTo(Math.round(gx) + 0.5, H); }
+      for (var gy = (H / 2) % g; gy < H; gy += g) { ctx.moveTo(0, Math.round(gy) + 0.5); ctx.lineTo(W, Math.round(gy) + 0.5); }
+      ctx.stroke();
+    }
+
+    if ($('o-diag').checked) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, H); ctx.moveTo(W, 0); ctx.lineTo(0, H); ctx.stroke();
+    }
+
+    if ($('o-sirkel').checked) {
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.arc(W / 2, H / 2, m / 2 - lw, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = linje;
+      ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
+      var r2 = m / 10;
+      ctx.strokeStyle = '#fff';
+      [[r2 * 1.3, r2 * 1.3], [W - r2 * 1.3, r2 * 1.3], [r2 * 1.3, H - r2 * 1.3], [W - r2 * 1.3, H - r2 * 1.3]].forEach(function (p) {
+        ctx.beginPath(); ctx.arc(p[0], p[1], r2, 0, Math.PI * 2); ctx.stroke();
+      });
+    }
+
+    // Høye, smale flater (tårn): la midtpartiet bruke mer av høyden, og krymp tekst som ikke får plass i bredden
+    var mk = H > W * 1.6 ? Math.min(H / 1.1, W * 2.6) : m;
+    var pass = function (t, str, vekt) { ctx.font = font(str, vekt); var b = ctx.measureText(t).width; if (b > W * 0.9) { str *= W * 0.9 / b; ctx.font = font(str, vekt); } return str; };
+    var midtH = mk * 0.12;
+    if ($('o-farger').checked) {
+      var bw = Math.min(W * 0.7, mk * 1.2), bx = (W - bw) / 2, by = H / 2 + mk * 0.06;
+      ['#ffffff', '#ffff00', '#00ffff', '#00ff00', '#ff00ff', '#ff0000', '#0000ff', '#000000'].forEach(function (f, i) {
+        ctx.fillStyle = f; ctx.fillRect(Math.round(bx + i * bw / 8), by, Math.ceil(bw / 8), midtH);
+      });
+      for (var i = 0; i <= 10; i++) {
+        var v = Math.round(i * 25.5);
+        ctx.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
+        ctx.fillRect(Math.round(bx + i * bw / 11), by + midtH, Math.ceil(bw / 11), midtH * 0.45);
+      }
+      ctx.strokeStyle = '#7d828a'; ctx.lineWidth = 1; ctx.strokeRect(Math.round(bx) + 0.5, by + 0.5, Math.round(bw), Math.round(midtH * 1.45));
+    }
+
+    if ($('o-logo').checked && logoKlar) {
+      var lh = mk * 0.075, lwid = lh * (763.5 / 275.5);
+      ctx.drawImage(logo, (W - lwid) / 2, H / 2 - mk * 0.26, lwid, lh);
+    }
+
+    // Prosjektnavn og fritekst øverst i sirkelen, likt på alle flater
+    var prosjekt = $('prosjekt').value.trim(), fritekst = $('fritekst').value.trim();
+    if (prosjekt || fritekst) {
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      var linjer = [];
+      if (prosjekt) linjer.push([prosjekt, mk * 0.042, 500, '#fff']);
+      if (fritekst) linjer.push([fritekst, mk * 0.027, 400, '#d6d8db']);
+      var ytop = H / 2 - mk * (linjer.length === 2 ? 0.385 : 0.345);
+      linjer.forEach(function (l) {
+        ctx.font = font(l[1], l[2]);
+        var maksB = Math.min(W * 0.9, mk * 0.95), bredde = ctx.measureText(l[0]).width;
+        if (bredde > maksB) { ctx.font = font(l[1] * maksB / bredde, l[2]); bredde = maksB; }
+        ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - bredde / 2 - mk * 0.015, ytop - l[1] * 0.7, bredde + mk * 0.03, l[1] * 1.4);
+        ctx.fillStyle = l[3]; ctx.fillText(l[0], W / 2, ytop);
+        ytop += l[1] * 1.55;
+      });
+    }
+
+    if ($('o-tekst').checked) {
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      var ty = H / 2 - mk * 0.1;
+      var tekst = W + ' × ' + H;
+      pass(tekst, mk * 0.06, 300);
+      var tbw = ctx.measureText(tekst).width + mk * 0.06;
+      ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - tbw / 2, ty - mk * 0.05, tbw, mk * 0.1);
+      ctx.fillStyle = '#fff'; ctx.fillText(tekst, W / 2, ty);
+      var under = [];
+      if (tittel) under.push(tittel);
+      if (harPaneler) under.push(kol + ' × ' + rad + ' paneler à ' + pw + ' × ' + ph + ' px');
+      if (kart) under.push('Posisjon ' + ox + ', ' + oy);
+      if (under.length) {
+        ctx.font = font(mk * 0.03, 400);
+        var y2 = $('o-farger').checked ? H / 2 + mk * 0.06 + midtH * 1.45 + mk * 0.06 : H / 2 + mk * 0.06;
+        under.forEach(function (t, i) {
+          pass(t, mk * 0.03, 400);
+          var w2 = Math.min(W, ctx.measureText(t).width + mk * 0.04);
+          ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(W / 2 - w2 / 2, y2 + i * mk * 0.05 - mk * 0.022, w2, mk * 0.044);
+          ctx.fillStyle = i === 0 && tittel ? '#fff' : '#b9bdc3';
+          ctx.fillText(t, W / 2, y2 + i * mk * 0.05);
+        });
+      }
+    }
+
+    if ($('o-kant').checked) {
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#fff'; ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+      ctx.strokeStyle = '#ff0000'; ctx.strokeRect(1.5, 1.5, W - 3, H - 3);
+      var a = m * 0.035;
+      ctx.fillStyle = linje;
+      var pil = function (x, y, dx, dy) {
+        ctx.beginPath(); ctx.moveTo(x, y);
+        ctx.lineTo(x - dx * a - dy * a * 0.6, y - dy * a - dx * a * 0.6);
+        ctx.lineTo(x - dx * a + dy * a * 0.6, y - dy * a + dx * a * 0.6);
+        ctx.closePath(); ctx.fill();
+      };
+      pil(W / 2, 3, 0, -1); pil(W / 2, H - 3, 0, 1); pil(3, H / 2, -1, 0); pil(W - 3, H / 2, 1, 0);
+    }
+    ctx.restore();
+  }
+
+  function linjeFarge(i) {
+    var v = $('farge').value;
+    return v === 'flate' ? HaptPixelmap.farge(i) : v;
+  }
+
+  function tegn() {
+    if (kart) {
+      cv.width = kart.bredde; cv.height = kart.hoyde;
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
+      kart.flater.forEach(function (f, i) { tegnTest(f.x, f.y, f.b, f.h, f.pw, f.ph, f.navn, linjeFarge(i)); });
+      $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px med ' + kart.flater.length + ' flater. Lagres som PNG i full oppløsning.';
+      return;
+    }
+    var W = Math.max(16, Math.min(16384, Math.round(+$('w').value || 1920)));
+    var H = Math.max(16, Math.min(16384, Math.round(+$('h').value || 1080)));
+    var pw = Math.round(+$('pw').value || 0), ph = Math.round(+$('ph').value || 0);
+    cv.width = W; cv.height = H;
+    tegnTest(0, 0, W, H, pw, ph, $('tittel').value.trim(), linjeFarge(0));
+    var harP = $('o-paneler').checked && pw > 0 && ph > 0;
+    $('info').textContent = W + ' × ' + H + ' px' + (harP ? ', ' + Math.ceil(W / pw) + ' × ' + Math.ceil(H / ph) + ' paneler' : '') + '. Lagres som PNG i full oppløsning.';
+  }
+
+  function visKart() {
+    $('enkelt').hidden = !!kart;
+    $('kartInfo').hidden = !kart;
+    if (!kart) { tegn(); return; }
+    $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + ' flater funnet.';
+    var boks = $('kartFlater'); boks.innerHTML = '';
+    kart.flater.forEach(function (f) {
+      var d = document.createElement('div'); d.className = 'kartflate';
+      d.innerHTML = '<div><label>Navn</label><input type="text" data-k="navn"></div><div><label>Panel b</label><input type="number" min="0" data-k="pw"></div><div><label>Panel h</label><input type="number" min="0" data-k="ph"></div>' +
+        '<div class="kartmal"><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>Bredde</label><input type="number" min="1" data-k="b"></div><div><label>Høyde</label><input type="number" min="1" data-k="h"></div></div>';
+      d.querySelectorAll('[data-k]').forEach(function (inp) {
+        inp.value = f[inp.dataset.k];
+        inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(+inp.min, Math.round(+inp.value || 0)) : inp.value; tegn(); });
+      });
+      boks.appendChild(d);
+    });
+    tegn();
+  }
+
+  $('kartfil').addEventListener('change', function () {
+    var fil = this.files[0]; if (!fil) return;
+    this.value = '';
+    HaptLesKart.fraFil(fil, {
+      status: function (t) { if (kart) $('kartTekst').textContent = t; else $('info').textContent = t; },
+      kart: function (k) { kart = k; visKart(); },
+      aktiv: function (k) { return k === kart; },
+      ferdig: function () { visKart(); }
+    });
+  });
+  $('fraPixelmap').onclick = function () {
+    var k = HaptPixelmap.hent();
+    if (!k || !k.flater.length) { alert('Fant ikke noe kart. Lag et på Pixelmap-siden først.'); return; }
+    kart = k; visKart();
+  };
+  $('fjernKart').onclick = function () { kart = null; visKart(); };
+
+  $('mal').addEventListener('change', function () {
+    if (this.value === 'egen') return;
+    var d = this.value.split('x'); $('w').value = d[0]; $('h').value = d[1]; tegn();
+  });
+  ['w', 'h'].forEach(function (id) { $(id).addEventListener('input', function () { oppdaterMal(); tegn(); }); });
+  ['prosjekt', 'fritekst'].forEach(function (id) {
+    try { $(id).value = localStorage.getItem('hapt-testbilde-' + id) || ''; } catch (e) {}
+    $(id).addEventListener('input', function () { try { localStorage.setItem('hapt-testbilde-' + id, this.value); } catch (e) {} tegn(); });
+  });
+  document.querySelectorAll('#enkelt input, .card input[type=checkbox], #ruter, #farge').forEach(function (el) {
+    if (el.id !== 'w' && el.id !== 'h') el.addEventListener('input', tegn);
+  });
+
+  $('last').onclick = function () {
+    tegn();
+    cv.toBlob(function (blob) {
+      var a = document.createElement('a');
+      var navn = ($('prosjekt').value.trim() || (kart ? kart.navn : $('tittel').value).trim() || 'testbilde').replace(/[^\wæøåÆØÅ-]+/g, '-');
+      a.download = 'HAPT-' + navn + '-' + cv.width + 'x' + cv.height + '.png';
+      a.href = URL.createObjectURL(blob);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    }, 'image/png');
+  };
+
+  if (document.fonts && document.fonts.load) {
+    Promise.all([document.fonts.load('300 20px Barlow'), document.fonts.load('400 20px Barlow'), document.fonts.load('500 20px Barlow')]).then(tegn, tegn);
+  }
+  tegn();
+})();
+</script>
+</body>
+</html>

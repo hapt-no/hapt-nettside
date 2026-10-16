@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Syncfilm – HAPT verktøy</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
+<style>
+@font-face{font-family:'Barlow';font-style:normal;font-weight:300;font-display:swap;src:url(../../fonts/barlow-latin-300-normal.woff2) format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(../../fonts/barlow-latin-500-normal.woff2) format('woff2');}
+.preview { background: #000; }
+.preview canvas:fullscreen { width: 100vw; height: 100vh; object-fit: contain; background: #000; box-shadow: none; }
+.kartflate { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; align-items: end; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kartflate .navn { grid-column: 1 / -1; }
+.kartflate input { padding: 6px 7px; font-size: 15px; }
+.kartflate label { font-size: 12px; }
+.fremdrift { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 12px 0 6px; }
+.fremdrift i { display: block; height: 100%; width: 0; background: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
+    <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="./" aria-current="page">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
+  </header>
+
+  <h1>Syncfilm</h1>
+  <p class="lead">Lag en syncfilm for egne flater: blink og pip samtidig, framenummer, timecode og en løpende strek på hver flate. Last ned som MP4 og spill den i mediaserveren, så ser du om alle flater og lyden går likt.</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Flater</h2>
+        <label class="btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px">Last inn pixelmap (PNG eller kartfil)</label>
+        <input id="kartfil" type="file" accept="image/png,image/jpeg,image/webp,.json,application/json" hidden>
+        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap">Bruk kartet fra Pixelmap-siden</button></div>
+        <div id="kartInfo" hidden>
+          <p class="note" id="kartTekst"></p>
+          <div id="kartFlater"></div>
+          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart">Fjern pixelmap</button></div>
+        </div>
+        <div id="enkelt">
+          <p class="note">Uten pixelmap blir det én flate:</p>
+          <div class="field">
+            <label for="mal">Oppløsning</label>
+            <select id="mal">
+              <option value="1920x1080">1920 × 1080 (Full HD)</option>
+              <option value="3840x2160">3840 × 2160 (UHD)</option>
+              <option value="1280x720">1280 × 720</option>
+              <option value="1920x1200">1920 × 1200</option>
+              <option value="4096x2160">4096 × 2160 (DCI 4K)</option>
+              <option value="1080x1920">1080 × 1920 (stående)</option>
+              <option value="egen">Egen</option>
+            </select>
+          </div>
+          <div class="row">
+            <div class="field"><label for="w">Bredde (px)</label><input id="w" type="number" min="16" max="8192" value="1920"></div>
+            <div class="field"><label for="h">Høyde (px)</label><input id="h" type="number" min="16" max="8192" value="1080"></div>
+          </div>
+          <div class="field"><label for="tittel">Navn</label><input id="tittel" type="text" placeholder="F.eks. Hovedskjerm"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Film</h2>
+        <div class="row">
+          <div class="field"><label for="fps">Bilder per sekund</label>
+            <select id="fps">
+              <option value="23.976">23,976</option><option value="24">24</option><option value="25">25</option>
+              <option value="29.97">29,97</option><option value="30">30</option>
+              <option value="50" selected>50</option><option value="59.94">59,94</option><option value="60">60</option>
+            </select>
+          </div>
+          <div class="field"><label for="lengde">Lengde (sekunder)</label><input id="lengde" type="number" min="1" max="600" value="60"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="blink">Blink og pip</label>
+            <select id="blink"><option value="1">1 bilde</option><option value="2">2 bilder</option><option value="3">3 bilder</option></select>
+          </div>
+          <div class="field"><label for="tone">Pip</label>
+            <select id="tone"><option value="1000">1 kHz</option><option value="2000">2 kHz</option><option value="0">Ingen lyd</option></select>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" id="df" checked> Drop-frame timecode på 29,97 og 59,94</label>
+        <label class="check"><input type="checkbox" id="logo" checked> Animert HAPT-logo på hver flate</label>
+        <div class="field" style="margin-top:10px"><label for="prosjekt">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026"></div>
+        <p class="note">Blinket og pipet kommer på første bilde i hvert sekund (timecode :00). Pipet ligger på begge kanaler, −6 dBFS.</p>
+      </div>
+
+      <div class="btns">
+        <button class="btn" type="button" id="lag">Lag MP4</button>
+        <button class="btn ghost" type="button" id="spill">Spill av</button>
+        <button class="btn ghost" type="button" id="fullskjerm">Fullskjerm</button>
+      </div>
+      <div id="lagInfo" hidden>
+        <div class="fremdrift"><i id="fremdrift"></i></div>
+        <p class="note" id="lagTekst"></p>
+      </div>
+    </div>
+
+    <div>
+      <div class="preview luft"><canvas id="c" width="1920" height="1080"></canvas></div>
+      <p class="note" id="info"></p>
+      <p class="note">«Spill av» og fullskjerm går på nettleserens klokke og er bare for å se hvordan filmen ser ut. Til selve synctesten bruker du MP4-filen.</p>
+    </div>
+  </div>
+</div>
+
+<script src="../logo-animasjon.js"></script>
+<script src="../pixelmap/pixelmap.js"></script>
+<script src="../pixelmap/leskart.js"></script>
+<script src="mp4-muxer.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var cv = $('c'), ctx = cv.getContext('2d');
+  var kart = null;
+  var RATER = { '23.976': [24000, 1001], '24': [24, 1], '25': [25, 1], '29.97': [30000, 1001], '30': [30, 1], '50': [50, 1], '59.94': [60000, 1001], '60': [60, 1] };
+  var font = function (px, vekt) { return (vekt || 400) + ' ' + Math.max(1, Math.round(px)) + 'px Barlow, Helvetica, Arial, sans-serif'; };
+
+  function valg() {
+    var r = RATER[$('fps').value], R = Math.round(r[0] / r[1]);
+    return {
+      num: r[0], den: r[1], R: R,
+      df: $('df').checked && r[1] === 1001 && (R === 30 || R === 60),
+      blink: +$('blink').value, tone: +$('tone').value,
+      lengde: Math.max(1, Math.min(600, +$('lengde').value || 60)),
+      prosjekt: $('prosjekt').value.trim(),
+      logo: $('logo').checked && !!window.HaptLogo
+    };
+  }
+
+  // Timecode for bilde nr. i. Drop-frame hopper over bildenummer 0 og 1 (0–3 på 59,94) hvert minutt unntatt hvert tiende.
+  function timecode(i, o) {
+    var R = o.R, n = i;
+    if (o.df) {
+      var D = R === 30 ? 2 : 4, per10 = R * 600 - D * 9, perMin = R * 60 - D;
+      var d = Math.floor(n / per10), m = n % per10;
+      n += D * 9 * d + (m > D ? D * Math.floor((m - D) / perMin) : 0);
+    }
+    var ff = n % R, s = Math.floor(n / R), to = function (v) { return (v < 10 ? '0' : '') + v; };
+    return { tekst: to(Math.floor(s / 3600)) + ':' + to(Math.floor(s / 60) % 60) + ':' + to(s % 60) + (o.df ? ';' : ':') + to(ff), ff: ff, s: s };
+  }
+
+  function flater() {
+    if (kart) return kart.flater;
+    return [{ navn: $('tittel').value.trim(), x: 0, y: 0, b: +$('w').value || 1920, h: +$('h').value || 1080 }];
+  }
+  function storrelse() {
+    if (kart) return [kart.bredde, kart.hoyde];
+    return [+$('w').value || 1920, +$('h').value || 1080];
+  }
+
+  // Tegner én flate for bilde nr. i
+  function tegnFlate(g, f, i, o, tc) {
+    var W = f.b, H = f.h, R = o.R, ff = tc.ff;
+    g.save(); g.beginPath(); g.rect(f.x, f.y, W, H); g.clip(); g.translate(f.x, f.y);
+    var blink = ff < o.blink;
+    var m = Math.min(W, H), mk = H > W * 1.6 ? Math.min(H / 1.1, W * 2.6) : W > H * 3 ? Math.min(W / 3, H * 1.6) : m;
+    var pass = function (t, str, vekt, maks) { g.font = font(str, vekt); var b = g.measureText(t).width; if (b > maks) { str *= maks / b; g.font = font(str, vekt); } return str; };
+    var stoende = H > W;
+    g.fillStyle = blink ? '#ffffff' : '#0c0d0f'; g.fillRect(0, 0, W, H);
+
+    // Bildestige langs den lange siden: én rute per bilde i sekundet, ruten for dette bildet er fylt
+    var L = stoende ? H : W, tykk = Math.max(6, Math.round(Math.min(W, H) * 0.08)), slot = L / R;
+    for (var k = 0; k < R; k++) {
+      var a = Math.round(k * slot), b = Math.round((k + 1) * slot) - a;
+      g.fillStyle = k === ff ? (blink ? '#000' : '#1a8fd1') : (k === 0 ? (blink ? '#bbb' : '#3a3d42') : (blink ? '#ddd' : '#1b1e22'));
+      if (stoende) g.fillRect(W - tykk, a + 1, tykk, Math.max(1, b - 2)); else g.fillRect(a + 1, H - tykk, Math.max(1, b - 2), tykk);
+    }
+    // Løpende strek over hele flata, flytter seg ett steg per bilde (viser hakk, dobbeltbilder og tearing)
+    var sx = Math.round((ff + 0.5) * slot), sb = Math.max(2, Math.round(slot * 0.35));
+    g.fillStyle = blink ? '#000' : '#1a8fd1';
+    if (stoende) g.fillRect(0, sx - sb / 2, W - tykk, sb); else g.fillRect(sx - sb / 2, 0, sb, H - tykk);
+
+    // Klokke: sektor som fylles gjennom sekundet
+    var cx = stoende ? (W - tykk) / 2 : W / 2, cy = stoende ? H / 2 : (H - tykk) / 2;
+    var r = Math.max(4, Math.min(mk * 0.3, (stoende ? W - tykk : W) * 0.42, (stoende ? H : H - tykk) * 0.3));
+    g.lineWidth = Math.max(1, r / 40);
+    g.fillStyle = blink ? '#ccc' : 'rgba(26,143,209,0.35)';
+    g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (ff + 1) / R); g.closePath(); g.fill();
+    g.strokeStyle = blink ? '#000' : '#ffffff';
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
+    for (k = 0; k < R; k += (R > 30 ? 2 : 1)) {
+      var v = -Math.PI / 2 + Math.PI * 2 * k / R, inn = k === 0 ? 0.8 : 0.9;
+      g.beginPath(); g.moveTo(cx + Math.cos(v) * r * inn, cy + Math.sin(v) * r * inn); g.lineTo(cx + Math.cos(v) * r, cy + Math.sin(v) * r); g.stroke();
+    }
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    var tall = (ff < 10 ? '0' : '') + ff;
+    pass(tall, r * 0.9, 500, r * 1.5); g.fillStyle = blink ? '#000' : '#fff'; g.fillText(tall, cx, cy + r * 0.04);
+
+    // Timecode over klokka, navn og oppløsning under
+    var bredde = (stoende ? W - tykk : W) * 0.92, tekstH = Math.max(6, r * 0.22);
+    var str = pass(tc.tekst, tekstH, 400, bredde);
+    g.fillStyle = blink ? '#000' : '#fff'; g.fillText(tc.tekst, cx, cy - r - str * 0.9);
+    var under = [];
+    if (f.navn) under.push([f.navn, 500]);
+    under.push([W + ' × ' + H + (kart ? '  ·  ' + f.x + ', ' + f.y : ''), 300]);
+    if (o.prosjekt) under.push([o.prosjekt, 400]);
+    var y = cy + r + tekstH * 0.9;
+    under.forEach(function (l) {
+      var s2 = pass(l[0], tekstH * 0.75, l[1], bredde);
+      g.fillStyle = blink ? '#000' : (l[1] === 500 ? '#fff' : '#b9bdc3'); g.fillText(l[0], cx, y);
+      y += s2 * 1.35;
+    });
+    // Logoanimasjonen fra hapt.no (intro, så runder på 4,4 s), sentrert over timecoden når det er plass, ellers øverst til venstre.
+    // Svart på blinkbildene, ellers hvit og blå som på nettsiden.
+    // Feltet bak logoen fylles med bakgrunnsfargen, så den løpende streken ikke går i ett med logoen.
+    if (o.logo) {
+      var tilst = HaptLogo.tilstand(i * o.den / o.num), fl = blink ? '#000' : null;
+      var logo = function (x, y, h) {
+        var p = Math.max(1, h * 0.12);
+        g.fillStyle = blink ? '#ffffff' : '#0c0d0f'; g.fillRect(x - p, y - p, h * HaptLogo.forhold + 2 * p, h + 2 * p);
+        HaptLogo.tegn(g, x, y, h, tilst, fl);
+      };
+      var lh = tekstH * 1.2, lw = lh * HaptLogo.forhold, lTopp = cy - r - str * 0.9 - str * 0.6 - str * 0.45 - lh, marg = Math.max(3, lh * 0.25);
+      if (lTopp >= marg && lw <= bredde) logo(cx - lw / 2, lTopp, lh);
+      else {
+        // Øverst til venstre, men aldri oppå timecoden eller utenfor flata. Blir den for liten, droppes den.
+        var fri = stoende ? W - tykk : W, hoy = stoende ? H : H - tykk;
+        lh = Math.min(hoy * 0.14, fri * 0.3 / HaptLogo.forhold); marg = Math.max(3, lh * 0.35);
+        g.font = font(str, 400);
+        var tcL = cx - g.measureText(tc.tekst).width / 2, tcT = cy - r - str * 1.5, gap = Math.max(2, lh * 0.3);
+        if (marg + lh + gap > tcT) lh = Math.min(lh, (tcL - marg - gap) / HaptLogo.forhold);
+        lh = Math.min(lh, (fri - 2 * marg) / HaptLogo.forhold);
+        if (lh >= 5) logo(marg, marg, lh);
+      }
+    }
+    // Kantlinje
+    g.strokeStyle = blink ? '#000' : '#7d828a'; g.lineWidth = 1; g.strokeRect(0.5, 0.5, W - 1, H - 1);
+    g.restore();
+  }
+
+  function tegnBilde(g, i, o) {
+    var s = storrelse(), tc = timecode(i, o);
+    g.fillStyle = '#000'; g.fillRect(0, 0, s[0], s[1]);
+    flater().forEach(function (f) { tegnFlate(g, f, i, o, tc); });
+  }
+
+  var visBilde = 0;
+  function tegn() {
+    var s = storrelse(), o = valg();
+    if (cv.width !== s[0] || cv.height !== s[1]) { cv.width = s[0]; cv.height = s[1]; }
+    tegnBilde(ctx, visBilde, o);
+    var n = Math.round(o.lengde * o.num / o.den);
+    $('info').textContent = s[0] + ' × ' + s[1] + ' px, ' + flater().length + (flater().length === 1 ? ' flate' : ' flater') + ', ' + $('fps').options[$('fps').selectedIndex].text + ' bilder/s, ' + n + ' bilder.';
+  }
+
+  // Pixelmap
+  function visKart() {
+    $('enkelt').hidden = !!kart; $('kartInfo').hidden = !kart;
+    if (kart) {
+      $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + ' flater.';
+      var boks = $('kartFlater'); boks.innerHTML = '';
+      kart.flater.forEach(function (f) {
+        var d = document.createElement('div'); d.className = 'kartflate';
+        d.innerHTML = '<div class="navn"><label>Navn</label><input type="text" data-k="navn"></div><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>Bredde</label><input type="number" min="1" data-k="b"></div><div><label>Høyde</label><input type="number" min="1" data-k="h"></div>';
+        d.querySelectorAll('[data-k]').forEach(function (inp) {
+          inp.value = f[inp.dataset.k];
+          inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(+inp.min, Math.round(+inp.value || 0)) : inp.value; tegn(); });
+        });
+        boks.appendChild(d);
+      });
+    }
+    tegn();
+  }
+  $('kartfil').addEventListener('change', function () {
+    var fil = this.files[0]; if (!fil) return;
+    this.value = '';
+    HaptLesKart.fraFil(fil, {
+      status: function (t) { if (kart) $('kartTekst').textContent = t; else $('info').textContent = t; },
+      kart: function (k) { kart = k; visKart(); },
+      aktiv: function (k) { return k === kart; },
+      ferdig: function () { visKart(); }
+    });
+  });
+  $('fraPixelmap').onclick = function () {
+    var k = HaptPixelmap.hent();
+    if (!k || !k.flater.length) { alert('Fant ikke noe kart. Lag et på Pixelmap-siden først.'); return; }
+    kart = k; visKart();
+  };
+  $('fjernKart').onclick = function () { kart = null; visKart(); };
+  $('mal').addEventListener('change', function () {
+    if (this.value === 'egen') return;
+    var d = this.value.split('x'); $('w').value = d[0]; $('h').value = d[1]; tegn();
+  });
+  ['w', 'h', 'tittel', 'fps', 'lengde', 'blink', 'df', 'logo', 'prosjekt', 'tone'].forEach(function (id) { $(id).addEventListener('input', tegn); });
+  try { $('prosjekt').value = localStorage.getItem('hapt-testbilde-prosjekt') || ''; } catch (e) {}
+  // Vis et bilde midt i sekundet som forhåndsvisning
+  visBilde = Math.round(valg().R * 0.4);
+
+  // Avspilling i nettleseren (bare for å se på)
+  var spiller = null;
+  function stopp() { if (spiller) { cancelAnimationFrame(spiller.raf); if (spiller.lyd) spiller.lyd.close(); spiller = null; $('spill').textContent = 'Spill av'; } }
+  function spill() {
+    if (spiller) { stopp(); return; }
+    var o = valg(), start = performance.now(), sist = -1, lyd = null;
+    try { if (o.tone) lyd = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+    spiller = { lyd: lyd };
+    $('spill').textContent = 'Stopp';
+    var steg = function (na) {
+      var i = Math.floor((na - start) / 1000 * o.num / o.den);
+      if (i >= Math.round(o.lengde * o.num / o.den)) { stopp(); return; }
+      if (i !== sist) {
+        visBilde = i; tegnBilde(ctx, i, o);
+        var tc = timecode(i, o);
+        if (lyd && tc.ff === 0) {
+          var osc = lyd.createOscillator(), gain = lyd.createGain();
+          osc.frequency.value = o.tone; gain.gain.value = 0.5; osc.connect(gain); gain.connect(lyd.destination);
+          osc.start(); osc.stop(lyd.currentTime + o.blink * o.den / o.num);
+        }
+        sist = i;
+      }
+      spiller.raf = requestAnimationFrame(steg);
+    };
+    spiller.raf = requestAnimationFrame(steg);
+  }
+  $('spill').onclick = spill;
+  $('fullskjerm').onclick = function () {
+    if (cv.requestFullscreen) cv.requestFullscreen().then(function () { if (!spiller) spill(); }, function () {});
+    else if (cv.webkitRequestFullscreen) { cv.webkitRequestFullscreen(); if (!spiller) spill(); }
+  };
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement) stopp(); });
+
+  // MP4: bildene tegnes ett og ett og kodes med WebCodecs (H.264 + AAC der nettleseren kan, ellers VP9 + Opus)
+  async function velgVideo(W, H, o) {
+    var bitrate = Math.round(Math.min(60e6, Math.max(4e6, W * H * (o.num / o.den) * 0.05)));
+    var kandidater = [['avc', 'avc1.640028'], ['avc', 'avc1.640032'], ['avc', 'avc1.640033'], ['avc', 'avc1.640034'], ['vp9', 'vp09.00.51.08']];
+    for (var k = 0; k < kandidater.length; k++) {
+      var cfg = { codec: kandidater[k][1], width: W, height: H, bitrate: bitrate, framerate: o.num / o.den };
+      if (kandidater[k][0] === 'avc') cfg.avc = { format: 'avc' };
+      try { var s = await VideoEncoder.isConfigSupported(cfg); if (s.supported) return { type: kandidater[k][0], cfg: cfg }; } catch (e) {}
+    }
+    return null;
+  }
+  async function velgLyd() {
+    var kandidater = [['aac', 'mp4a.40.2'], ['opus', 'opus']];
+    for (var k = 0; k < kandidater.length; k++) {
+      var cfg = { codec: kandidater[k][1], sampleRate: 48000, numberOfChannels: 2, bitrate: 192000 };
+      try { var s = await AudioEncoder.isConfigSupported(cfg); if (s.supported) return { type: kandidater[k][0], cfg: cfg }; } catch (e) {}
+    }
+    return null;
+  }
+
+  // Koder stereo lyd (48 kHz) i biter på ett sekund. fyll(data, start, n) skriver inn samplene. Gir [[chunk, meta]].
+  async function kodLyd(cfg, totalt, fyll) {
+    var ut = [], feil = null, sr = 48000;
+    var enc = new AudioEncoder({ output: function (c, m) { ut.push([c, m]); }, error: function (e) { feil = e; } });
+    enc.configure(cfg);
+    for (var start = 0; start < totalt; start += sr) {
+      var n = Math.min(sr, totalt - start), data = new Float32Array(n * 2);
+      fyll(data, start, n);
+      var ad = new AudioData({ format: 'f32-planar', sampleRate: sr, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.round(start / sr * 1e6), data: data });
+      enc.encode(ad); ad.close();
+    }
+    await enc.flush(); enc.close();
+    if (feil) throw feil;
+    return ut;
+  }
+  // Hvor mange samples kommer et lydsignal for sent etter koding og dekoding? Spilles fra start uten trimming, slik de fleste spillere gjør.
+  async function malForsinkelse(cfg) {
+    var sr = 48000, ved = 24000;
+    var ref = -1;
+    var chunks = await kodLyd(cfg, sr, function (data, start, n) {
+      for (var t = ved; t < ved + 960; t++) { var v = 0.5 * Math.sin(2 * Math.PI * 1000 * (t - ved) / sr); data[t] = v; data[n + t] = v; if (ref < 0 && Math.abs(v) > 0.2) ref = t; }
+    });
+    var meta = chunks[0][1];
+    if (!window.AudioDecoder || !meta || !meta.decoderConfig) return 0;
+    var biter = [], feil = null;
+    var dec = new AudioDecoder({ output: function (a) {
+      var buf = new Float32Array(a.numberOfFrames);
+      a.copyTo(buf, { planeIndex: 0, format: 'f32-planar' }); biter.push(buf); a.close();
+    }, error: function (e) { feil = e; } });
+    dec.configure(meta.decoderConfig);
+    chunks.forEach(function (c) { dec.decode(c[0]); });
+    await dec.flush(); dec.close();
+    if (feil) return 0;
+    var pos = 0;
+    for (var k = 0; k < biter.length; k++) {
+      for (var j = 0; j < biter[k].length; j++) if (Math.abs(biter[k][j]) > 0.2) return Math.max(0, pos + j - ref);
+      pos += biter[k].length;
+    }
+    return 0;
+  }
+
+  var lager = false;
+  $('lag').onclick = async function () {
+    if (lager) return;
+    if (!window.VideoEncoder || !window.VideoFrame) { alert('Denne nettleseren kan ikke lage video. Bruk Chrome, Edge eller Safari (versjon 17 eller nyere).'); return; }
+    stopp();
+    var o = valg(), s = storrelse(), W = s[0], H = s[1];
+    if (W % 2 || H % 2) { alert('Bredde og høyde må være partall for video.'); return; }
+    var vid = await velgVideo(W, H, o);
+    if (!vid) { alert('Nettleseren klarer ikke å kode video i ' + W + ' × ' + H + '. Prøv Chrome eller Safari på Mac, eller en mindre oppløsning.'); return; }
+    var lyd = o.tone && window.AudioEncoder ? await velgLyd() : null;
+    lager = true; $('lag').disabled = true; $('lagInfo').hidden = false;
+    var tekst = $('lagTekst'), bar = $('fremdrift');
+    var antall = Math.round(o.lengde * o.num / o.den);
+    try {
+      var muxer = new Mp4Muxer.Muxer({
+        target: new Mp4Muxer.ArrayBufferTarget(),
+        video: { codec: vid.type, width: W, height: H, frameRate: o.num },  // tidsskala: o.num ticks per sekund, ett bilde = o.den ticks (heltall, også ved 29,97)
+        audio: lyd ? { codec: lyd.type, numberOfChannels: 2, sampleRate: 48000 } : undefined,
+        fastStart: 'in-memory', firstTimestampBehavior: 'offset'
+      });
+      var feil = null;
+      var venc = new VideoEncoder({ output: function (c, m) { muxer.addVideoChunk(c, m); }, error: function (e) { feil = e; } });
+      venc.configure(vid.cfg);
+
+      var forsinkelse = 0;
+      if (lyd) {
+        tekst.textContent = 'Lager lyd …';
+        var sr = 48000, totalt = Math.round(antall * o.den / o.num * sr);
+        var pip = [];
+        for (var i = 0; i < antall; i++) if (timecode(i, o).ff === 0) pip.push([Math.round(i * o.den / o.num * sr), Math.round((i + o.blink) * o.den / o.num * sr)]);
+        // Lydkodere legger inn noen millisekunder stillhet først. Den måles ved å kode og dekode et kort pip,
+        // og all lyd flyttes like mye tidligere så pipet treffer blinket.
+        forsinkelse = await malForsinkelse(lyd.cfg);
+        var lydChunks = await kodLyd(lyd.cfg, totalt, function (data, start, n) {
+          for (var q = 0; q < pip.length; q++) {
+            var p0 = pip[q][0] - forsinkelse, p1 = pip[q][1] - forsinkelse;
+            if (p1 <= start || p0 >= start + n) continue;
+            for (var t = Math.max(p0, start, 0); t < Math.min(p1, start + n); t++) {
+              var fra = t - p0, til = p1 - t, rampe = Math.min(1, (fra + 1) / 48, til / 48);
+              var v = 0.5 * rampe * Math.sin(2 * Math.PI * o.tone * fra / sr);
+              data[t - start] = v; data[n + t - start] = v;
+            }
+          }
+        });
+        lydChunks.forEach(function (c) { muxer.addAudioChunk(c[0], c[1]); });
+      }
+
+      var lerret = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(W, H) : Object.assign(document.createElement('canvas'), { width: W, height: H });
+      var g = lerret.getContext('2d');
+      var t0 = performance.now();
+      for (i = 0; i < antall; i++) {
+        if (feil) throw feil;
+        tegnBilde(g, i, o);
+        var fr = new VideoFrame(lerret, { timestamp: Math.round(i * 1e6 * o.den / o.num), duration: Math.round(1e6 * o.den / o.num) });
+        venc.encode(fr, { keyFrame: i % (o.R * 2) === 0 }); fr.close();
+        while (venc.encodeQueueSize > 6) await new Promise(function (r) { setTimeout(r, 1); });
+        if (i % 10 === 0) {
+          bar.style.width = (100 * i / antall).toFixed(1) + '%';
+          var gatt = (performance.now() - t0) / 1000, igjen = gatt / Math.max(1, i) * (antall - i);
+          tekst.textContent = 'Lager bilde ' + i + ' av ' + antall + (i > 30 ? ', ca. ' + Math.ceil(igjen) + ' s igjen' : '') + ' …';
+          await new Promise(function (r) { setTimeout(r, 0); });
+        }
+      }
+      tekst.textContent = 'Gjør ferdig filen …';
+      await venc.flush();
+      if (feil) throw feil;
+      muxer.finalize();
+      var blob = new Blob([muxer.target.buffer], { type: 'video/mp4' });
+      var a = document.createElement('a');
+      var navn = ((o.prosjekt || (kart && kart.navn) || 'syncfilm').replace(/[^\wæøåÆØÅ-]+/g, '-')) + '-sync-' + W + 'x' + H + '-' + $('fps').value + 'p.mp4';
+      a.download = 'HAPT-' + navn; a.href = URL.createObjectURL(blob);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+      bar.style.width = '100%';
+      tekst.textContent = 'Ferdig: ' + (blob.size / 1e6).toFixed(1) + ' MB, ' + (vid.type === 'avc' ? 'H.264' : 'VP9') + (lyd ? ' + ' + (lyd.type === 'aac' ? 'AAC' : 'Opus') + ' (koderforsinkelse ' + (forsinkelse / 48).toFixed(1) + ' ms rettet)' : ' uten lyd') + '.' +
+        (vid.type !== 'avc' ? ' Nettleseren kunne ikke lage H.264; bruk Chrome eller Safari på Mac om mediaserveren ikke tar VP9.' : '');
+    } catch (e) {
+      tekst.textContent = 'Noe gikk galt: ' + (e && e.message ? e.message : e);
+    }
+    lager = false; $('lag').disabled = false;
+  };
+
+  if (document.fonts && document.fonts.load) Promise.all([document.fonts.load(font(20, 300)), document.fonts.load(font(20, 400)), document.fonts.load(font(20, 500))]).then(tegn, tegn);
+  tegn();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Tekstgjenkjenning for testbildet (leser navn på flater i et pixelmap-bilde).
+Kopiert uendret fra npm, slik at det virker uten eksterne tjenester:
+- tesseract.js 5.1.1 (tesseract.min.js, worker.min.js) – Apache-2.0, se LICENSE-tesseract.js.txt
+- tesseract.js-core 5.1.1 (tesseract-core-*-lstm.wasm.js) – Apache-2.0
+- @tesseract.js-data/nor 1.0.0, 4.0.0_best_int (nor.traineddata.gz) – Apache-2.0 (tesseract-ocr/tessdata)
