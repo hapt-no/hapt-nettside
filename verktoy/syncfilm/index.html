@@ -88,6 +88,7 @@
           </div>
         </div>
         <label class="check"><input type="checkbox" id="df" checked> Drop-frame timecode på 29,97 og 59,94</label>
+        <label class="check"><input type="checkbox" id="logo" checked> Animert HAPT-logo på hver flate</label>
         <div class="field" style="margin-top:10px"><label for="prosjekt">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026"></div>
         <p class="note">Blinket og pipet kommer på første bilde i hvert sekund (timecode :00). Pipet ligger på begge kanaler, −6 dBFS.</p>
       </div>
@@ -111,6 +112,7 @@
   </div>
 </div>
 
+<script src="../logo-animasjon.js"></script>
 <script src="../pixelmap/pixelmap.js"></script>
 <script src="../pixelmap/leskart.js"></script>
 <script src="mp4-muxer.js"></script>
@@ -129,7 +131,8 @@
       df: $('df').checked && r[1] === 1001 && (R === 30 || R === 60),
       blink: +$('blink').value, tone: +$('tone').value,
       lengde: Math.max(1, Math.min(600, +$('lengde').value || 60)),
-      prosjekt: $('prosjekt').value.trim()
+      prosjekt: $('prosjekt').value.trim(),
+      logo: $('logo').checked && !!window.HaptLogo
     };
   }
 
@@ -206,6 +209,18 @@
       g.fillStyle = blink ? '#000' : (l[1] === 500 ? '#fff' : '#b9bdc3'); g.fillText(l[0], cx, y);
       y += s2 * 1.35;
     });
+    // Logoanimasjonen fra hapt.no (intro, så runder på 4,4 s), sentrert over timecoden når det er plass, ellers øverst til venstre.
+    // Svart på blinkbildene, ellers hvit og blå som på nettsiden.
+    if (o.logo) {
+      var tilst = HaptLogo.tilstand(i * o.den / o.num), fl = blink ? '#000' : null;
+      var lh = tekstH * 1.2, lw = lh * HaptLogo.forhold, lTopp = cy - r - str * 0.9 - str * 0.6 - str * 0.45 - lh, marg = Math.max(3, lh * 0.25);
+      if (lTopp >= marg && lw <= bredde) HaptLogo.tegn(g, cx - lw / 2, lTopp, lh, tilst, fl);
+      else {
+        var fri = stoende ? W - tykk : W, hoy = stoende ? H : H - tykk;
+        lh = Math.max(5, Math.min(hoy * 0.14, fri * 0.3 / HaptLogo.forhold)); marg = Math.max(3, lh * 0.35);
+        HaptLogo.tegn(g, marg, marg, lh, tilst, fl);
+      }
+    }
     // Kantlinje
     g.strokeStyle = blink ? '#000' : '#7d828a'; g.lineWidth = 1; g.strokeRect(0.5, 0.5, W - 1, H - 1);
     g.restore();
@@ -264,7 +279,7 @@
     if (this.value === 'egen') return;
     var d = this.value.split('x'); $('w').value = d[0]; $('h').value = d[1]; tegn();
   });
-  ['w', 'h', 'tittel', 'fps', 'lengde', 'blink', 'df', 'prosjekt', 'tone'].forEach(function (id) { $(id).addEventListener('input', tegn); });
+  ['w', 'h', 'tittel', 'fps', 'lengde', 'blink', 'df', 'logo', 'prosjekt', 'tone'].forEach(function (id) { $(id).addEventListener('input', tegn); });
   try { $('prosjekt').value = localStorage.getItem('hapt-testbilde-prosjekt') || ''; } catch (e) {}
   // Vis et bilde midt i sekundet som forhåndsvisning
   visBilde = Math.round(valg().R * 0.4);
