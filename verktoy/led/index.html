@@ -308,6 +308,8 @@ details[open] summary { margin-bottom: 14px; }
     var backupPorter = backup === 'ingen' ? 0 : porter;
     var antProsessorer = backup === 'port' ? Math.ceil((porter * 2) / ppp) : Math.ceil(porter / ppp) * (backup === 'prosessor' ? 2 : 1);
     $('data-note').textContent = pr.note;
+    // Får ikke ett panel plass på en port, finnes det ikke noe fornuftig antall porter: vis strek i stedet for ∞
+    if (!perPort) { porter = '–'; backupPorter = backup === 'ingen' ? 0 : '–'; antProsessorer = '–'; }
     return { hz: hz, bit: bit, kap: kap, perPort: perPort, porter: porter, backup: backup, backupPorter: backupPorter, prosessorer: antProsessorer };
   }
 
@@ -350,7 +352,7 @@ details[open] summary { margin-bottom: 14px; }
       ['Korteste fine seeravstand', 'ca. ' + nf(pitch, 1) + ' m'],
       ['Effekt maks', nf(maks / 1000, 2) + ' kW'],
       ['Effekt snitt', nf(snitt / 1000, 2) + ' kW'],
-      [faser === 1 ? 'Strøm maks (230 V)' : 'Strøm maks per fase', nf(fase(maks), 1) + ' A'],
+      [faser === 1 ? 'Strøm maks (230 V)' : 'Strøm maks per fase (jevnt fordelt)', nf(fase(maks), 1) + ' A'],
       ['Paneler per ' + kurs + ' A kurs', perKurs + '  (' + nf(margin * 100, 0) + ' % last)'],
       ['Kurser à ' + kurs + ' A', kurser],
       ['Datamengde', nf(W * H * d.hz * d.bit * 3 / 1e9, 2) + ' Gbit/s'],
@@ -457,7 +459,7 @@ details[open] summary { margin-bottom: 14px; }
     var sk = kjeder(c, r, perKurs, modus === 'fri' ? 'kol' : modus, fraBunn);
     var fasenavn = nett === '1' ? ['L1'] : nett === '3it' ? ['L1-L2', 'L2-L3', 'L3-L1'] : ['L1', 'L2', 'L3'];
     var esc = function (t) { return String(t).replace(/[&<>]/g, function (x) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[x]; }); };
-    var h = '<h3>Data (' + dk.length + ' port' + (dk.length === 1 ? '' : 'er') + (d.backupPorter ? ', med backup' : '') + ')</h3><ul>';
+    var h = '<h3>Data (' + (d.perPort ? dk.length : '–') + ' port' + (dk.length === 1 ? '' : 'er') + (d.backupPorter ? ', med backup' : '') + ')</h3><ul>';
     dk.forEach(function (kj, i) {
       h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>Port ' + (i + 1) + ': ' + esc(beskriv(kj, modus)) + (d.backupPorter ? '. Backup-port ' + (i + 1) + ' inn i ' + (kj[kj.length - 1][0] + 1) + '.' + (kj[kj.length - 1][1] + 1) : '') + '</span></li>';
     });

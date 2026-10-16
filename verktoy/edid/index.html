@@ -132,6 +132,10 @@
     if ($('to').checked) t.push(HaptEdid.cvtRB(+$('w2').value, +$('h2').value, +$('hz2').value, v, eks));
     var feil = [];
     t.forEach(function (x) { feil = feil.concat(HaptEdid.sjekkTiming(x)); });
+    // Timinger en EDID ikke kan beskrive gir en ødelagt fil, så nedlasting og kopiering stenges til de er rettet
+    var ugyldig = feil.length > 0;
+    $('lastBin').disabled = ugyldig; $('kopierHex').disabled = ugyldig;
+    if (ugyldig) feil.push('Filen lages ikke før dette er rettet.');
     if ($('hdmi').checked && Math.max.apply(null, t.map(function (x) { return x.klokke; })) > 340) feil.push('Pikselklokka er over 340 MHz. Det krever HDMI 2.0 hele veien, og ikke alle kilder godtar det uten HDMI 2.0-blokk.');
 
     var rader = [];
@@ -150,7 +154,7 @@
     $('lagFeil').innerHTML = '';
     feil.forEach(function (f) { var p = document.createElement('p'); p.className = 'warn'; p.textContent = f; $('lagFeil').appendChild(p); });
     sisteBytes = bytes;
-    $('hex').textContent = hex(bytes);
+    $('hex').textContent = ugyldig ? '' : hex(bytes);
     $('lyd').disabled = !$('hdmi').checked;
   }
 

@@ -125,7 +125,7 @@
   if (q.get('w')) {
     $('w').value = q.get('w'); $('h').value = q.get('h');
     $('pw').value = q.get('pw') || 0; $('ph').value = q.get('ph') || 0;
-    if (q.get('tekst')) $('tittel').value = q.get('tekst');
+    var tekst = q.get('tekst') || q.get('navn'); if (tekst) $('tittel').value = tekst;  // navn: panelnavnet fra LED-siden
     if (+q.get('pw') > 0) $('o-rutenett').checked = false; // panelkartet er rutenett nok
   }
   function oppdaterMal() {

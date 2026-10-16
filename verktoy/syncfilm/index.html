@@ -211,14 +211,25 @@
     });
     // Logoanimasjonen fra hapt.no (intro, så runder på 4,4 s), sentrert over timecoden når det er plass, ellers øverst til venstre.
     // Svart på blinkbildene, ellers hvit og blå som på nettsiden.
+    // Feltet bak logoen fylles med bakgrunnsfargen, så den løpende streken ikke går i ett med logoen.
     if (o.logo) {
       var tilst = HaptLogo.tilstand(i * o.den / o.num), fl = blink ? '#000' : null;
+      var logo = function (x, y, h) {
+        var p = Math.max(1, h * 0.12);
+        g.fillStyle = blink ? '#ffffff' : '#0c0d0f'; g.fillRect(x - p, y - p, h * HaptLogo.forhold + 2 * p, h + 2 * p);
+        HaptLogo.tegn(g, x, y, h, tilst, fl);
+      };
       var lh = tekstH * 1.2, lw = lh * HaptLogo.forhold, lTopp = cy - r - str * 0.9 - str * 0.6 - str * 0.45 - lh, marg = Math.max(3, lh * 0.25);
-      if (lTopp >= marg && lw <= bredde) HaptLogo.tegn(g, cx - lw / 2, lTopp, lh, tilst, fl);
+      if (lTopp >= marg && lw <= bredde) logo(cx - lw / 2, lTopp, lh);
       else {
+        // Øverst til venstre, men aldri oppå timecoden eller utenfor flata. Blir den for liten, droppes den.
         var fri = stoende ? W - tykk : W, hoy = stoende ? H : H - tykk;
-        lh = Math.max(5, Math.min(hoy * 0.14, fri * 0.3 / HaptLogo.forhold)); marg = Math.max(3, lh * 0.35);
-        HaptLogo.tegn(g, marg, marg, lh, tilst, fl);
+        lh = Math.min(hoy * 0.14, fri * 0.3 / HaptLogo.forhold); marg = Math.max(3, lh * 0.35);
+        g.font = font(str, 400);
+        var tcL = cx - g.measureText(tc.tekst).width / 2, tcT = cy - r - str * 1.5, gap = Math.max(2, lh * 0.3);
+        if (marg + lh + gap > tcT) lh = Math.min(lh, (tcL - marg - gap) / HaptLogo.forhold);
+        lh = Math.min(lh, (fri - 2 * marg) / HaptLogo.forhold);
+        if (lh >= 5) logo(marg, marg, lh);
       }
     }
     // Kantlinje
@@ -394,7 +405,7 @@
     try {
       var muxer = new Mp4Muxer.Muxer({
         target: new Mp4Muxer.ArrayBufferTarget(),
-        video: { codec: vid.type, width: W, height: H, frameRate: o.num / o.den },
+        video: { codec: vid.type, width: W, height: H, frameRate: o.num },  // tidsskala: o.num ticks per sekund, ett bilde = o.den ticks (heltall, også ved 29,97)
         audio: lyd ? { codec: lyd.type, numberOfChannels: 2, sampleRate: 48000 } : undefined,
         fastStart: 'in-memory', firstTimestampBehavior: 'offset'
       });

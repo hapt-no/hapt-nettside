@@ -22,7 +22,7 @@
 .flate .row4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .flate .row4 label { font-size: 12px; }
 .flate .row4 input { padding: 6px 7px; font-size: 15px; }
-#c { cursor: grab; }
+#c { cursor: grab; touch-action: none; }  /* dra flater med fingeren uten at siden ruller */
 </style>
 </head>
 <body>
@@ -176,7 +176,7 @@
     f.x = Math.max(0, fest[0]); f.y = Math.max(0, fest[1]);
     tegn();
   });
-  cv.addEventListener('pointerup', function () { if (drar) { drar = null; synkSkjema(); } });
+  ['pointerup', 'pointercancel'].forEach(function (t) { cv.addEventListener(t, function () { if (drar) { drar = null; synkSkjema(); } }); });
 
   if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('400 20px Barlow'), document.fonts.load('500 20px Barlow')]).then(tegn, tegn);
   synkSkjema(); tegn();

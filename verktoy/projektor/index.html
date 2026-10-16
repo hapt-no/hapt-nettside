@@ -156,7 +156,8 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
     $('proj').appendChild(og);
   });
 
-  function linserFor(p) { var ut = []; L.forEach(function (l, i) { if (l.f[p.g]) ut.push(i); }); return ut; }
+  // Linser uten formel og uten kastforhold for denne projektoren tas ikke med (ingenting å regne på)
+  function linserFor(p) { var ut = []; L.forEach(function (l, i) { var f = l.f[p.g]; if (f && (f.a0 != null || f.tr)) ut.push(i); }); return ut; }
   function fyllLinser(behold) {
     var p = P[+$('proj').value], liste = linserFor(p), sel = $('linse'), forrige = behold ? sel.value : null;
     sel.innerHTML = '';
@@ -179,6 +180,11 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
   }
   function formel(p, l) {
     var f = l.f[p.g];
+    if (f.a0 == null) {
+      // Bare oppgitt kastforhold («0.680-0.950»): bruk det som a, uten offset
+      var d = String(f.tr).replace(/,/g, '.').split('-').map(parseFloat);
+      return { a0: d[0], b0: 0, a1: d.length > 1 ? d[1] : d[0], b1: 0, bKjent: false, f: f };
+    }
     return { a0: f.a0, b0: f.b0 == null ? 0 : f.b0, a1: f.a1 == null ? f.a0 : f.a1, b1: (f.b1 == null ? (f.b0 == null ? 0 : f.b0) : f.b1), bKjent: f.b0 != null, f: f };
   }
   // Projisert felt (hele brikken) for et innhold med mål bxh
@@ -221,7 +227,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
     res.push(['Bilde (innhold)', tall(ib, 2) + ' × ' + tall(ih, 2) + ' m, diagonal ' + m2(diag)]);
     if (Math.abs(fe.b - ib) > 0.005 || Math.abs(fe.h - ih) > 0.005) res.push(['Hele projisert felt', tall(fe.b, 2) + ' × ' + tall(fe.h, 2) + ' m (sorte felt)']);
     if (modus === 'avstand') {
-      res.push(['Avstand, vid', m2(Lmin) + (l.f[p.g].a0 !== l.f[p.g].a1 ? '' : ' (fast linse)')]);
+      res.push(['Avstand, vid', m2(Lmin) + (F.a0 !== F.a1 ? '' : ' (fast linse)')]);
       if (Math.abs(Lmax - Lmin) >= 0.005) res.push(['Avstand, tele', m2(Lmax)]);
       res.push(['Med ±5 % toleranse', m2(Math.min(Lmin, Lmax) * 0.95) + ' – ' + m2(Math.max(Lmin, Lmax) * 1.05)]);
       var rent = (l.f[p.g].a0) * fe.b;
@@ -344,7 +350,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
   if (lagret && P[+lagret.proj]) {
     $('proj').value = lagret.proj; fyllLinser(false);
     felter.forEach(function (id) { if (id !== 'proj' && lagret[id] !== undefined) $(id).value = lagret[id]; });
-    if (!L[+$('linse').value] || !L[+$('linse').value].f[P[+$('proj').value].g]) fyllLinser(false);
+    if ($('linse').value === '' || linserFor(P[+$('proj').value]).indexOf(+$('linse').value) < 0) fyllLinser(false);
     settModus(lagret.modus === 'bilde' ? 'bilde' : 'avstand');
   } else {
     var std = 0; P.forEach(function (p, i) { if (p.n === 'EB-PU2220B') std = i; });
