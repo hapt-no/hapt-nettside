@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>hapt-o-clock – scene</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+<script src="../las.js"></script>
+<style>
+html, body { margin: 0; padding: 0; height: 100%; background: #000; overflow: hidden; }
+canvas { display: block; width: 100vw; height: 100vh; }
+body.skjul-peker, body.skjul-peker * { cursor: none; }
+.hint { position: fixed; left: 50%; top: 24px; transform: translateX(-50%); background: rgba(30,33,37,0.92); color: #ecedee;
+  font: 500 14px var(--ui); padding: 9px 16px; border-radius: 10px; transition: opacity .4s; pointer-events: none; white-space: nowrap; }
+.hint.borte { opacity: 0; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hint" id="hint">Klikk eller trykk F for fullskjerm · Esc går ut</div>
+<script src="../logo-animasjon.js"></script>
+<script src="klokke-kjerne.js"></script>
+<script src="klokke-skjerm.js"></script>
+<script>
+// Presenteren: viser det operatorvinduet har lagret, og tegner tiden selv for hvert bilde ut fra
+// veggklokka, så den går jevnt selv om operatorvinduet ligger bak andre vinduer.
+(function () {
+  var K = HaptKlokke, NOKKEL = 'hapt-klokke-show', cv = document.getElementById('c'), g = cv.getContext('2d');
+  var forhand = /[?&]forhandsvisning/.test(location.search), show = K.nyttShow();
+  function les() { try { var t = localStorage.getItem(NOKKEL); if (t) show = K.rens(JSON.parse(t)); } catch (e) {} }
+  les();
+  var kanal = 'BroadcastChannel' in window ? new BroadcastChannel('hapt-klokke') : null;
+  if (kanal) kanal.onmessage = function (e) { if (e.data && e.data.show) show = K.rens(e.data.show); };
+  window.addEventListener('storage', function (e) { if (e.key === NOKKEL) les(); });
+
+  function storrelse() {
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr);
+  }
+  addEventListener('resize', storrelse); storrelse();
+
+  function bilde() {
+    var dpr = cv.width / Math.max(1, innerWidth);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    HaptKlokkeSkjerm.tegn(g, innerWidth, innerHeight, show, Date.now());
+    requestAnimationFrame(bilde);
+  }
+  requestAnimationFrame(bilde);
+
+  var hint = document.getElementById('hint');
+  if (forhand) { hint.remove(); return; }
+
+  // Sier fra til operatorvinduet at scenen er åpen, og hvor stor den er (forhåndsvisningen følger formatet)
+  function puls() { if (kanal) kanal.postMessage({ skjerm: { w: innerWidth, h: innerHeight, full: !!document.fullscreenElement } }); }
+  setInterval(puls, 1000); puls();
+  addEventListener('resize', puls);
+  addEventListener('pagehide', function () { if (kanal) kanal.postMessage({ skjerm: null }); });
+
+  function fullskjerm() {
+    if (document.fullscreenElement) return;
+    var el = document.documentElement;
+    (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
+  }
+  cv.addEventListener('click', fullskjerm);
+  cv.addEventListener('dblclick', function () { if (document.fullscreenElement) document.exitFullscreen(); });
+  addEventListener('keydown', function (e) { if (e.key === 'f' || e.key === 'F') fullskjerm(); });
+
+  // Musepekeren og hjelpeteksten forsvinner når musa står stille
+  var tid;
+  function rort() {
+    document.body.classList.remove('skjul-peker');
+    hint.classList.toggle('borte', !!document.fullscreenElement);
+    clearTimeout(tid);
+    tid = setTimeout(function () { document.body.classList.add('skjul-peker'); hint.classList.add('borte'); }, 2500);
+  }
+  addEventListener('mousemove', rort);
+  document.addEventListener('fullscreenchange', function () { rort(); puls(); });
+  rort();
+})();
+</script>
+</body>
+</html>
