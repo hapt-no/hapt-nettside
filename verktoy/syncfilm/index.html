@@ -7,12 +7,14 @@
 <title>Syncfilm – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
 <style>
 @font-face{font-family:'Barlow';font-style:normal;font-weight:300;font-display:swap;src:url(../../fonts/barlow-latin-300-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(../../fonts/barlow-latin-500-normal.woff2) format('woff2');}
 .preview { background: #000; }
-.preview canvas:fullscreen { width: 100vw; height: 100vh; object-fit: contain; background: #000; }
+.preview canvas:fullscreen { width: 100vw; height: 100vh; object-fit: contain; background: #000; box-shadow: none; }
 .kartflate { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; align-items: end; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .kartflate .navn { grid-column: 1 / -1; }
 .kartflate input { padding: 6px 7px; font-size: 15px; }
@@ -24,7 +26,7 @@
 <body>
 <div class="wrap">
   <header class="site">
-    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="./" aria-current="page">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
@@ -102,7 +104,7 @@
     </div>
 
     <div>
-      <div class="preview"><canvas id="c" width="1920" height="1080"></canvas></div>
+      <div class="preview luft"><canvas id="c" width="1920" height="1080"></canvas></div>
       <p class="note" id="info"></p>
       <p class="note">«Spill av» og fullskjerm går på nettleserens klokke og er bare for å se hvordan filmen ser ut. Til selve synctesten bruker du MP4-filen.</p>
     </div>

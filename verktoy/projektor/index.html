@@ -7,19 +7,21 @@
 <title>Projektor og linse – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
 <style>
 table.linser { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
 table.linser th { text-align: left; font-weight: 400; color: var(--muted); padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line2); }
 table.linser td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.linser tr { cursor: pointer; }
-table.linser tr:hover td { color: var(--accent); }
+table.linser tr:hover td { background: var(--surface2); }
 table.linser tr.valgt td { color: var(--fg); background: rgba(26,143,209,.12); }
 table.linser td.tall { text-align: right; white-space: nowrap; }
 table.linser .ut { color: var(--muted); }
 .tabell { overflow-x: auto; }
+@media (max-width: 360px) { table.linser td.tall { white-space: normal; } }
 .st { font-size: 12px; color: var(--muted); }
 .st.estimert, .st.ikke_bekreftet, .st.sekundaerkilde, .st.delvis { color: var(--warn); }
-.ok { color: #4cc38a; } .nei { color: #d9576b; }
 .kilder a { color: var(--muted); word-break: break-all; }
 details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
 </style>
@@ -27,7 +29,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
 <body>
 <div class="wrap">
   <header class="site">
-    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
     <nav><a href="../led/">LED-vegg</a><a href="./" aria-current="page">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
@@ -110,8 +112,8 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
         <div class="kpi"><b id="k3">–</b><span>linseforskyvning</span></div>
         <div class="kpi"><b id="k4">–</b><span>lysstyrke på duken</span></div>
       </div>
-      <div class="card">
-        <svg id="tegning" viewBox="0 0 800 300" style="width:100%;height:auto;display:block"></svg>
+      <div class="preview luft" style="margin-bottom:14px">
+        <svg id="tegning" viewBox="0 0 800 300"></svg>
       </div>
       <div class="card">
         <table class="res" id="res"></table>

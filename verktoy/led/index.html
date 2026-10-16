@@ -7,6 +7,8 @@
 <title>LED-vegg – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
 <style>
 @font-face{font-family:'Barlow';font-style:normal;font-weight:300;font-display:swap;src:url(../../fonts/barlow-latin-300-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
@@ -18,10 +20,11 @@ details[open] summary { margin-bottom: 14px; }
 .egne-liste button { background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; }
 .egne-liste button:hover { color: var(--warn); }
 .forslag { display: grid; gap: 8px; margin-top: 4px; }
-.forslag button { text-align: left; background: var(--bg); border: 1px solid var(--line2); border-radius: 4px; color: var(--fg); padding: 8px 10px; font: inherit; font-size: 14px; cursor: pointer; }
-.forslag button:hover, .forslag button.valgt { border-color: var(--accent); }
+.forslag button { text-align: left; background: var(--surface2); border: 1px solid transparent; border-radius: 9px; color: var(--fg); padding: 8px 11px; font: inherit; font-size: 14px; cursor: pointer; }
+.forslag button:hover { background: var(--line2); }
+.forslag button.valgt { background: rgba(26,143,209,.12); border-color: rgba(26,143,209,.45); }
 .forslag small { color: var(--muted); }
-.kabling h3 { font-weight: 400; font-size: 15px; color: var(--muted); margin: 18px 0 6px; }
+.kabling h3 { font-family: var(--font); font-weight: 500; font-size: 15px; color: var(--muted); margin: 18px 0 6px; }
 .kabling h3:first-child { margin-top: 0; }
 .kabling ul { margin: 0; padding: 0; list-style: none; font-size: 15px; }
 .kabling li { padding: 5px 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: baseline; }
@@ -32,7 +35,7 @@ details[open] summary { margin-bottom: 14px; }
 <body>
 <div class="wrap">
   <header class="site">
-    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
     <nav><a href="./" aria-current="page">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
@@ -190,7 +193,7 @@ details[open] summary { margin-bottom: 14px; }
           <button type="button" data-vis-tegning="data">Data</button>
           <button type="button" data-vis-tegning="strom">Strøm</button>
         </div>
-        <div class="preview" style="background:none;border:0"><svg id="vegg" role="img" aria-label="Tegning av veggen"></svg></div>
+        <div class="preview luft"><svg id="vegg" role="img" aria-label="Tegning av veggen"></svg></div>
       </div>
       <div class="card">
         <h2>Kablingsforslag</h2>

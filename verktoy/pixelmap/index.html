@@ -7,11 +7,13 @@
 <title>Pixelmap – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
 <style>
 @font-face{font-family:'Barlow';font-style:normal;font-weight:300;font-display:swap;src:url(../../fonts/barlow-latin-300-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(../../fonts/barlow-latin-500-normal.woff2) format('woff2');}
-.flate { border: 1px solid var(--line2); border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+.flate { border: 1px solid var(--line2); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
 .flate .topp { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .flate .topp input[type=text] { flex: 1; }
 .flate .topp i { width: 14px; height: 14px; border-radius: 3px; flex: none; }
@@ -26,7 +28,7 @@
 <body>
 <div class="wrap">
   <header class="site">
-    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="./" aria-current="page">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
@@ -66,7 +68,7 @@
     </div>
 
     <div>
-      <div class="preview"><canvas id="c" width="3840" height="2160"></canvas></div>
+      <div class="preview luft"><canvas id="c" width="3840" height="2160"></canvas></div>
       <p class="note" id="info"></p>
       <p class="warn" id="overlapp"></p>
     </div>

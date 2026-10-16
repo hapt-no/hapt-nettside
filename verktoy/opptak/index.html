@@ -7,11 +7,13 @@
 <title>Opptak og stream – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
 </head>
 <body>
 <div class="wrap">
   <header class="site">
-    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="./" aria-current="page">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
@@ -250,7 +252,7 @@
     // Medier: krev 1,5 × margin på skrivehastighet
     $('o-medier').innerHTML = MEDIER.map(function (m) {
       var ok = m[1] >= MBs * 1.5, knapt = !ok && m[1] >= MBs;
-      return '<tr><td>' + m[0] + ' (' + m[1] + ' MB/s)</td><td style="color:' + (ok ? '#4cc38a' : knapt ? 'var(--warn)' : '#d9576b') + '">' + (ok ? 'Holder' : knapt ? 'Knapt' : 'For treg') + '</td></tr>';
+      return '<tr><td>' + m[0] + ' (' + m[1] + ' MB/s)</td><td style="color:' + (ok ? 'var(--live)' : knapt ? 'var(--warn)' : 'var(--danger)') + '">' + (ok ? 'Holder' : knapt ? 'Knapt' : 'For treg') + '</td></tr>';
     }).join('');
     opptak.tekst = rader.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n') + '\nTil sammen: ' + tall(MBs, 1) + ' MB/s';
     lagre();

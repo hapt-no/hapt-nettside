@@ -7,6 +7,8 @@
 <title>Testbilde – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
 <style>
 @font-face{font-family:'Barlow';font-style:normal;font-weight:300;font-display:swap;src:url(../../fonts/barlow-latin-300-normal.woff2) format('woff2');}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/barlow-latin-400-normal.woff2) format('woff2');}
@@ -22,7 +24,7 @@
 <body>
 <div class="wrap">
   <header class="site">
-    <a class="brand" href="../"><img src="../hapt-ordmerke-hvit.svg" alt="HAPT"><span>Verktøy</span></a>
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="./" aria-current="page">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
@@ -101,7 +103,7 @@
     </div>
 
     <div>
-      <div class="preview"><canvas id="c" width="1920" height="1080"></canvas></div>
+      <div class="preview luft"><canvas id="c" width="1920" height="1080"></canvas></div>
       <p class="note" id="info"></p>
     </div>
   </div>
