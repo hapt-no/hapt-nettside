@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>hapt-o-clock – HAPT verktøy</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+<link rel="stylesheet" href="klokke.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
+</head>
+<body class="klokke">
+<header class="site">
+  <a class="brand" href="../" title="Tilbake til verktøyene"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>o-clock</span></a>
+  <a class="topp-tilbake" href="../">← verktøy</a>
+  <span class="topp-luft"></span>
+  <span class="taster"><span><kbd>Space</kbd>T1</span><span><kbd>↩</kbd>T2</span><span><kbd>M</kbd>melding</span><span><kbd>F</kbd>fullskjerm</span></span>
+  <span class="skille"></span>
+  <div class="utgang" role="group" aria-label="Utgang">
+    <button type="button" data-ut="clock" title="Timerne og meldingen">Klokke</button>
+    <button type="button" data-ut="black" title="Svart scene">Svart</button>
+    <button type="button" data-ut="logo" title="Logoen på svart">Logo</button>
+  </div>
+  <button class="knapp" type="button" id="apneScene" title="Åpner scenen på skjerm 2 i fullskjerm, eller i et eget vindu">Åpne scene</button>
+  <span class="skille"></span>
+  <button class="knapp" type="button" id="apneInnst" title="Innstillinger">Innstillinger</button>
+</header>
+
+<main class="drift">
+  <aside class="side">
+    <div class="seksjon">
+      <h3>Melding</h3>
+      <input type="text" id="utkast" placeholder="Skriv melding …" autocomplete="off">
+      <div class="melding-knapper">
+        <button class="knapp" type="button" id="tilBank" title="Legg meldingen i banken">+ Bank</button>
+        <button class="knapp" type="button" id="visMelding" title="Vis eller skjul meldingen på scenen (M)"><span class="prik"></span><span>Vis melding</span></button>
+      </div>
+      <div class="pa-scenen" id="paScenen" hidden></div>
+    </div>
+    <div class="seksjon">
+      <h3>Bank</h3>
+      <div class="bank" id="bank"></div>
+    </div>
+    <div class="seksjon">
+      <h3>Utgang <span class="hoyre" id="sceneTekst">Scenen er ikke åpen</span></h3>
+      <div class="forhand lukket" id="forhand"><canvas id="forhandLerret"></canvas></div>
+      <p class="note" style="font-size:12px">Med to skjermer i Chrome eller Edge går «Åpne scene» rett i fullskjerm på skjerm 2, og kontrollene flytter til et eget vindu her (nettleseren spør om lov første gang). Esc på scenen avslutter. Ellers åpnes scenen i et eget vindu som du drar dit og setter i fullskjerm med «Fullskjerm» eller F.</p>
+    </div>
+  </aside>
+  <section class="timere" id="timere"></section>
+</main>
+
+<dialog class="innst" id="innst">
+  <div class="innst-hode">
+    <h2>Innstillinger</h2>
+    <button class="knapp" type="button" id="lukkInnst">Ferdig</button>
+    <div class="fanelinje" id="innstFaner">
+      <button class="fane" type="button" data-side="t0">Timer 1</button>
+      <button class="fane" type="button" data-side="t1">Timer 2</button>
+      <button class="fane" type="button" data-side="scene">Scene</button>
+      <button class="fane" type="button" data-side="presets">Presets</button>
+      <button class="fane" type="button" data-side="kp">Kjøreplan</button>
+      <button class="fane" type="button" data-side="fil">Show</button>
+    </div>
+  </div>
+  <div class="innst-innhold" id="innstInnhold"></div>
+</dialog>
+
+<div id="sceneFull"><canvas id="sceneLerret"></canvas></div>
+
+<input type="file" id="velgKp" accept=".xlsx,.csv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+<input type="file" id="velgShow" accept=".json,application/json" hidden>
+<input type="file" id="velgLogo" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
+
+<script src="../logo-animasjon.js"></script>
+<script src="klokke-kjerne.js"></script>
+<script src="klokke-skjerm.js"></script>
+<script src="klokke.js"></script>
+</body>
+</html>

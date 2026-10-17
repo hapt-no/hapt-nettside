@@ -1,0 +1,173 @@
+/* Operatorvinduet til hapt-o-clock i nettleseren: samme oppsett som appen. Topplinje, sidepanel med
+   meldinger og forhåndsvisning, og én rad per timer med klokka til venstre og presets/kjøreplan til høyre. */
+:root { --t1: #1a8fd1; --t2: #9b87f5; }
+body.klokke { padding: 0; font-size: 14px; }
+html:not(.laast) body.klokke { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Topplinje */
+body.klokke header.site { display: flex; flex-wrap: nowrap; align-items: center; gap: 14px; height: 58px; padding: 0 20px; margin: 0; background: var(--panel); border-bottom: 1px solid var(--line); flex: none; }
+body.klokke header.site .brand { padding: 0; gap: 8px; align-items: baseline; }
+body.klokke header.site .brand img { height: 17px; align-self: center; }
+body.klokke header.site .brand span { font-size: 19px; }
+body.klokke header.site .tema { margin: 0; }
+.topp-tilbake { color: var(--muted); text-decoration: none; font-size: 12.5px; white-space: nowrap; }
+.topp-luft { flex: 1; }
+.taster { display: flex; gap: 12px; color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.taster kbd { font: 500 10.5px var(--ui); background: var(--surface2); border-radius: 5px; padding: 2px 6px; margin-right: 4px; }
+.skille { width: 1px; height: 20px; background: var(--line2); flex: none; }
+.utgang { display: flex; background: var(--surface2); border-radius: 10px; padding: 3px; gap: 2px; }
+.utgang button { background: none; border: 0; border-radius: 7px; color: var(--muted); font: 500 13px var(--font); padding: 5px 14px; cursor: pointer; }
+.utgang button:hover { color: var(--fg); }
+.utgang button[aria-pressed="true"] { background: var(--live); color: #fff; font-weight: 600; }
+.utgang button[data-ut="black"][aria-pressed="true"], .utgang button[data-ut="logo"][aria-pressed="true"] { background: var(--warn); }
+.knapp { background: var(--surface2); color: var(--fg); border: 0; border-radius: 9px; font: 500 13.5px var(--font); padding: 7px 13px; cursor: pointer; white-space: nowrap; line-height: 1.2; }
+.knapp:hover { background: var(--line2); }
+.knapp:disabled { opacity: .4; cursor: default; background: var(--surface2); }
+.knapp.liten { font-size: 12px; padding: 4px 9px; border-radius: 7px; }
+.knapp.stor { font-size: 16px; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; }
+.knapp.gronn { background: var(--live); color: #fff; }
+.knapp.bla { background: var(--accent); color: #fff; font-weight: 600; }
+.knapp.gronn:hover, .knapp.bla:hover { filter: brightness(1.1); }
+.knapp.bla:disabled { background: var(--accent); }
+.knapp.omriss { box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); background: transparent; }
+.knapp.pa { background: color-mix(in srgb, var(--live) 18%, transparent); color: var(--live); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--live) 50%, transparent); }
+.prik { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--line2); flex: none; }
+.prik.pa { background: var(--live); }
+.scenestatus { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.scenestatus.pa { color: var(--live); }
+
+/* Hoveddelen */
+.drift { flex: 1; min-height: 0; display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+.side { background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; }
+.seksjon { padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.seksjon h3, .etikett { font: 600 13px var(--font); color: var(--muted); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+.seksjon h3 .hoyre, .etikett .hoyre { margin-left: auto; font: 400 11px var(--ui); }
+.side input[type=text] { font-size: 14px; padding: 8px 10px; }
+.melding-knapper { display: grid; grid-template-columns: 92px 1fr; gap: 6px; margin-top: 8px; }
+.melding-knapper .knapp { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.pa-scenen { color: var(--live); font-size: 11.5px; margin-top: 8px; overflow-wrap: anywhere; }
+.bank { display: flex; flex-direction: column; gap: 1px; }
+.bank .linje { display: flex; align-items: center; gap: 4px; padding: 6px 8px; border-radius: 7px; }
+.bank .linje:hover { background: var(--surface2); }
+.bank .linje span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+.bank .linje button { opacity: 0; }
+.bank .linje:hover button, .bank .linje button:focus { opacity: 1; }
+@media (hover: none) { .bank .linje button { opacity: 1; } }
+.forhand { background: #000; border-radius: 8px; box-shadow: 0 0 0 1px var(--line2); overflow: hidden; aspect-ratio: 16 / 9; color-scheme: dark; }
+.forhand canvas { display: block; width: 100%; height: 100%; }
+.forhand.lukket { opacity: .55; }
+
+/* Timerradene */
+.timere { display: grid; grid-template-rows: 1fr 1fr; min-height: 0; }
+.trad { display: grid; grid-template-columns: minmax(320px, 470px) minmax(0, 1fr); min-height: 0; border-bottom: 2px solid var(--line); }
+.trad:last-child { border-bottom: 0; }
+.kontroll { padding: 16px 22px; display: flex; flex-direction: column; gap: 11px; min-height: 0; border-right: 1px solid var(--line); overflow: hidden; }
+.thode { display: flex; align-items: center; gap: 10px; }
+.tnr { width: 22px; height: 22px; border-radius: 50%; color: #fff; font: 600 12px var(--font); display: grid; place-items: center; flex: none; }
+.thode input { background: none; border: 0; padding: 0; font: 500 19px var(--font); color: var(--fg); min-width: 0; flex: 1; box-shadow: none; }
+.thode input:focus { box-shadow: none; }
+.merke { font: 600 10.5px var(--ui); border-radius: 99px; padding: 2px 8px; white-space: nowrap; }
+.tall-boks { flex: 1 1 auto; min-height: 44px; display: flex; align-items: center; container-type: size; }
+.tall { font: 800 clamp(36px, min(23cqi, 80cqh), 220px) var(--ui); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.02em; white-space: nowrap; }
+.tall.lang { font-size: clamp(30px, min(15.5cqi, 80cqh), 180px); }
+.status { display: flex; align-items: center; gap: 7px; font: 500 14px var(--font); color: var(--muted); }
+.status i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
+.status.go i { background: currentColor; }
+.status.go { color: var(--live); } .status.over { color: var(--danger); } .status.warp { color: var(--accent); } .status.warpvarsel { color: var(--warn); }
+.knapperad { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+.knapperad input { width: 80px; font-size: 14px; padding: 7px 8px; text-align: center; }
+.knapperad .luft { width: 8px; }
+.knapperad.juster .knapp { min-width: 54px; font-variant-numeric: tabular-nums; }
+.symbol { width: 13px; height: 13px; display: inline-block; flex: none; }
+.neste { display: flex; align-items: center; gap: 8px; background: var(--panel); border-radius: 12px; padding: 6px 6px 6px 14px; min-height: 48px; }
+.neste .n { font: 500 12.5px var(--font); color: var(--muted); }
+.neste b { font: 500 15px var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.neste .tid { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.neste .tom { color: var(--muted); font-size: 12px; flex: 1; }
+.neste .go { margin-left: auto; min-width: 64px; font-size: 15px; padding: 9px 14px; }
+
+/* Presets og kjøreplan */
+.liste { display: flex; flex-direction: column; min-height: 0; }
+.fanelinje { display: flex; align-items: flex-end; gap: 4px; padding: 0 22px; background: var(--panel); border-bottom: 1px solid var(--line); min-height: 44px; flex: none; }
+.fanelinje .fane { background: none; border: 0; color: var(--muted); font: 500 15px var(--font); padding: 10px 10px 11px; cursor: pointer; position: relative; }
+.fanelinje .fane[aria-pressed="true"] { color: var(--fg); font-weight: 600; }
+.fanelinje .fane[aria-pressed="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--accent); border-radius: 1px; }
+.fanelinje .tittel { font: 600 13px var(--font); color: var(--muted); padding: 13px 0 12px; }
+.fanelinje .rediger { margin-left: auto; align-self: center; background: none; border: 0; color: var(--muted); font-size: 11.5px; cursor: pointer; }
+.fanelinje .rediger:hover { color: var(--fg); }
+.rulle { overflow-y: auto; flex: 1; min-height: 0; padding: 10px 14px; }
+.preset { display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 8px; }
+.preset .navn { font: 400 15px var(--font); margin-left: 4px; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.preset .sum { color: var(--muted); font-size: 12px; }
+.tomt { color: var(--muted); font-size: 12.5px; padding: 6px 8px; }
+.kp-hode { display: flex; align-items: center; gap: 10px; padding: 9px 22px; background: var(--panel); border-bottom: 1px solid var(--line); flex: none; }
+.kp-hode b { font: 600 16px var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.kp-hode .kilde { color: var(--muted); font-size: 11px; white-space: nowrap; }
+.avvik { margin-left: auto; font-size: 12px; white-space: nowrap; border-radius: 99px; padding: 4px 10px; }
+.avvik.bak { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); font-weight: 600; }
+.avvik.foran { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); font-weight: 600; }
+.avvik.info { color: var(--muted); padding-inline: 0; }
+.punkt { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 8px; cursor: pointer; position: relative; }
+.punkt:hover { background: color-mix(in srgb, var(--surface2) 60%, transparent); }
+.punkt.valgt { background: var(--surface2); }
+.punkt.na { background: color-mix(in srgb, var(--live) 12%, transparent); }
+.punkt.na::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: var(--live); }
+.punkt.kort { opacity: .45; }
+.punkt .nr { width: 26px; text-align: right; color: var(--muted); font-size: 11px; flex: none; }
+.punkt .kl { width: 64px; color: var(--muted); font-size: 11.5px; flex: none; }
+.punkt .tekst { flex: 1; min-width: 0; }
+.punkt .tekst b { display: block; font: 400 15px var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.punkt.na .tekst b { font-weight: 600; color: var(--live); }
+.punkt .tekst span { display: block; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.punkt .lengde { color: var(--muted); font-size: 12px; }
+.overskrift { padding: 10px 8px 3px; font: 600 13.5px var(--font); color: var(--muted); cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.overskrift span { font: 400 10.5px var(--ui); }
+.notater { background: var(--panel); border-top: 1px solid var(--line); padding: 10px 22px; max-height: 130px; overflow-y: auto; flex: none; font-size: 12px; }
+.notater h4 { font: 600 13px var(--font); color: var(--muted); margin: 0 0 6px; }
+.notater div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; margin-bottom: 4px; }
+.notater div span:first-child { color: var(--muted); font-size: 11px; }
+.notater div span:last-child { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Innstillinger */
+dialog.innst { width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 40px); padding: 0; border: 0; border-radius: 14px; background: var(--bg); color: var(--fg); box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+dialog.innst::backdrop { background: rgba(0,0,0,.55); }
+.innst-hode { display: flex; align-items: center; gap: 12px; padding: 14px 20px 0; background: var(--panel); position: sticky; top: 0; z-index: 1; flex-wrap: wrap; }
+.innst-hode h2 { margin: 0; flex: 1; }
+.innst-hode .fanelinje { padding: 0; background: none; border: 0; width: 100%; overflow-x: auto; scrollbar-width: none; min-height: 0; }
+.innst-innhold { padding: 18px 20px 22px; }
+.innst-innhold .card { background: var(--panel); }
+.farger { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.farger label { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--fg); font-size: 13px; }
+.farger input[type=color] { width: 34px; height: 26px; padding: 0; border: 1px solid var(--line2); border-radius: 6px; background: none; flex: none; }
+.glider { display: flex; align-items: center; gap: 10px; }
+.glider input { flex: 1; }
+.glider output { min-width: 52px; text-align: right; font-size: 13px; color: var(--muted); }
+.pliste { display: flex; flex-direction: column; gap: 6px; }
+.prad { display: grid; grid-template-columns: minmax(0, 1fr) 150px 96px auto; gap: 6px; align-items: center; }
+.prad input, .prad select { font-size: 14px; padding: 7px 9px; }
+.prad .flytt { display: flex; gap: 3px; }
+.feil { color: var(--danger); font-size: 13px; margin-top: 8px; }
+
+/* Smal skjerm: alt under hverandre, siden ruller */
+@media (max-width: 1100px) {
+  .taster { display: none; }
+  .drift { grid-template-columns: minmax(0, 1fr); overflow-y: auto; }
+  .side { order: 2; border-right: 0; border-top: 2px solid var(--line); overflow: visible; }
+  .timere { display: block; }
+  .trad { grid-template-columns: minmax(0, 1fr); }
+  .kontroll { border-right: 0; }
+  .tall-boks { height: 120px; flex: none; }
+  .liste { max-height: 420px; border-top: 1px solid var(--line); }
+}
+@media (max-width: 700px) {
+  body.klokke header.site { height: auto; flex-wrap: wrap; padding: 10px 14px; row-gap: 8px; }
+  .topp-luft, .skille, .topp-tilbake { display: none; }
+  body.klokke header.site .brand { margin-right: auto; }
+  .kontroll { padding: 14px 16px; }
+  .prad { grid-template-columns: minmax(0, 1fr) 1fr; }
+}
+
+/* Scenen i dette vinduet (fullskjerm på skjerm 2) */
+#sceneFull { display: none; background: #000; }
+#sceneFull:fullscreen { display: block; width: 100vw; height: 100vh; cursor: none; }
+#sceneFull canvas { display: block; width: 100%; height: 100%; }
