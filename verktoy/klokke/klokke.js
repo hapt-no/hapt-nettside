@@ -305,13 +305,17 @@
     var g = cv.getContext('2d');
     g.setTransform(bw / W, 0, 0, bh / H, 0, 0);
     HaptKlokkeSkjerm.tegn(g, W, H, show, na);
-    var tekst = aapen ? 'Scenen er åpen · ' + scene.w + ' × ' + scene.h + (scene.full ? ' · fullskjerm' : '') : 'Scenen er ikke åpen';
+    var tekst = Date.now() < sceneBeskjed.til ? sceneBeskjed.tekst : aapen ? 'Scenen er åpen · ' + scene.w + ' × ' + scene.h + (scene.full ? ' · fullskjerm' : '') : 'Scenen er ikke åpen';
     var st = $('sceneTekst');
     if (st.textContent !== tekst) { st.textContent = tekst; st.style.color = aapen ? 'var(--live)' : ''; }
-    var knapp = $('apneScene');
-    var kt = aapen ? 'Scene åpen' : 'Åpne scene';
-    if (knapp.textContent !== kt) knapp.textContent = kt;
-    knapp.classList.toggle('pa', !!aapen);
+    var knapp = $('apneScene'), ikkeFull = aapen && !scene.full;
+    var kt = !aapen ? 'Åpne scene' : ikkeFull ? 'Fullskjerm' : 'Scene åpen';
+    if (knapp.textContent !== kt) {
+      knapp.textContent = kt;
+      knapp.title = !aapen ? 'Åpner scenen i et eget vindu, på den andre skjermen hvis nettleseren får lov.' : ikkeFull ? 'Setter scenen i fullskjerm på skjermen den står på (F)' : 'Scenen er i fullskjerm';
+    }
+    knapp.classList.toggle('pa', !!aapen && !ikkeFull);
+    knapp.classList.toggle('bla', !!ikkeFull);
   }
 
   // ---------- Tid som går av seg selv: 0:00-handlinger ----------
@@ -327,21 +331,46 @@
     if (!e.data || !('skjerm' in e.data)) return;
     scene = e.data.skjerm ? { w: e.data.skjerm.w, h: e.data.skjerm.h, full: e.data.skjerm.full, sist: Date.now() } : null;
   };
+  var sceneBeskjed = { tekst: '', til: 0 };
+  function beskjed(t) { sceneBeskjed = { tekst: t, til: Date.now() + 6000 }; }
+  function sceneApen() { return scene && Date.now() - scene.sist < 2500; }
+  // Fullskjerm må startes med et klikk. Chrome og Edge lar operatorvinduet gi klikket videre til scenen.
+  function fullskjermScene() {
+    if (!sceneVindu || sceneVindu.closed) { beskjed('Klikk i scenevinduet for fullskjerm'); return; }
+    try { sceneVindu.postMessage({ fullskjerm: true }, { targetOrigin: location.origin, delegate: 'fullscreen' }); }
+    catch (e) { try { sceneVindu.postMessage({ fullskjerm: true }, location.origin); } catch (e2) {} }
+    var sendt = Date.now();
+    setTimeout(function () { if (sceneApen() && !scene.full && scene.sist > sendt) beskjed('Klikk i scenevinduet for fullskjerm'); }, 1500);
+  }
+  // Med lov til å se skjermene (Chrome og Edge) legges scenen på skjerm 2. Første gang spør nettleseren om lov;
+  // da åpnes vinduet med en gang og flyttes over når svaret kommer, så klikket ikke går tapt mens spørsmålet står.
+  function skjermTilgang() {
+    if (!window.getScreenDetails) return Promise.resolve('nei');
+    if (!navigator.permissions) return Promise.resolve('prompt');
+    return navigator.permissions.query({ name: 'window-management' }).then(function (t) { return t.state; }, function () { return 'prompt'; });
+  }
+  function annenSkjerm() {
+    return window.getScreenDetails().then(function (d) {
+      return d.screens.filter(function (s) { return s !== d.currentScreen; })[0] || null;
+    }, function () { return null; });
+  }
+  function plassering(s) { return 'popup=yes,left=' + s.availLeft + ',top=' + s.availTop + ',width=' + s.availWidth + ',height=' + s.availHeight; }
   $('apneScene').onclick = async function () {
-    if (scene && Date.now() - scene.sist < 2500 && sceneVindu && !sceneVindu.closed) { sceneVindu.focus(); return; }
-    var egenskaper = 'popup=yes,width=1280,height=720';
-    // Har nettleseren lov til å se skjermene (Chrome), legges scenen rett på den andre skjermen
-    try {
-      if (window.getScreenDetails && navigator.permissions) {
-        var tilgang = await navigator.permissions.query({ name: 'window-management' });
-        if (tilgang.state === 'granted') {
-          var d = await window.getScreenDetails(), andre = d.screens.filter(function (s) { return s !== d.currentScreen; })[0];
-          if (andre) egenskaper = 'popup=yes,left=' + andre.availLeft + ',top=' + andre.availTop + ',width=' + andre.availWidth + ',height=' + andre.availHeight;
-        }
-      }
-    } catch (e) {}
-    sceneVindu = window.open('skjerm.html', 'hapt-klokke-scene', egenskaper);
-    if (!sceneVindu) $('sceneTekst').textContent = 'Nettleseren stoppet vinduet. Tillat popup-vinduer for hapt.no.';
+    if (sceneApen()) {
+      if (!scene.full) fullskjermScene();
+      else if (sceneVindu && !sceneVindu.closed) sceneVindu.focus();
+      return;
+    }
+    var tilgang = await skjermTilgang(), andre = tilgang === 'granted' ? await annenSkjerm() : null;
+    sceneVindu = window.open('skjerm.html', 'hapt-klokke-scene', andre ? plassering(andre) : 'popup=yes,width=1280,height=720');
+    if (!sceneVindu) { beskjed('Nettleseren stoppet vinduet. Tillat popup-vinduer for hapt.no.'); return; }
+    if (tilgang === 'prompt') {
+      var vindu = sceneVindu;
+      annenSkjerm().then(function (s) {
+        if (!s || vindu.closed) return;
+        try { vindu.moveTo(s.availLeft, s.availTop); vindu.resizeTo(s.availWidth, s.availHeight); } catch (e) {}
+      });
+    }
   };
 
   // ---------- Melding, bank og utgang ----------
@@ -373,6 +402,7 @@
     else if (k === 'm' || k === 'M') endre(function (s) { K.veksleMelding(s); });
     else if (k === 'r' || k === 'R') endre(function (s) { K.stopp(s.timers[0]); });
     else if (k === 't' || k === 'T') endre(function (s) { K.stopp(s.timers[1]); });
+    else if ((k === 'f' || k === 'F') && sceneApen() && !scene.full) fullskjermScene();
     else return;
     e.preventDefault();
   });

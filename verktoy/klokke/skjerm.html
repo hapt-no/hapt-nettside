@@ -61,9 +61,14 @@ body.skjul-peker, body.skjul-peker * { cursor: none; }
   function fullskjerm() {
     if (document.fullscreenElement) return;
     var el = document.documentElement;
-    (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
+    var p = (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
+    if (p && p.catch) p.catch(function () {});
   }
   cv.addEventListener('click', fullskjerm);
+  // Operatorvinduet kan gi videre klikket sitt (Chrome og Edge), så scenen går i fullskjerm uten at noen klikker her
+  addEventListener('message', function (e) {
+    if (e.origin === location.origin && e.data && e.data.fullskjerm) fullskjerm();
+  });
   cv.addEventListener('dblclick', function () { if (document.fullscreenElement) document.exitFullscreen(); });
   addEventListener('keydown', function (e) { if (e.key === 'f' || e.key === 'F') fullskjerm(); });
 
