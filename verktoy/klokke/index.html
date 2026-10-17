@@ -23,7 +23,7 @@
     <button type="button" data-ut="black" title="Svart scene">Svart</button>
     <button type="button" data-ut="logo" title="Logoen på svart">Logo</button>
   </div>
-  <button class="knapp" type="button" id="apneScene" title="Åpner scenen i et eget vindu, på den andre skjermen hvis nettleseren får lov.">Åpne scene</button>
+  <button class="knapp" type="button" id="apneScene" title="Åpner scenen på skjerm 2 i fullskjerm, eller i et eget vindu">Åpne scene</button>
   <span class="skille"></span>
   <button class="knapp" type="button" id="apneInnst" title="Innstillinger">Innstillinger</button>
 </header>
@@ -46,7 +46,7 @@
     <div class="seksjon">
       <h3>Utgang <span class="hoyre" id="sceneTekst">Scenen er ikke åpen</span></h3>
       <div class="forhand lukket" id="forhand"><canvas id="forhandLerret"></canvas></div>
-      <p class="note" style="font-size:12px">I Chrome og Edge legger «Åpne scene» scenen på skjerm 2 (nettleseren spør om lov første gang), og «Fullskjerm» eller F gjør resten. I Safari og Firefox drar du vinduet dit og klikker i det. Scenen går videre selv om dette vinduet ligger bak.</p>
+      <p class="note" style="font-size:12px">Med to skjermer i Chrome eller Edge går «Åpne scene» rett i fullskjerm på skjerm 2, og kontrollene flytter til et eget vindu her (nettleseren spør om lov første gang). Esc på scenen avslutter. Ellers åpnes scenen i et eget vindu som du drar dit og setter i fullskjerm med «Fullskjerm» eller F.</p>
     </div>
   </aside>
   <section class="timere" id="timere"></section>
@@ -67,6 +67,8 @@
   </div>
   <div class="innst-innhold" id="innstInnhold"></div>
 </dialog>
+
+<div id="sceneFull"><canvas id="sceneLerret"></canvas></div>
 
 <input type="file" id="velgKp" accept=".xlsx,.csv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
 <input type="file" id="velgShow" accept=".json,application/json" hidden>

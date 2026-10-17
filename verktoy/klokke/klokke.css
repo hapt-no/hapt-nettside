@@ -166,3 +166,8 @@ dialog.innst::backdrop { background: rgba(0,0,0,.55); }
   .kontroll { padding: 14px 16px; }
   .prad { grid-template-columns: minmax(0, 1fr) 1fr; }
 }
+
+/* Scenen i dette vinduet (fullskjerm på skjerm 2) */
+#sceneFull { display: none; background: #000; }
+#sceneFull:fullscreen { display: block; width: 100vw; height: 100vh; cursor: none; }
+#sceneFull canvas { display: block; width: 100%; height: 100%; }

@@ -6,7 +6,7 @@
   var NOKKEL = 'hapt-klokke-show';
   var show = hent();
   var kanal = 'BroadcastChannel' in window ? new BroadcastChannel('hapt-klokke') : null;
-  var scene = null, sceneVindu = null;
+  var scene = null, sceneVindu = null, erScene = false, kontrollVindu = null;
   var rader = [], visPresets = [false, false], valgtPunkt = null, innstSide = 't0', ventendeWarp = [null, null];
 
   function hent() {
@@ -267,6 +267,7 @@
   var sisteForhand = 0;
   function ramme() {
     var na = Date.now();
+    if (erScene) { tegnSceneHer(na); requestAnimationFrame(ramme); return; }
     show.timers.forEach(function (t, i) {
       var r = rader[i], d = K.visning(t, na);
       if (r.tall.textContent !== d.text) { r.tall.textContent = d.text; r.tall.classList.toggle('lang', d.text.length > 5); }
@@ -312,7 +313,7 @@
     var kt = !aapen ? 'Åpne scene' : ikkeFull ? 'Fullskjerm' : 'Scene åpen';
     if (knapp.textContent !== kt) {
       knapp.textContent = kt;
-      knapp.title = !aapen ? 'Åpner scenen i et eget vindu, på den andre skjermen hvis nettleseren får lov.' : ikkeFull ? 'Setter scenen i fullskjerm på skjermen den står på (F)' : 'Scenen er i fullskjerm';
+      knapp.title = !aapen ? 'Åpner scenen på skjerm 2 i fullskjerm, eller i et eget vindu' : ikkeFull ? 'Setter scenen i fullskjerm på skjermen den står på (F)' : 'Scenen er i fullskjerm';
     }
     knapp.classList.toggle('pa', !!aapen && !ikkeFull);
     knapp.classList.toggle('bla', !!ikkeFull);
@@ -320,7 +321,11 @@
 
   // ---------- Tid som går av seg selv: 0:00-handlinger ----------
   // Sjekkes fra en Web Worker, som nettleseren ikke bremser når vinduet ligger i bakgrunnen.
-  function sjekk() { if (K.avgjor(show, Date.now())) { lagre(); tegnAlt(); } }
+  // Når dette vinduet er scenen, gjør kontrollvinduet jobben. Lukkes det, tar scenen den over så 0:00-handlingene ikke stopper.
+  function sjekk() {
+    if (erScene && kontrollVindu && !kontrollVindu.closed) return;
+    if (K.avgjor(show, Date.now())) { lagre(); if (!erScene) tegnAlt(); }
+  }
   try {
     var arbeider = new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(0)},200)'], { type: 'text/javascript' })));
     arbeider.onmessage = sjekk;
@@ -328,7 +333,9 @@
 
   // ---------- Scenen ----------
   if (kanal) kanal.onmessage = function (e) {
-    if (!e.data || !('skjerm' in e.data)) return;
+    if (!e.data) return;
+    if (e.data.show && erScene) { show = K.rens(e.data.show); return; }
+    if (!('skjerm' in e.data) || erScene) return;
     scene = e.data.skjerm ? { w: e.data.skjerm.w, h: e.data.skjerm.h, full: e.data.skjerm.full, sist: Date.now() } : null;
   };
   var sceneBeskjed = { tekst: '', til: 0 };
@@ -342,35 +349,73 @@
     var sendt = Date.now();
     setTimeout(function () { if (sceneApen() && !scene.full && scene.sist > sendt) beskjed('Klikk i scenevinduet for fullskjerm'); }, 1500);
   }
-  // Med lov til å se skjermene (Chrome og Edge) legges scenen på skjerm 2. Første gang spør nettleseren om lov;
-  // da åpnes vinduet med en gang og flyttes over når svaret kommer, så klikket ikke går tapt mens spørsmålet står.
   function skjermTilgang() {
     if (!window.getScreenDetails) return Promise.resolve('nei');
     if (!navigator.permissions) return Promise.resolve('prompt');
     return navigator.permissions.query({ name: 'window-management' }).then(function (t) { return t.state; }, function () { return 'prompt'; });
   }
-  function annenSkjerm() {
-    return window.getScreenDetails().then(function (d) {
-      return d.screens.filter(function (s) { return s !== d.currentScreen; })[0] || null;
-    }, function () { return null; });
-  }
   function plassering(s) { return 'popup=yes,left=' + s.availLeft + ',top=' + s.availTop + ',width=' + s.availWidth + ',height=' + s.availHeight; }
+  // Som presentasjonsvisningen i Google Presentasjoner (Chrome og Edge, to skjermer): dette vinduet blir selve
+  // scenen i fullskjerm på skjerm 2, og kontrollene åpnes i et nytt vindu på skjermen du står ved. Ett klikk.
+  // Uten lov til å se skjermene, eller med bare én skjerm, åpnes scenen i et eget vindu som før.
+  var skjermer = null;
+  function hentSkjermer() { return window.getScreenDetails().then(function (d) { skjermer = d; return d; }, function () { return null; }); }
+  skjermTilgang().then(function (t) { if (t === 'granted') hentSkjermer(); });
+
+  async function sceneHer(d) {
+    var her = d.currentScreen, andre = d.screens.filter(function (x) { return x !== her; })[0];
+    lagre();
+    try { await $('sceneFull').requestFullscreen({ screen: andre, navigationUI: 'hide' }); }
+    catch (e) { return false; }
+    erScene = true;
+    document.body.classList.add('er-scene');
+    kontrollVindu = window.open('./', 'hapt-klokke-kontroll', plassering(her));
+    if (!kontrollVindu) {
+      document.exitFullscreen().catch(function () {});
+      beskjed('Nettleseren stoppet kontrollvinduet. Tillat popup-vinduer for hapt.no.');
+    }
+    pulsScene();
+    return true;
+  }
+  function pulsScene() {
+    if (!erScene) return;
+    if (kanal) kanal.postMessage({ skjerm: { w: innerWidth, h: innerHeight, full: true } });
+    setTimeout(pulsScene, 1000);
+  }
+  document.addEventListener('fullscreenchange', function () {
+    if (document.fullscreenElement || !erScene) return;
+    // Ut av fullskjerm (Esc): dette vinduet blir kontrollene igjen, og kontrollvinduet lukkes
+    erScene = false;
+    document.body.classList.remove('er-scene');
+    if (kanal) kanal.postMessage({ skjerm: null });
+    if (kontrollVindu && !kontrollVindu.closed) kontrollVindu.close();
+    kontrollVindu = null;
+    show = hent(); scene = null; tegnAlt();
+  });
+  function tegnSceneHer(na) {
+    var cv = $('sceneLerret'), dpr = window.devicePixelRatio || 1;
+    var bw = Math.round(innerWidth * dpr), bh = Math.round(innerHeight * dpr);
+    if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
+    var g = cv.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    HaptKlokkeSkjerm.tegn(g, innerWidth, innerHeight, show, na);
+  }
+
   $('apneScene').onclick = async function () {
     if (sceneApen()) {
       if (!scene.full) fullskjermScene();
       else if (sceneVindu && !sceneVindu.closed) sceneVindu.focus();
       return;
     }
-    var tilgang = await skjermTilgang(), andre = tilgang === 'granted' ? await annenSkjerm() : null;
-    sceneVindu = window.open('skjerm.html', 'hapt-klokke-scene', andre ? plassering(andre) : 'popup=yes,width=1280,height=720');
-    if (!sceneVindu) { beskjed('Nettleseren stoppet vinduet. Tillat popup-vinduer for hapt.no.'); return; }
-    if (tilgang === 'prompt') {
-      var vindu = sceneVindu;
-      annenSkjerm().then(function (s) {
-        if (!s || vindu.closed) return;
-        try { vindu.moveTo(s.availLeft, s.availTop); vindu.resizeTo(s.availWidth, s.availHeight); } catch (e) {}
-      });
+    var tilgang = await skjermTilgang();
+    // Spør bare om lov når det faktisk står en skjerm 2 på (screen.isExtended krever ingen tillatelse)
+    if (tilgang === 'prompt' && window.screen.isExtended) await hentSkjermer();
+    if (skjermer && skjermer.screens.length > 1 && $('sceneFull').requestFullscreen) {
+      if (await sceneHer(skjermer)) return;
     }
+    // Én skjerm, Safari/Firefox eller uten lov: scenen i eget vindu
+    sceneVindu = window.open('skjerm.html', 'hapt-klokke-scene', 'popup=yes,width=1280,height=720');
+    if (!sceneVindu) beskjed(tilgang === 'prompt' && window.screen.isExtended ? 'Trykk «Åpne scene» en gang til' : 'Nettleseren stoppet vinduet. Tillat popup-vinduer for hapt.no.');
   };
 
   // ---------- Melding, bank og utgang ----------
@@ -564,8 +609,10 @@
     else if (h === 'skjermer') {
       var svarEl = innh.querySelector('[data-svar="skjermer"]');
       if (!window.getScreenDetails) { svarEl.textContent = 'Denne nettleseren kan ikke se skjermene. Dra scenevinduet dit det skal.'; return; }
-      window.getScreenDetails().then(function (d) { svarEl.textContent = 'Fant ' + d.screens.length + ' skjerm' + (d.screens.length === 1 ? '' : 'er') + '. «Åpne scene» legger den på ' + (d.screens.length > 1 ? 'den andre skjermen.' : 'denne skjermen.'); })
-        .catch(function () { svarEl.textContent = 'Fikk ikke tilgang. Dra scenevinduet dit det skal.'; });
+      hentSkjermer().then(function (d) {
+        if (!d) { svarEl.textContent = 'Fikk ikke tilgang. Dra scenevinduet dit det skal.'; return; }
+        svarEl.textContent = 'Fant ' + d.screens.length + ' skjerm' + (d.screens.length === 1 ? '' : 'er') + '. ' + (d.screens.length > 1 ? '«Åpne scene» går i fullskjerm på den andre skjermen.' : 'Koble til skjerm 2, så går «Åpne scene» i fullskjerm der.');
+      });
     }
     else if (h === 'nypreset') { endre(function (s) { s.presets.push(K.nyPreset('Ny preset', 300)); }); tegnInnst(); var siste = innh.querySelectorAll('[data-pk="navn"]'); if (siste.length) { siste[siste.length - 1].focus(); siste[siste.length - 1].select(); } }
     else if (h === 'importer') $('velgKp').click();
