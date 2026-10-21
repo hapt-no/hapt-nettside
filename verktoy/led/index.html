@@ -30,6 +30,8 @@ details[open] summary { margin-bottom: 14px; }
 .kabling li { padding: 5px 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: baseline; }
 .kabling li i { flex: none; width: 10px; height: 10px; border-radius: 50%; display: inline-block; transform: translateY(1px); }
 .kabling p { margin: 6px 0 0; font-size: 15px; }
+#blandingBoks { margin-top: 14px; }
+.luft-topp { margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -87,6 +89,18 @@ details[open] summary { margin-bottom: 14px; }
           <label>Nærmeste muligheter</label>
           <div class="forslag" id="forslag"></div>
         </div>
+
+        <div id="blandingBoks" hidden>
+          <label class="check"><input type="checkbox" id="bland"> <span id="blandTekst">Bland inn små paneler</span></label>
+          <div class="field" id="smaPlassBoks" hidden><label for="smaPlass">Små paneler står</label>
+            <select id="smaPlass"><option value="topp" selected>Øverst</option><option value="bunn">Nederst</option></select>
+          </div>
+        </div>
+        <div class="row luft-topp">
+          <div class="field"><label for="lagerStor" id="lagerStorTekst">Du har (stk)</label><input id="lagerStor" type="number" min="0" step="1" placeholder="Ikke oppgitt"></div>
+          <div class="field" id="lagerSmaBoks" hidden><label for="lagerSma" id="lagerSmaTekst">Du har små (stk)</label><input id="lagerSma" type="number" min="0" step="1" placeholder="Ikke oppgitt"></div>
+        </div>
+        <p class="note" id="lagerNote" style="margin-top:4px"></p>
       </div>
 
       <div class="card">
@@ -253,8 +267,8 @@ details[open] summary { margin-bottom: 14px; }
   }
 
   // Finn nærmeste antall paneler for ønsket bredde og høyde (i meter)
-  function forslag(p, bm, hm) {
-    var pb = p.b / 1000, ph = p.h / 1000;
+  function forslag(p, bm, hm, u) {
+    var pb = p.b / 1000, ph = (u || p).h / 1000;
     var cs = [Math.max(1, Math.floor(bm / pb)), Math.max(1, Math.ceil(bm / pb))];
     var rs = [Math.max(1, Math.floor(hm / ph)), Math.max(1, Math.ceil(hm / ph))];
     var ut = [], sett = {};
@@ -266,18 +280,23 @@ details[open] summary { margin-bottom: 14px; }
     return ut;
   }
 
-  function hentAntall(p) {
-    if (modus === 'antall') return { c: Math.max(1, +$('kol').value || 1), r: Math.max(1, +$('rad').value || 1) };
+  // Gir kolonner og rader. Med små paneler blandet inn telles radene i små paneler (halv høyde).
+  function hentAntall(p, lite) {
+    var u = lite || p;
+    if (modus === 'antall') {
+      var radIn = +$('rad').value || 1;
+      return { c: Math.max(1, Math.round(+$('kol').value || 1)), r: Math.max(1, Math.round(lite ? radIn * 2 : radIn)) };
+    }
     var bm, hm;
     if (modus === 'maal') { bm = +$('mb').value || 1; hm = +$('mh').value || 1; }
     else { bm = +$('fb').value || 1; hm = bm / (+$('ff').value); }
-    var liste = forslag(p, bm, hm);
+    var liste = forslag(p, bm, hm, u);
     if (valgtForslag >= liste.length) valgtForslag = 0;
     var boks = $('forslag'); boks.innerHTML = '';
     liste.forEach(function (f, i) {
       var b = document.createElement('button'); b.type = 'button';
       if (i === valgtForslag) b.className = 'valgt';
-      b.innerHTML = f.c + ' × ' + f.r + ' paneler <small>' + nf(f.c * p.b / 1000, 2) + ' × ' + nf(f.r * p.h / 1000, 2) + ' m, ' + (f.c * p.px) + ' × ' + (f.r * p.py) + ' px, ' + format((f.c * p.b) / (f.r * p.h)) + '</small>';
+      b.innerHTML = f.c + ' × ' + (lite ? nf(f.r / 2, 1) : f.r) + ' paneler <small>' + nf(f.c * p.b / 1000, 2) + ' × ' + nf(f.r * u.h / 1000, 2) + ' m, ' + (f.c * p.px) + ' × ' + (f.r * u.py) + ' px, ' + format((f.c * p.b) / (f.r * u.h)) + '</small>';
       b.onclick = function () { valgtForslag = i; regn(); };
       boks.appendChild(b);
     });
@@ -313,14 +332,72 @@ details[open] summary { margin-bottom: 14px; }
     return { hz: hz, bit: bit, kap: kap, perPort: perPort, porter: porter, backup: backup, backupPorter: backupPorter, prosessorer: antProsessorer };
   }
 
+  // ---------- Lager og blanding av store og små paneler ----------
+  function hentLager() { try { return JSON.parse(localStorage.getItem('hapt-lager') || '{}'); } catch (e) { return {}; } }
+  function lagreLager(l) { try { localStorage.setItem('hapt-lager', JSON.stringify(l)); } catch (e) {} }
+  function lagerFor(id) { var v = hentLager()[id]; return v == null || v === '' ? null : Math.max(0, Math.floor(+v)); }
+  function cm(x) { return nf(x.b / 10, 0) + ' × ' + nf(x.h / 10, 0); }
+
+  // Alle kolonner bygges likt: t store og s små per kolonne (2t + s = høyden i små paneler).
+  // Flest mulig store, men bytter ut store med to små når lageret ikke rekker.
+  function fordel(c, R2, T, S) {
+    var tMaks = Math.floor(R2 / 2);
+    for (var t = tMaks; t >= 0; t--) {
+      var s = R2 - 2 * t;
+      if ((T == null || c * t <= T) && (S == null || c * s <= S)) return { t: t, s: s };
+    }
+    var t2 = T == null ? tMaks : Math.min(tMaks, Math.floor(T / c));
+    return { t: t2, s: R2 - 2 * t2 };
+  }
+
+  function oppdaterLagerfelt(p, lite) {
+    $('blandingBoks').hidden = !HaptPaneler.lite(p);
+    if (HaptPaneler.lite(p)) $('blandTekst').textContent = 'Bland inn ' + cm(HaptPaneler.lite(p)) + ' cm (samme pitch)';
+    $('smaPlassBoks').hidden = !lite;
+    $('lagerSmaBoks').hidden = !lite;
+    $('lagerStorTekst').textContent = 'Du har ' + cm(p) + ' cm (stk)';
+    if (lite) $('lagerSmaTekst').textContent = 'Du har ' + cm(lite) + ' cm (stk)';
+    $('rad').step = lite ? '0.5' : '1';
+    $('rad').previousElementSibling.textContent = lite ? 'Paneler i høyden (0,5 = lite panel)' : 'Paneler i høyden';
+    if (document.activeElement !== $('lagerStor')) $('lagerStor').value = lagerFor(p.id) == null ? '' : lagerFor(p.id);
+    if (lite && document.activeElement !== $('lagerSma')) $('lagerSma').value = lagerFor(lite.id) == null ? '' : lagerFor(lite.id);
+  }
+
   function regn() {
     var p = HaptPaneler.finn($('panel').value);
     if (!p) return;
-    var a = hentAntall(p), c = a.c, r = a.r, n = c * r;
-    var bmm = c * p.b, hmm = r * p.h;
-    var W = c * p.px, H = r * p.py;
+    var lite = $('bland').checked ? HaptPaneler.lite(p) : null;
+    oppdaterLagerfelt(p, lite);
+    var a = hentAntall(p, lite), c = a.c;
+    var T = lagerFor(p.id), S = lite ? lagerFor(lite.id) : null;
+    var plan = lite ? fordel(c, a.r, T, S) : { t: a.r, s: 0 };
+    // Radene ovenfra og ned, hver med sitt panel
+    var raderP = [], i0;
+    if (lite && $('smaPlass').value === 'topp') for (i0 = 0; i0 < plan.s; i0++) raderP.push(lite);
+    for (i0 = 0; i0 < plan.t; i0++) raderP.push(p);
+    if (lite && $('smaPlass').value !== 'topp') for (i0 = 0; i0 < plan.s; i0++) raderP.push(lite);
+    var r = raderP.length, n = c * r;
+    var sum = function (k) { return raderP.reduce(function (a2, x) { return a2 + x[k]; }, 0); };
+    var bmm = c * p.b, hmm = sum('h');
+    var W = c * p.px, H = sum('py');
     var diag = Math.sqrt(bmm * bmm + hmm * hmm) / 1000;
-    var kg = n * p.kg, maks = n * p.maks, snitt = n * p.snitt;
+    var kg = c * sum('kg'), maks = c * sum('maks'), snitt = c * sum('snitt');
+    var antStore = c * plan.t, antSma = c * plan.s;
+    var blandet = lite && plan.s > 0;
+    // Lagerstatus
+    var mangler = [];
+    if (T != null && antStore > T) mangler.push((antStore - T) + ' stk ' + cm(p));
+    if (lite && S != null && antSma > S) mangler.push((antSma - S) + ' stk ' + cm(lite));
+    var lagerTekst = '';
+    if (T != null || (lite && S != null)) {
+      lagerTekst = 'Veggen bruker ' + antStore + ' stk ' + cm(p) + (lite ? ' og ' + antSma + ' stk ' + cm(lite) : '') + ' cm. ';
+      var over = [];
+      if (T != null) over.push((T - antStore) + ' stk ' + cm(p));
+      if (lite && S != null) over.push((S - antSma) + ' stk ' + cm(lite));
+      lagerTekst += mangler.length ? 'Du mangler ' + mangler.join(' og ') + ' cm.' : 'Du har nok, med ' + over.join(' og ') + ' cm til overs.';
+    } else if (lite) lagerTekst = 'Skriv inn hvor mange du har, så bytter kalkulatoren ut store med to små der det trengs.';
+    $('lagerNote').textContent = lagerTekst;
+    $('lagerNote').className = mangler.length ? 'warn' : 'note';
 
     var nett = $('nett').value, kurs = +$('kurs').value, margin = +$('margin').value;
     var faser = nett === '1' ? 1 : 3;
@@ -340,10 +417,11 @@ details[open] summary { margin-bottom: 14px; }
 
     $('k-maal').textContent = nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m';
     $('k-opp').textContent = W + ' × ' + H;
-    $('k-antall').textContent = c + ' × ' + r + ' = ' + n;
+    $('k-antall').textContent = blandet ? antStore + ' + ' + antSma + ' små' : c + ' × ' + r + ' = ' + n;
     $('k-vekt').textContent = nf(kg, 0) + ' kg';
 
     var rader = [
+      ['Paneler', blandet ? antStore + ' × ' + cm(p) + ' cm og ' + antSma + ' × ' + cm(lite) + ' cm  (' + c + ' kolonner à ' + plan.t + ' + ' + plan.s + ')' : c + ' × ' + r + ' = ' + n + ' × ' + cm(p) + ' cm'],
       ['Format', format(bmm / hmm) + '  (' + nf(bmm / hmm, 3) + ')'],
       ['Diagonal', nf(diag, 2) + ' m  (' + nf(diag / 0.0254, 0) + '″)'],
       ['Areal', nf(bmm * hmm / 1e6, 2) + ' m²'],
@@ -361,7 +439,7 @@ details[open] summary { margin-bottom: 14px; }
       ['Hovedporter', d.porter],
       ['Backup-porter', d.backupPorter],
       ['Prosessorer', d.prosessorer + (d.backup === 'prosessor' ? '  (halvparten backup)' : '')],
-      ['Vekt per kolonne', nf(r * p.kg, 1) + ' kg']
+      ['Vekt per kolonne', nf(sum('kg'), 1) + ' kg']
     ];
     var t = $('tabell'); t.innerHTML = '';
     rader.forEach(function (x) {
@@ -376,16 +454,19 @@ details[open] summary { margin-bottom: 14px; }
     else if (W > 3840 || H > 2160) adv.push('Oppløsningen er større enn UHD (3840 × 2160). Sjekk at kilden og prosessoren klarer det.');
     if (W > 1920 && W * H > 1920 * 1200 && W * H <= 3840 * 2160) adv.push('Mer enn Full HD: kilden må sende over 1080p, eller bildet skaleres.');
     if (!d.perPort) adv.push('Ett panel har flere piksler enn én port klarer ved denne frekvensen og bitdybden.');
+    if (mangler.length) adv.push('Du har ikke nok paneler: mangler ' + mangler.join(' og ') + ' cm.');
+    if (blandet) adv.push('Med små paneler blandet inn regnes porter og kurser som om alle var store, så de er på den sikre siden.');
     $('advarsler').innerHTML = adv.map(function (s) { return '<p class="warn"></p>'; }).join('');
     Array.prototype.forEach.call($('advarsler').children, function (el, i) { el.textContent = adv[i]; });
 
-    tegn(p, c, r, kj);
-    var q = new URLSearchParams({ w: W, h: H, pw: p.px, ph: p.py, navn: p.navn });
+    tegn(p, c, raderP, kj);
+    var ph = blandet ? lite.py : p.py;
+    var q = new URLSearchParams({ w: W, h: H, pw: p.px, ph: ph, navn: p.navn });
     $('tilTestbilde').href = '../testbilde/?' + q.toString();
-    $('tilPixelmap').href = '../pixelmap/?' + new URLSearchParams({ legg: p.navn + ' ' + c + '×' + r, b: W, h: H, pw: p.px, ph: p.py }).toString();
+    $('tilPixelmap').href = '../pixelmap/?' + new URLSearchParams({ legg: p.navn + ' ' + c + '×' + r, b: W, h: H, pw: p.px, ph: ph }).toString();
 
     sisteTekst = 'LED-vegg: ' + p.navn + '\n' +
-      c + ' × ' + r + ' = ' + n + ' paneler\n' +
+      (blandet ? antStore + ' × ' + cm(p) + ' cm + ' + antSma + ' × ' + cm(lite) + ' cm\n' : c + ' × ' + r + ' = ' + n + ' paneler\n') +
       'Størrelse: ' + nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m (' + format(bmm / hmm) + ')\n' +
       'Oppløsning: ' + W + ' × ' + H + ' px\n' +
       'Vekt: ' + nf(kg, 0) + ' kg (bare paneler)\n' +
@@ -505,10 +586,15 @@ details[open] summary { margin-bottom: 14px; }
     return { data: dk, strom: sk };
   }
 
-  function tegn(p, c, r, kj) {
-    var svg = $('vegg');
-    var pad = 60, cw = p.b, ch = p.h;
-    var Wt = c * cw, Ht = r * ch;
+  function tegn(p, c, raderP, kj) {
+    var svg = $('vegg'), r = raderP.length;
+    var pad = 60, cw = p.b;
+    var ry = [], y0 = 0;
+    raderP.forEach(function (x) { ry.push(y0); y0 += x.h; });
+    var rh = function (y) { return raderP[y].h; };
+    var ch = Math.min.apply(null, raderP.map(function (x) { return x.h; }));
+    var midt = function (pn) { return [pn[0] * cw + cw / 2, ry[pn[1]] + rh(pn[1]) / 2]; };
+    var Wt = c * cw, Ht = y0;
     var skala = Math.max(Wt, Ht) / 1000;
     var fs = 22 * skala, ln = 1.5 * skala;
     svg.setAttribute('viewBox', (-pad * skala) + ' ' + (-pad * 0.4 * skala) + ' ' + (Wt + pad * 1.4 * skala) + ' ' + (Ht + pad * 1.3 * skala));
@@ -516,29 +602,31 @@ details[open] summary { margin-bottom: 14px; }
     var visNr = c * r <= 400;
     for (var y = 0; y < r; y++) for (var x = 0; x < c; x++) {
       var mork = (x + y) % 2 === 0;
-      s += '<rect x="' + (x * cw) + '" y="' + (y * ch) + '" width="' + cw + '" height="' + ch + '" fill="' + (mork ? '#15181c' : '#1c2026') + '" stroke="#2f343a" stroke-width="' + ln + '"/>';
-      if (visNr && visTegning === 'paneler' && cw / skala > 24) s += '<text x="' + (x * cw + cw / 2) + '" y="' + (y * ch + ch / 2) + '" fill="#7d828a" font-size="' + Math.min(fs, cw * 0.28) + '" text-anchor="middle" dominant-baseline="central">' + (x + 1) + '.' + (y + 1) + '</text>';
+      s += '<rect x="' + (x * cw) + '" y="' + ry[y] + '" width="' + cw + '" height="' + rh(y) + '" fill="' + (raderP[y] !== p ? (mork ? '#13202a' : '#182733') : (mork ? '#15181c' : '#1c2026')) + '" stroke="#2f343a" stroke-width="' + ln + '"/>';
+      if (visNr && visTegning === 'paneler' && cw / skala > 24) s += '<text x="' + (x * cw + cw / 2) + '" y="' + (ry[y] + rh(y) / 2) + '" fill="#7d828a" font-size="' + Math.min(fs, cw * 0.28, rh(y) * 0.28) + '" text-anchor="middle" dominant-baseline="central">' + (x + 1) + '.' + (y + 1) + '</text>';
     }
     s += '<rect x="0" y="0" width="' + Wt + '" height="' + Ht + '" fill="none" stroke="#1a8fd1" stroke-width="' + (ln * 2) + '"/>';
     // Mållinjer
     var by = Ht + 26 * skala;
     s += '<line x1="0" y1="' + by + '" x2="' + Wt + '" y2="' + by + '" stroke="#7d828a" stroke-width="' + ln + '"/>';
     s += '<text x="' + (Wt / 2) + '" y="' + (by + fs * 1.1) + '" fill="#ecedee" font-size="' + fs + '" text-anchor="middle">' + nf(Wt / 1000, 2) + ' m · ' + (c * p.px) + ' px</text>';
+    var Hpx = raderP.reduce(function (a2, x) { return a2 + x.py; }, 0);
     var lx = -26 * skala;
     s += '<line x1="' + lx + '" y1="0" x2="' + lx + '" y2="' + Ht + '" stroke="#7d828a" stroke-width="' + ln + '"/>';
-    s += '<text transform="translate(' + (lx - fs * 0.5) + ' ' + (Ht / 2) + ') rotate(-90)" fill="#ecedee" font-size="' + fs + '" text-anchor="middle">' + nf(Ht / 1000, 2) + ' m · ' + (r * p.py) + ' px</text>';
+    s += '<text transform="translate(' + (lx - fs * 0.5) + ' ' + (Ht / 2) + ') rotate(-90)" fill="#ecedee" font-size="' + fs + '" text-anchor="middle">' + nf(Ht / 1000, 2) + ' m · ' + Hpx + ' px</text>';
     var liste = kj && (visTegning === 'data' ? kj.data : visTegning === 'strom' ? kj.strom : null);
     if (liste) {
       var sw = Math.min(cw, ch) * 0.06;
       liste.forEach(function (k, i) {
         var f = kjedeFarger[i % kjedeFarger.length];
-        var pts = k.map(function (pn) { return (pn[0] * cw + cw / 2) + ',' + (pn[1] * ch + ch / 2); }).join(' ');
+        var pts = k.map(function (pn) { return midt(pn).join(','); }).join(' ');
         s += '<polyline points="' + pts + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '" stroke-linejoin="round" stroke-linecap="round"/>';
         var a = k[0], z = k[k.length - 1];
         var rr = Math.min(cw, ch) * 0.2;
-        s += '<circle cx="' + (a[0] * cw + cw / 2) + '" cy="' + (a[1] * ch + ch / 2) + '" r="' + rr + '" fill="' + f + '"/>';
-        s += '<text x="' + (a[0] * cw + cw / 2) + '" y="' + (a[1] * ch + ch / 2) + '" fill="#0c0d0f" font-size="' + rr * 1.1 + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + (visTegning === 'data' ? 'P' : 'K') + (i + 1) + '</text>';
-        if (k.length > 1) s += '<circle cx="' + (z[0] * cw + cw / 2) + '" cy="' + (z[1] * ch + ch / 2) + '" r="' + rr * 0.45 + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '"/>';
+        var ma = midt(a), mz = midt(z);
+        s += '<circle cx="' + ma[0] + '" cy="' + ma[1] + '" r="' + rr + '" fill="' + f + '"/>';
+        s += '<text x="' + ma[0] + '" y="' + ma[1] + '" fill="#0c0d0f" font-size="' + rr * 1.1 + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + (visTegning === 'data' ? 'P' : 'K') + (i + 1) + '</text>';
+        if (k.length > 1) s += '<circle cx="' + mz[0] + '" cy="' + mz[1] + '" r="' + rr * 0.45 + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '"/>';
       });
     }
     svg.innerHTML = s;
@@ -550,7 +638,7 @@ details[open] summary { margin-bottom: 14px; }
         panel: $('panel').value, modus: modus, kol: $('kol').value, rad: $('rad').value,
         mb: $('mb').value, mh: $('mh').value, fb: $('fb').value, ff: $('ff').value,
         nett: $('nett').value, kurs: $('kurs').value, margin: $('margin').value,
-        prosessor: $('prosessor').value, kap: $('kap').value, ppp: $('ppp').value, hz: $('hz').value, bit: $('bit').value, kabling: $('kabling').value, backup: $('backup').value, start: $('start').value, vis: visTegning
+        prosessor: $('prosessor').value, kap: $('kap').value, ppp: $('ppp').value, hz: $('hz').value, bit: $('bit').value, kabling: $('kabling').value, backup: $('backup').value, start: $('start').value, vis: visTegning, bland: $('bland').checked, smaPlass: $('smaPlass').value
       }));
     } catch (e) {}
   }
@@ -560,6 +648,8 @@ details[open] summary { margin-bottom: 14px; }
       if (!s) return;
       ['kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'prosessor', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup', 'start'].forEach(function (k) { if (s[k] != null) $(k).value = s[k]; });
       if (s.panel && HaptPaneler.finn(s.panel)) $('panel').value = s.panel;
+      if (s.bland != null) $('bland').checked = !!s.bland;
+      if (s.smaPlass) $('smaPlass').value = s.smaPlass;
       if (s.modus) settModus(s.modus);
       if (s.vis) settVisning(s.vis);
     } catch (e) {}
@@ -577,6 +667,17 @@ details[open] summary { margin-bottom: 14px; }
     document.querySelectorAll('[data-vis-tegning]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.visTegning === v ? 'true' : 'false'); });
   }
   document.querySelectorAll('[data-vis-tegning]').forEach(function (b) { b.onclick = function () { settVisning(b.dataset.visTegning); regn(); }; });
+  $('bland').addEventListener('change', function () { valgtForslag = 0; regn(); });
+  $('smaPlass').addEventListener('input', regn);
+  // Lageret huskes per panel i denne nettleseren
+  [['lagerStor', function () { return HaptPaneler.finn($('panel').value); }], ['lagerSma', function () { return HaptPaneler.lite(HaptPaneler.finn($('panel').value)); }]].forEach(function (x) {
+    $(x[0]).addEventListener('input', function () {
+      var pn = x[1](); if (!pn) return;
+      var l = hentLager(), v = this.value.trim();
+      if (v === '') delete l[pn.id]; else l[pn.id] = Math.max(0, Math.floor(+v || 0));
+      lagreLager(l); regn();
+    });
+  });
   ['panel', 'kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup', 'start'].forEach(function (id) {
     $(id).addEventListener('input', function () { if (['kol', 'rad', 'mb', 'mh', 'fb', 'ff'].indexOf(id) >= 0) valgtForslag = 0; regn(); });
   });
