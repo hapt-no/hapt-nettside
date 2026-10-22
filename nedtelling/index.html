@@ -17,14 +17,12 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .n{font-weight:500;}
 .e{font-weight:300;color:#7d828a;margin-left:.18em;margin-right:.55em;}
 .rad .e:last-child{margin-right:0;}
-#dager{font-size:min(18vw,30vh);margin-bottom:3vh;}
-#tid{font-size:min(13vw,24vh);}
+#tid{font-size:min(15vw,30vh);}
 .e{font-size:.42em;}
 #tekst[hidden]{display:none;}#tekst{margin-top:6vh;font-weight:300;font-size:min(2.6vw,4vh);color:#7d828a;letter-spacing:.06em;text-transform:uppercase;}
 </style>
 </head>
 <body>
-<div class="rad" id="dager"><span class="n" id="d">1</span><span class="e" id="de">Day</span></div>
 <div class="rad" id="tid"><span class="n" id="h">00</span><span class="e">hrs</span><span class="n" id="m">00</span><span class="e">min</span><span class="n" id="s">00</span><span class="e">sec</span></div>
 <div id="tekst" hidden>Friday 15:20</div>
 <script>
@@ -49,9 +47,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   function to(n){ return (n < 10 ? '0' : '') + n; }
   function tikk(){
     var s = Math.max(0, Math.ceil((mal - Date.now()) / 1000));
-    var dg = Math.floor(s / 86400), t = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), sek = s % 60;
-    el('dager').style.display = dg > 0 ? '' : 'none';
-    el('d').textContent = dg; el('de').textContent = dg === 1 ? 'Day' : 'Days';
+    var t = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sek = s % 60;
     el('h').textContent = to(t); el('m').textContent = to(m); el('s').textContent = to(sek);
     if (s === 0) return;
     setTimeout(tikk, 1000 - (Date.now() % 1000) + 5);
