@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0c0d0f">
+<title>Nedtelling – HAPT</title>
+<!-- Nedtelling til fredag 23. oktober 2026 kl. 15:20 norsk tid.
+     Annet tidspunkt: hapt.no/nedtelling/?til=2026-12-24T15:00 (norsk tid). -->
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:'Barlow';font-weight:300;font-display:swap;src:url(../fonts/barlow-latin-300-normal.woff2) format('woff2');}
+@font-face{font-family:'Barlow';font-weight:500;font-display:swap;src:url(../fonts/barlow-latin-500-normal.woff2) format('woff2');}
+html,body{margin:0;height:100%;background:#0c0d0f;color:#fff;}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Barlow',system-ui,sans-serif;cursor:none;}
+body:hover{cursor:default;}
+#tall{font-weight:500;font-size:min(22vw,40vh);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;white-space:nowrap;}
+#tall .k{color:#7d828a;}
+#tekst{margin-top:3vh;font-weight:300;font-size:min(3.4vw,5vh);color:#7d828a;letter-spacing:0.04em;}
+</style>
+</head>
+<body>
+<div id="tall">00:00:00</div>
+<div id="tekst">til fredag kl. 15:20</div>
+<script>
+(function(){
+  // Fredag 23.10.2026 kl. 15:20 i Oslo (sommertid, UTC+2)
+  var mal = Date.parse('2026-10-23T15:20:00+02:00');
+  var q = new URLSearchParams(location.search).get('til');
+  if (q) {
+    // Tolkes som norsk tid: prøv +02:00 (sommer) og +01:00 (vinter), velg den som stemmer i Oslo
+    [ '+02:00', '+01:00' ].some(function(off){
+      var t = Date.parse(q + (q.length <= 16 ? ':00' : '') + off);
+      if (isNaN(t)) return false;
+      var oslo = new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Oslo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(t)).replace(' ','T');
+      if (oslo === q.slice(0,16)) { mal = t; return true; }
+      return false;
+    });
+    var dager = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
+    var d = new Date(mal);
+    var dag = dager[new Date(d.toLocaleString('en-US',{timeZone:'Europe/Oslo'})).getDay()];
+    var kl = d.toLocaleTimeString('no-NO',{timeZone:'Europe/Oslo',hour:'2-digit',minute:'2-digit'}).replace('.',':');
+    document.getElementById('tekst').textContent = 'til ' + dag + ' kl. ' + kl;
+  }
+  var el = document.getElementById('tall');
+  function to(n){ return (n < 10 ? '0' : '') + n; }
+  function tikk(){
+    var s = Math.max(0, Math.ceil((mal - Date.now()) / 1000));
+    var t = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sek = s % 60;
+    el.innerHTML = to(t) + '<span class="k">:</span>' + to(m) + '<span class="k">:</span>' + to(sek);
+    if (s === 0) { document.getElementById('tekst').textContent = 'Nå!'; return; }
+    setTimeout(tikk, 1000 - (Date.now() % 1000) + 5);
+  }
+  tikk();
+})();
+</script>
+</body>
+</html>
