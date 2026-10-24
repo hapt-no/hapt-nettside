@@ -12,19 +12,24 @@
     try { n = n.normalize('NFC'); } catch (e) {}
     n = n.toLowerCase().replace(/–/g, '-');
     // Bokstaver som æ, ø, å og ü blir nærmeste a–z, så «Øvelse» blir «ovelse» og ikke «velse»
-    n = n.replace(/æ/g, 'ae').replace(/ø/g, 'o').replace(/ß/g, 'ss');
+    n = n.replace(/æ/g, 'ae').replace(/ø/g, 'o').replace(/ß/g, 'ss').replace(/œ/g, 'oe').replace(/þ/g, 'th')
+      .replace(/[ðđ]/g, 'd').replace(/ł/g, 'l').replace(/ı/g, 'i');
     try { n = n.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) {}
     if (fraBruker) n = n.replace(/\.wav$/, '');
     else n = n.replace(/\.[a-z0-9]{1,5}$/, '').replace(/_v\d+$/, '');
-    n = n.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    return (n || 'lyd') + '.wav';
+    n = n.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'audio';
+    // Navn Windows ikke kan lage filer med (CON, AUX, NUL, COM1 …) får et tillegg
+    if (/^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/.test(n)) n += '-1';
+    return n + '.wav';
   }
 
   // ---------- Kanalmasker ----------
-  // Det ffmpeg skriver i WAV-hodet når kilden ikke sier noe om kanalene (ffmpeg 6, av_channel_layout_default)
-  var STANDARD_MASKE = { 1: 0x4, 2: 0x3, 3: 0xB, 4: 0x107, 5: 0x37, 6: 0x3F, 7: 0x70F, 8: 0x63F, 10: 0x2D03F, 12: 0x2D63F };
+  // Oppsettet ffmpeg gjetter når kilden ikke sier noe om kanalene (ffmpeg 6.1, av_channel_layout_default).
+  // 0 betyr uspesifisert. Maskene kan ha biter over 32 (brede og ekstra LFE-kanaler), så de regnes som tall, ikke med bitoperatorer.
+  var STANDARD_MASKE = { 1: 0x4, 2: 0x3, 3: 0xB, 4: 0x107, 5: 0x37, 6: 0x3F, 7: 0x70F, 8: 0x63F, 10: 0x2D03F, 12: 0x2D63F, 16: 0x18003F737, 24: 0x1F80003FFFF };
   function standardMaske(kanaler) { return STANDARD_MASKE[kanaler] || 0; }
-  function antallBiter(m) { var n = 0; while (m) { n += m & 1; m >>>= 1; } return n; }
+  function bitListe(m) { var ut = [], b = 1; m = Math.floor(m || 0); while (m > 0) { if (m % 2) ut.push(b); m = Math.floor(m / 2); b *= 2; } return ut; }
+  function antallBiter(m) { return bitListe(m).length; }
 
   // ---------- PCM ----------
   // fmt: { enc: 's' | 'u' | 'f' | 'ulaw' | 'alaw', bytes (per sample i fila), bits (gyldige), le, hoy (24 i 32, venstrejustert), kanaler, bpf }
@@ -269,6 +274,8 @@
     return TP_FAS;
   }
 
+  var LFE = [0x8, 34359738368];
+  var BAK = [0x10, 0x20, 0x100, 0x200, 0x400, 0x8000, 0x10000, 0x20000, 8589934592, 17179869184];
   function Maaler(rate, kanaler, maske) {
     this.rate = rate; this.K = kanaler;
     var f = kVekt(rate);
@@ -277,11 +284,10 @@
     for (var k = 0; k < kanaler; k++) this.z.push(new Float64Array(8));
     // Kanalvekter etter BS.1770: LFE 0, surround 1,41, resten 1
     this.vekt = [];
-    var biter = [];
-    if (maske && antallBiter(maske) === kanaler) for (var b = 0; b < 32; b++) if (maske & (1 << b)) biter.push(1 << b);
+    var biter = maske && antallBiter(maske) === kanaler ? bitListe(maske) : [];
     for (k = 0; k < kanaler; k++) {
       var bit = biter[k] || 0;
-      this.vekt.push(bit === 0x8 ? 0 : (bit === 0x10 || bit === 0x20 || bit === 0x200 || bit === 0x400) ? 1.41 : 1);
+      this.vekt.push(LFE.indexOf(bit) >= 0 ? 0 : BAK.indexOf(bit) >= 0 ? 1.41 : 1);
     }
     this.blokk = Math.round(rate / 10); // 100 ms
     this.iBlokk = 0;
@@ -296,33 +302,25 @@
   Maaler.prototype.legg = function (kan, antall) {
     var K = this.K, pre = this.f[0], rlb = this.f[1], k, i;
     // Topp og true peak
-    var faser = tpFaser(), N2 = 2 * TP_H;
-    for (k = 0; k < K; k++) {
-      var x = kan[k], tp = 0, sp = this.topp[k];
+    var N2 = 2 * TP_H;
+    if (antall > 0) for (k = 0; k < K; k++) {
+      var x = kan[k], sp = this.topp[k];
       for (i = 0; i < antall; i++) { var a = x[i] < 0 ? -x[i] : x[i]; if (a > sp) sp = a; }
       this.topp[k] = sp;
-      var tpNå = Math.max(this.tp[k], sp);
-      // Arbeidsbuffer: historikk + ny blokk; interpoler mellom i og i+1 der en av dem er høy nok
+      // Arbeidsbuffer: historikk + ny blokk
       var hb = this.hist[k], n = N2 + antall, w = this._w && this._w.length >= n ? this._w : (this._w = new Float64Array(n + 4096));
       w.set(hb, 0); w.set(x.subarray(0, antall), N2);
-      var terskel = tpNå * 0.6, best = this.tp[k] > sp ? this.tp[k] : sp;
+      // Helt i starten speiles signalet (x[−j] = x[j]) som i ffmpeg sin omsampler, så det ikke blir et falskt
+      // sprang fra null til første sample
+      if (!this.startet) for (var j = 1; j <= N2; j++) w[N2 - j] = j < antall ? x[j] : 0;
       // Posisjon i (i w) har sentrum mellom w[i] og w[i+1]; trenger w[i-TP_H+1 .. i+TP_H]
-      for (i = TP_H - 1; i + TP_H < n; i++) {
-        var a1 = w[i] < 0 ? -w[i] : w[i], a2 = w[i + 1] < 0 ? -w[i + 1] : w[i + 1];
-        if (a1 < terskel && a2 < terskel) continue;
-        var base = i - TP_H + 1;
-        for (var f = 0; f < 3; f++) {
-          var c = faser[f], s = 0;
-          for (var j = 0; j < N2; j++) s += w[base + j] * c[j];
-          if (s < 0) s = -s;
-          if (s > best) best = s;
-        }
-      }
-      this.tp[k] = best;
+      this._tp(k, w, TP_H - 1, n - TP_H);
       // Ta vare på de siste 2·TP_H samplene til neste runde
+      if (!this.startet) hb.set(w.subarray(0, N2));
       if (antall >= N2) hb.set(x.subarray(antall - N2, antall));
       else { hb.copyWithin(0, antall); hb.set(x.subarray(0, antall), N2 - antall); }
     }
+    if (antall > 0) this.startet = true;
     // K-vekting og 100 ms-blokker
     var B = this.blokk, pos = 0;
     while (pos < antall) {
@@ -351,6 +349,34 @@
     }
     this.antall += antall;
   };
+  // Interpoler (4 ×) i intervallene mellom w[i] og w[i+1] for i i [fra, til), bare der en av dem er høy nok
+  Maaler.prototype._tp = function (k, w, fra, til) {
+    var faser = tpFaser(), N2 = 2 * TP_H, sp = this.topp[k];
+    var best = this.tp[k] > sp ? this.tp[k] : sp, terskel = best * 0.6;
+    for (var i = fra; i < til; i++) {
+      var a1 = w[i] < 0 ? -w[i] : w[i], a2 = w[i + 1] < 0 ? -w[i + 1] : w[i + 1];
+      if (a1 < terskel && a2 < terskel) continue;
+      var base = i - TP_H + 1;
+      for (var f = 0; f < 3; f++) {
+        var c = faser[f], s = 0;
+        for (var j = 0; j < N2; j++) s += w[base + j] * c[j];
+        if (s < 0) s = -s;
+        if (s > best) best = s;
+      }
+    }
+    this.tp[k] = best;
+  };
+  // Slutten: speil de siste samplene (x[N−1+j] = x[N−1−j]) og regn ut de siste posisjonene
+  Maaler.prototype._tomTp = function () {
+    if (this.tomt || !this.startet) return;
+    this.tomt = true;
+    var N2 = 2 * TP_H, w = new Float64Array(N2 + TP_H);
+    for (var k = 0; k < this.K; k++) {
+      w.set(this.hist[k], 0);
+      for (var j = 1; j <= TP_H; j++) w[N2 - 1 + j] = w[N2 - 1 - j];
+      this._tp(k, w, N2 - TP_H, N2);
+    }
+  };
   // Integrert loudness med porter (−70 LUFS absolutt, −10 LU relativt), 400 ms-blokker med 75 % overlapp
   Maaler.prototype.lufs = function () {
     var b = this.blokker, z = [];
@@ -365,6 +391,7 @@
     return ld(gj.reduce(function (s, v) { return s + v; }, 0) / gj.length);
   };
   Maaler.prototype.resultat = function () {
+    this._tomTp();
     var db = function (v) { return v > 0 ? 20 * Math.log10(v) : -Infinity; };
     var sp = 0, tp = 0;
     for (var k = 0; k < this.K; k++) { if (this.topp[k] > sp) sp = this.topp[k]; if (this.tp[k] > tp) tp = this.tp[k]; }
@@ -378,6 +405,7 @@
   function Pakker(kanaler, bits, modus, kildeBits) {
     this.K = kanaler; this.bits = bits; this.modus = modus;
     this.kopi16 = bits === 16 && modus === 'kopi' && kildeBits && kildeBits <= 16;
+    this.dither = bits === 16 && !this.kopi16;
     this.klippet = 0;
     this.seed = 0x12345678;
   }
@@ -427,11 +455,12 @@
   // ---------- WAV-hode ----------
   // Samme oppbygging som ffmpeg sin pcm_s24le-WAV, som er prøvd på disguise VX4:
   // RIFF, fmt (40 byte WAVE_FORMAT_EXTENSIBLE med kanalmaske og PCM-undertype), LIST/INFO/ISFT, data.
-  // 16 bit mono/stereo opp til 48 kHz får vanlig 16-byte PCM-fmt, også som ffmpeg.
+  // Som ffmpeg: vanlig 16-byte PCM-fmt bare for 16 bit opp til 48 kHz når kanaloppsettet er mono, stereo eller
+  // uspesifisert (maske 0). Masker med biter over 0x3FFFF skrives som 0, også som ffmpeg.
   var PROGRAM = 'hapt.no tools'; // 13 tegn + NUL, samme lengde som ffmpeg sin
   function wavHode(kanaler, rate, bits, rammer, maske) {
     var B = bits / 8, blokk = kanaler * B, data = rammer * blokk;
-    var ext = bits > 16 || rate > 48000 || (maske !== 0 && maske !== 0x4 && maske !== 0x3);
+    var ext = bits > 16 || rate > 48000 || (!!maske && maske !== 0x4 && maske !== 0x3);
     var fmtLen = ext ? 40 : 16;
     var listData = PROGRAM.length + 1, listPad = listData & 1, listLen = 4 + 8 + listData + listPad;
     var hodeLen = 12 + 8 + fmtLen + 8 + listLen + 8;
@@ -451,7 +480,7 @@
     if (ext) {
       v.setUint16(o, 22, true); o += 2;
       v.setUint16(o, bits, true); o += 2;
-      v.setUint32(o, maske >>> 0, true); o += 4;
+      v.setUint32(o, maske && maske < 0x40000 ? maske : 0, true); o += 4;
       // KSDATAFORMAT_SUBTYPE_PCM 00000001-0000-0010-8000-00aa00389b71
       [1, 0, 0, 0, 0, 0, 0x10, 0, 0x80, 0, 0, 0xaa, 0, 0x38, 0x9b, 0x71].forEach(function (x) { v.setUint8(o++, x); });
     }
@@ -462,7 +491,7 @@
   }
 
   g.HaptLyd = {
-    wavNavn: wavNavn, standardMaske: standardMaske, antallBiter: antallBiter,
+    wavNavn: wavNavn, standardMaske: standardMaske, antallBiter: antallBiter, bitListe: bitListe,
     dekodPcm: dekodPcm, Omsampler: Omsampler, Maaler: Maaler, Pakker: Pakker, wavHode: wavHode, kVekt: kVekt
   };
 })(typeof self !== 'undefined' ? self : this);

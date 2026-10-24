@@ -43,6 +43,15 @@ Ror.prototype.inn = function (kan, fra, n) {
     this.fylt(d);
   }
 };
+// Stillhet (tomme edits): nuller rett inn i mellomlageret
+Ror.prototype.stille = function (n) {
+  while (n > 0) {
+    var d = Math.min(n, this.plass());
+    for (var k = 0; k < this.K; k++) this.st[k].fill(0, this.iSt, this.iSt + d);
+    n -= d;
+    this.fylt(d);
+  }
+};
 Ror.prototype.kjor = function () {
   var n = this.iSt;
   if (!n) return;
@@ -85,7 +94,7 @@ Ror.prototype.slutt = function () {
   this.send();
   var r = this.ml.resultat();
   r.rammer = this.rammer; r.klippet = this.pk.klippet; r.rate = this.utRate; r.bits = this.bits; r.kanaler = this.K; r.maske = this.maske;
-  r.omsamplet = !!this.oms; r.innRate = this.innRate; r.trinn = this.tid;
+  r.omsamplet = !!this.oms; r.innRate = this.innRate; r.dither = this.pk.dither; r.trinn = this.tid;
   return r;
 };
 
@@ -120,6 +129,7 @@ async function trekk(m) {
     var res = await HaptMp4.lesBiter(m.fil, liste, {
       tid: tid,
       vedBit: function (bit, u8, o) {
+        if (bit.stille) { ror.stille(bit.rammer); return; }
         var igjen = bit.rammer;
         while (igjen > 0) {
           var n = Math.min(igjen, ror.plass());
@@ -133,23 +143,27 @@ async function trekk(m) {
     if (!res.ferdig) return;
     r = ror.slutt();
     r.blokker = res.blokker; r.biter = liste.length;
+    // Bit for bit lik kilden bare for heltalls-PCM uten omsampling, når bitdybden ikke reduseres
+    r.eksakt = !r.omsamplet && (fmt.enc === 's' || fmt.enc === 'u') && spor.bits <= bits;
   } else {
     r = await dekodWc(m, spor, liste, utRate, bits, fremdrift);
   }
+  r.kodekType = spor.kodek.type; r.kodekNavn = spor.navn; r.kildeBits = spor.bits || 0; r.flyt = !!spor.flyt;
+  r.kildeKode = spor.kodek.type === 'pcm' ? spor.kodek.fmt.enc : '';
   var h = HaptLyd.wavHode(r.kanaler, r.rate, r.bits, r.rammer, r.maske);
   r.ms = Date.now() - t0; r.tid = tid;
   r.co64 = !!spor.tab.co64; r.moovPos = info.moovPos;
   self.postMessage({ type: 'ferdig', id: m.id, hode: h.hode, pad: h.pad, storrelse: h.storrelse, resultat: r }, [h.hode]);
 }
 
-// Komprimert lyd (AAC, MP3, Opus, FLAC) via WebCodecs. Som ffmpeg hoppes encoderforsinkelsen i starten over
-// (edit-lista), og alt som kommer ut av dekoderen etter det tas med.
+// Komprimert lyd (AAC, MP3, Opus, FLAC) via WebCodecs. Alle pakkene dekodes i rekkefølge, og tidsrommene fra
+// edit-lista (spor.utvalg, i sekunder) velges ut av det som kommer ut, som i ffmpeg.
 async function dekodWc(m, spor, liste, utRate, bits, fremdrift) {
   var kfg = spor.kodek.konfig, navn = spor.navn;
   if (typeof AudioDecoder === 'undefined') throw HaptMp4.feil('webcodecs', { navn: navn });
   var st = await AudioDecoder.isConfigSupported(kfg).catch(function () { return { supported: false }; });
   if (!st.supported) throw HaptMp4.feil('webcodecs', { navn: navn });
-  var skala = spor.spor.skala || spor.rate, feilen = null, ror = null, pos = 0, hopp = 0;
+  var skala = spor.spor.skala || spor.rate, feilen = null, ror = null, pos = 0, omr = null, iU = 0;
   var dek = new AudioDecoder({
     output: function (ad) {
       try {
@@ -158,15 +172,22 @@ async function dekodWc(m, spor, liste, utRate, bits, fremdrift) {
           var maske = K === spor.kanaler ? spor.maske : HaptLyd.standardMaske(K);
           ror = new Ror(m.id, K, ad.sampleRate, m.rate === 'kilde' ? ad.sampleRate : utRate, bits, 24, maske);
           pos = Math.round(ad.timestamp * ad.sampleRate / 1e6);
-          hopp = Math.round(spor.hopp * ad.sampleRate);
+          omr = spor.utvalg.map(function (u) { return u.stille != null ? { s: Math.round(u.stille * ad.sampleRate) } : { a: Math.round(u[0] * ad.sampleRate), b: u[1] === Infinity ? Infinity : Math.round(u[1] * ad.sampleRate) }; });
         }
         if (K !== ror.K) throw HaptMp4.feil('dekoder', { melding: 'channels' });
         var kan = [];
         for (var k = 0; k < K; k++) { var f = new Float32Array(n); ad.copyTo(f, { planeIndex: k, format: 'f32-planar' }); kan.push(f); }
         ad.close();
-        var fra = Math.max(0, Math.min(n, hopp - pos));
+        // Tidsrommene i rekkefølge; stillhet settes inn når tidsrommet før er ferdig
+        while (iU < omr.length) {
+          var u = omr[iU];
+          if (u.s != null) { ror.stille(u.s); iU++; continue; }
+          var fra = Math.max(u.a, pos), til = Math.min(u.b, pos + n);
+          if (til > fra) ror.inn(kan, fra - pos, til - fra);
+          if (u.b <= pos + n) { iU++; continue; }
+          break;
+        }
         pos += n;
-        if (fra < n) ror.inn(kan, fra, n - fra);
       } catch (e) { feilen = feilen || e; try { ad.close(); } catch (e2) {} }
     },
     error: function (e) { feilen = feilen || HaptMp4.feil('dekoder', { melding: String(e && e.message || e) }); }
@@ -192,6 +213,8 @@ async function dekodWc(m, spor, liste, utRate, bits, fremdrift) {
   try { dek.close(); } catch (e) {}
   if (feilen) throw feilen;
   if (!ror) throw HaptMp4.feil('dekoder', { melding: 'no output' });
+  // Stillhet etter siste lyd (tom edit til slutt)
+  for (; iU < omr.length; iU++) if (omr[iU].s != null) ror.stille(omr[iU].s);
   var r = ror.slutt();
   r.blokker = res.blokker; r.biter = liste.length;
   return r;

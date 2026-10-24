@@ -13,6 +13,8 @@
 .slipp { display: block; border: 1px dashed var(--line2); border-radius: 10px; padding: 26px 16px; text-align: center; color: var(--muted); font-size: 15px; cursor: pointer; margin: 0; }
 .slipp b { display: block; color: var(--fg); font-family: var(--font); font-weight: 500; font-size: 17px; margin-bottom: 4px; }
 .slipp:hover, .slipp.over { border-color: var(--accent); color: var(--fg); }
+.slipp:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); color: var(--fg); }
+#melding { margin-top: 10px; }
 .tips { margin: 0; padding-left: 18px; }
 .tips li { margin: 0 0 10px; color: var(--muted); font-size: 14.5px; }
 .tips li b { color: var(--fg); font-weight: 600; }
@@ -84,8 +86,9 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
     <div>
       <div class="card">
         <h2 data-en="Video files">Videofiler</h2>
-        <label class="slipp" id="slipp" for="fil"><b data-en="Drop video files here">Slipp videofiler her</b><span data-en="or click to choose. Several at once is fine.">eller trykk for å velge. Gjerne flere på en gang.</span></label>
+        <label class="slipp" id="slipp" for="fil" tabindex="0" role="button"><b data-en="Drop video files here">Slipp videofiler her</b><span data-en="or click to choose. Several at once is fine.">eller trykk for å velge. Gjerne flere på en gang.</span></label>
         <input id="fil" type="file" multiple accept=".mov,.mp4,.m4v,.m4a,.qt,.3gp,video/quicktime,video/mp4,audio/mp4" hidden>
+        <p class="note gul" id="melding" aria-live="polite" hidden></p>
         <p class="note" data-en="Nothing is uploaded. The files are read here in the browser, and only the audio is taken out.">Ingenting lastes opp. Filene leses bare her i nettleseren, og bare lyden hentes ut.</p>
       </div>
       <div class="card">
@@ -100,7 +103,7 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
           <button type="button" data-bits="24" aria-pressed="true">24 bit</button>
           <button type="button" data-bits="16" aria-pressed="false">16 bit</button>
         </div>
-        <p class="note" style="margin-top:0" data-en="48 kHz / 24-bit is the default and plays on disguise VX4. Audio that is already 48 kHz is copied bit for bit. Other sample rates are resampled with a long sinc filter. All channels are kept, and the level is never changed.">48 kHz / 24 bit er standard, og spiller på disguise VX4. Lyd som allerede er 48 kHz kopieres bit for bit. Annen samplerate omsamples med et langt sinc-filter. Alle kanalene beholdes, og nivået endres aldri.</p>
+        <p class="note" style="margin-top:0" data-en="48 kHz / 24-bit is the default and plays on disguise VX4. Audio that is already 48 kHz is copied bit for bit when the bit depth is not reduced. Other sample rates are resampled with a long sinc filter, and 16-bit from sources with more bits gets dither. All channels are kept, and the level is never changed.">48 kHz / 24 bit er standard, og spiller på disguise VX4. Lyd som allerede er 48 kHz kopieres bit for bit når bitdybden ikke reduseres. Annen samplerate omsamples med et langt sinc-filter, og 16 bit fra kilder med flere bit får dither. Alle kanalene beholdes, og nivået endres aldri.</p>
       </div>
     </div>
 
@@ -142,8 +145,8 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
       <tbody id="rader"><tr class="tom"><td colspan="7">Ingen filer ennå.</td></tr></tbody>
     </table>
     <p class="note" data-en="Silent means the highest peak is below −60 dBFS. Silent files are left out of &quot;Download all&quot;. Peak is the highest sample; TP is true peak (4 × oversampling). LUFS is integrated loudness (EBU R128), measured on the WAV. The WAV and the video should be equally long, within one frame.">Stille betyr at høyeste topp er under −60 dBFS. Stille filer tas ikke med i «Last ned alle». Topp er høyeste sample, TP er true peak (4 × oversampling). LUFS er integrert loudness (EBU R128), målt på WAV-fila. WAV og video skal være like lange, innenfor ett bilde.</p>
-    <p class="note" data-en="The WAV name is plain ASCII: lower case, &quot;_v2&quot; and the like before the extension is removed, letters like æ, ø, å and ü become ae, o, a and u, and anything else outside a–z and 0–9 becomes &quot;-&quot;. You can change the name; it is cleaned the same way. Finished WAV files stay in the browser until you download them or clear the list.">WAV-navnet er rent ASCII: små bokstaver, «_v2» og lignende før endelsen fjernes, æ, ø, å og ü blir ae, o, a og u, og alt annet enn a–z og 0–9 blir «-». Du kan endre navnet; det renses på samme måte. Ferdige WAV-filer ligger i nettleseren til du laster dem ned eller tømmer lista.</p>
-    <div class="note ffmpeg" id="ffmpeg" hidden><span data-en="For files this tool cannot read, ffmpeg does the same job:">For filer verktøyet ikke kan lese, gjør ffmpeg den samme jobben:</span><code>ffmpeg -i fil.mov -map 0:a:0 -vn -c:a pcm_s24le -ar 48000 fil.wav</code></div>
+    <p class="note" data-en="The WAV name is plain ASCII: lower case, &quot;_v2&quot; and the like before the extension is removed, letters like æ, ø, å and ü become ae, o, a and u, and anything else outside a–z and 0–9 becomes &quot;-&quot;. You can change the name; it is cleaned the same way, and an empty field gives the automatic name back. Finished WAV files stay in the browser until you remove them or clear the list.">WAV-navnet er rent ASCII: små bokstaver, «_v2» og lignende før endelsen fjernes, æ, ø, å og ü blir ae, o, a og u, og alt annet enn a–z og 0–9 blir «-». Du kan endre navnet; det renses på samme måte, og et tomt felt gir det automatiske navnet tilbake. Ferdige WAV-filer ligger i nettleseren til du fjerner dem eller tømmer lista.</p>
+    <div class="note ffmpeg" id="ffmpeg" hidden><span data-en="For files this tool cannot read, ffmpeg does the same job:">For filer verktøyet ikke kan lese, gjør ffmpeg den samme jobben:</span><code>ffmpeg -i input.mov -map 0:a:0 -vn -c:a pcm_s24le -ar 48000 output.wav</code></div>
   </div>
 </div>
 
@@ -167,7 +170,7 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
   function khz(r) { return tall(r / 1000, 0, 3) + ' kHz'; }
   function kanalTekst(n) { return n === 1 ? 'mono' : n === 2 ? 'stereo' : n + T(' kanaler', ' channels'); }
 
-  var rader = [], nesteId = 1, kjorer = false, stopp = false, arbeider = null, aktiv = null;
+  var rader = [], nesteId = 1, kjorer = false, stopp = false, arbeider = null, aktiv = null, melding = null;
   var oppsett = { rate: '48000', bits: 24 };
   try { var lagret = JSON.parse(localStorage.getItem('hapt-lyd') || 'null'); if (lagret) { if (lagret.rate === 'kilde' || lagret.rate === '48000') oppsett.rate = lagret.rate; if (lagret.bits === 16 || lagret.bits === 24) oppsett.bits = lagret.bits; } } catch (e) {}
   function lagre() { try { localStorage.setItem('hapt-lyd', JSON.stringify(oppsett)); } catch (e) {} }
@@ -189,15 +192,22 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
       case 'ikke-flettet': return T('Lyd der kanalene ligger hver for seg (ikke flettet) støttes ikke. Bruk ffmpeg.', 'Non-interleaved audio is not supported. Use ffmpeg.');
       case 'flere-formater': return T('Lydsporet bytter format underveis. Bruk ffmpeg.', 'The audio track changes format part-way. Use ffmpeg.');
       case 'fragmentert': return T('Fragmentert MP4 støttes ikke. Bruk ffmpeg.', 'Fragmented MP4 is not supported. Use ffmpeg.');
+      case 'edits': return T('Klippene i fila spiller lyden i en annen rekkefølge enn den ligger. Det støttes ikke her. Bruk ffmpeg.', 'The edits in the file play the audio out of order. That is not supported here. Use ffmpeg.');
+      case 'ingen-rate': return T('Fila sier ikke hvilken samplerate lyden har, så den kan ikke leses.', 'The file does not say what sample rate the audio has, so it cannot be read.');
       case 'tomt-spor': return T('Lydsporet er tomt.', 'The audio track is empty.');
       case 'for-stor': return T('WAV-fila blir over 4 GB, som er grensen for WAV. Velg 16 bit, eller del opp fila.', 'The WAV would be over 4 GB, the limit for WAV. Choose 16-bit, or split the file.');
+      case 'plass': return T('Nettleseren fikk ikke plass til WAV-fila (privat vindu har lite plass). Bruk et vanlig vindu, eller ta færre filer om gangen.', 'The browser ran out of room for the WAV file (private windows have little space). Use a normal window, or do fewer files at a time.');
       case 'lesefeil': return T('Kunne ikke lese fila. Er disken koblet fra, eller er fila flyttet?', 'Could not read the file. Was the disk disconnected, or the file moved?');
       case 'dekoder': return T('Dekoderen feilet: ', 'The decoder failed: ') + (d.melding || '');
       case 'ingen-lyd': return T('Fant ikke lydsporet.', 'Could not find the audio track.');
       default: return T('Noe gikk galt: ', 'Something went wrong: ') + (f.melding || f.kode);
     }
   }
-  var FFMPEG_KODER = ['ikke-mov', 'kodek', 'webcodecs', 'ikke-flettet', 'flere-formater', 'fragmentert'];
+  var FFMPEG_KODER = ['ikke-mov', 'kodek', 'webcodecs', 'ikke-flettet', 'flere-formater', 'fragmentert', 'edits'];
+
+  // Videoformater med navn som skal oversettes (resten er produktnavn)
+  var VIDEONAVN = { 'Uncompressed 10-bit': ['Ukomprimert 10 bit', 'Uncompressed 10-bit'], 'Uncompressed 8-bit': ['Ukomprimert 8 bit', 'Uncompressed 8-bit'] };
+  function videoNavn(n) { var x = VIDEONAVN[n]; return x ? T(x[0], x[1]) : n; }
 
   // ---------- Analyse ----------
   function oppsummer(info) {
@@ -223,86 +233,157 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
     }).then(function () {
       rad.status = rad.info.lyd.length ? 'klar' : 'utenLyd';
     }, function (e) {
+      var nv = e && e.name;
       rad.status = 'feil'; rad.feilFra = 'analyse';
-      rad.feil = { kode: e && e.kode || (e && e.name === 'NotReadableError' ? 'lesefeil' : 'ukjent'), data: e && e.data, melding: String(e && e.message || e) };
-    }).then(function () { tegnRad(rad); oppdater(); });
+      rad.feil = { kode: e && e.kode || (nv === 'NotReadableError' || nv === 'NotFoundError' ? 'lesefeil' : 'ukjent'), data: e && e.data, melding: String(e && e.message || e) };
+    }).then(function () {
+      if (rader.indexOf(rad) < 0) return;
+      fordelNavn(); tegnRad(rad); rader.forEach(tegnNavn); oppdater();
+    });
   }
-
-  // ---------- Navn ----------
-  function navn(rad) { return rad.navnBruker || rad.navnAuto; }
-  function unikt(n) {
-    var finnes = function (x) { return rader.some(function (r) { return navn(r) === x; }); };
-    if (!finnes(n)) return n;
-    for (var i = 2; ; i++) { var y = n.replace(/\.wav$/, '-' + i + '.wav'); if (!finnes(y)) return y; }
-  }
-  function dobbelt(rad) { return rader.some(function (r) { return r !== rad && navn(r) === navn(rad); }); }
 
   // ---------- Tilstand ----------
   function nokkel(rad) { return rad.spor + '|' + oppsett.rate + '|' + oppsett.bits; }
   function valgtSpor(rad) { return rad.info && rad.info.lyd[rad.spor]; }
   function kanTrekkes(rad) { var s = valgtSpor(rad); return !!(s && !s.stotte && !(rad.status === 'feil' && rad.feilFra === 'analyse')); }
   function trengerJobb(rad) { return kanTrekkes(rad) && rad.status !== 'leser' && (!rad.resultat || rad.resultat.nokkel !== nokkel(rad)); }
-  function nedlastbar(rad) { return rad.resultat && rad.resultat.nokkel === nokkel(rad) && !rad.resultat.stille; }
+  function gjeldende(rad) { return rad.resultat && rad.resultat.nokkel === nokkel(rad) ? rad.resultat : null; }
+  function nedlastbar(rad) { var r = gjeldende(rad); return !!(r && !r.stille); }
+
+  // ---------- Navn ----------
+  // Bare rader som kan gi en WAV, holder av et navn. Et navn som er gitt, beholdes. Nye navn deles ut i
+  // rekkefølgen i lista, og en rad venter hvis en fil over med samme navn fortsatt leses.
+  function grunnNavn(rad) { return rad.grunn || (rad.grunn = HaptLyd.wavNavn(rad.fil.name)); }
+  function navn(rad) { return rad.navnBruker || rad.navnAuto || grunnNavn(rad); }
+  function unikt(n, tatt) {
+    if (!tatt[n]) return n;
+    for (var i = 2; ; i++) { var y = n.replace(/\.wav$/, '-' + i + '.wav'); if (!tatt[y]) return y; }
+  }
+  function andreNavn(rad) {
+    var tatt = Object.create(null);
+    rader.forEach(function (r) { var n = r.navnBruker || r.navnAuto; if (r !== rad && n && kanTrekkes(r)) tatt[n] = true; });
+    return tatt;
+  }
+  function fordelNavn() {
+    var tatt = Object.create(null), mangler = [], venter = Object.create(null);
+    rader.forEach(function (r) {
+      if (!kanTrekkes(r)) { r.navnAuto = null; return; }
+      var n = r.navnBruker || r.navnAuto;
+      if (n && !tatt[n]) { tatt[n] = true; return; }
+      if (!r.navnBruker) r.navnAuto = null;
+      mangler.push(r);
+    });
+    rader.forEach(function (r) {
+      if (r.status === 'leser') { venter[grunnNavn(r)] = true; return; }
+      if (mangler.indexOf(r) < 0) return;
+      if (r.navnBruker) { r.navnBruker = r.merknad = unikt(r.navnBruker, tatt); tatt[r.navnBruker] = true; return; }
+      if (venter[grunnNavn(r)]) return;
+      r.navnAuto = unikt(grunnNavn(r), tatt); tatt[r.navnAuto] = true;
+    });
+  }
+  function nyttNavn(rad) {
+    var tatt = andreNavn(rad), v = rad.inp.value.trim(), ny = v ? HaptLyd.wavNavn(v, true) : null;
+    rad.merknad = null;
+    if (!ny || ny === rad.navnAuto) {
+      // Tomt felt gir det automatiske navnet tilbake
+      rad.navnBruker = null;
+      if (kanTrekkes(rad) && (!rad.navnAuto || tatt[rad.navnAuto])) rad.navnAuto = unikt(grunnNavn(rad), tatt);
+    } else {
+      var u = unikt(ny, tatt);
+      if (u !== ny) rad.merknad = u;
+      rad.navnBruker = u;
+    }
+    rad.inp.value = navn(rad);
+    tegnNavn(rad); oppdater();
+  }
 
   // ---------- Tegning ----------
+  // Knappene og feltet i hver rad lages én gang og beholdes. Tegningen endrer bare tekst og tilstand,
+  // så et klikk eller en tekst som skrives, ikke går tapt når raden oppdateres.
   var KOL = ['k-fil', 'k-kilde', 'k-lengde', 'k-topp', 'k-lufs', 'k-status', 'k-wav'];
   function etiketter() { return [T('Fil', 'File'), T('Lydspor', 'Track'), T('Lengde', 'Duration'), T('Topp', 'Peak'), 'LUFS', 'Status', T('WAV-navn', 'WAV name')]; }
+  function el(tag, kl, foreldre) { var e = document.createElement(tag); if (kl) e.className = kl; foreldre.appendChild(e); return e; }
 
   function lagRad(rad) {
-    var tr = document.createElement('tr'), et = etiketter();
-    KOL.forEach(function (k, i) { var td = document.createElement('td'); td.className = k; td.dataset.etikett = et[i]; tr.appendChild(td); });
+    var tr = document.createElement('tr'), et = etiketter(), td = [];
+    KOL.forEach(function (k, i) { var x = el('td', k, tr); x.dataset.etikett = et[i]; td.push(x); });
     rad.tr = tr;
-    var inp = document.createElement('input');
+    var c = rad.celle = {};
+    c.fjern = el('button', 'fjern', td[0]); c.fjern.type = 'button'; c.fjern.textContent = '×';
+    c.fjern.onclick = function () { fjern(rad); };
+    el('span', 'fnavn', td[0]).textContent = rad.fil.name;
+    c.under = el('span', 'liten', td[0]);
+    c.sporNavn = el('span', 'spor-navn', td[1]);
+    c.sporInfo = el('span', 'liten', td[1]);
+    var inp = rad.inp = el('input', '', td[6]);
     inp.type = 'text'; inp.spellcheck = false; inp.autocomplete = 'off';
-    inp.addEventListener('change', function () {
-      var ny = HaptLyd.wavNavn(inp.value, true);
-      rad.navnBruker = ny === rad.navnAuto ? null : ny;
-      rader.forEach(tegnRad);
-      oppdater();
-    });
-    rad.inp = inp;
+    inp.addEventListener('change', function () { nyttNavn(rad); });
+    inp.addEventListener('blur', function () { tegnNavn(rad); });
+    c.merknad = el('span', 'liten gul', td[6]);
+    c.last = el('button', 'btn lite', td[6]); c.last.type = 'button';
+    c.last.onclick = function () { lastNed(rad); };
+    c.strek = el('span', 'muted', td[6]); c.strek.textContent = '–';
     var tom = $('rader').querySelector('.tom');
     if (tom) tom.remove();
     $('rader').appendChild(tr);
   }
 
+  function sporValg(rad) {
+    var info = rad.info, c = rad.celle, sel = c.sel;
+    if (!info || info.lyd.length < 2) { if (sel) sel.hidden = true; return; }
+    if (!sel) {
+      sel = c.sel = document.createElement('select');
+      info.lyd.forEach(function (x, j) { var o = document.createElement('option'); o.value = j; sel.appendChild(o); });
+      sel.onchange = function () {
+        rad.spor = +sel.value;
+        if (rad.status === 'feil' && rad.feilFra !== 'analyse') rad.status = 'klar';
+        fordelNavn(); tegnRad(rad); rader.forEach(tegnNavn); oppdater();
+      };
+      rad.tr.children[1].insertBefore(sel, c.sporNavn);
+    }
+    sel.hidden = false;
+    sel.setAttribute('aria-label', T('Lydspor', 'Audio track'));
+    info.lyd.forEach(function (x, j) {
+      sel.options[j].textContent = (j + 1) + ': ' + x.navn + ', ' + kanalTekst(x.kanaler) + (x.stotte ? ' (' + T('støttes ikke', 'not supported') + ')' : '');
+    });
+    if (+sel.value !== rad.spor) sel.value = rad.spor;
+    sel.disabled = kjorer;
+  }
+
+  // Hva som ble gjort med lyden: kopiert bit for bit bare når samplene er helt like kilden
+  function behandling(r) {
+    var dith = r.dither ? ' (dither)' : '', oms = r.omsamplet ? T('omsamplet fra ', 'resampled from ') + khz(r.innRate) : '';
+    if (r.kodekType === 'wc') return [r.bits + ' bit', T('dekodet fra ', 'decoded from ') + r.kodekNavn + (oms ? ', ' + oms : '') + dith];
+    if (r.eksakt) return [r.bits + ' bit', T('kopiert', 'copied')];
+    if (oms) return [r.bits + ' bit', oms + dith];
+    var fra = r.kildeKode === 'f' ? 'float' : r.kildeKode === 'ulaw' ? 'μ-law' : r.kildeKode === 'alaw' ? 'A-law' : r.kildeBits;
+    return [null, fra + ' → ' + r.bits + ' bit' + dith];
+  }
+
   function tegnRad(rad) {
-    var td = rad.tr.children, et = etiketter(), i;
+    var td = rad.tr.children, et = etiketter(), c = rad.celle, i;
     for (i = 0; i < td.length; i++) td[i].dataset.etikett = et[i];
-    var info = rad.info, s = valgtSpor(rad), r = rad.resultat && rad.resultat.nokkel === nokkel(rad) ? rad.resultat : null;
+    var info = rad.info, s = valgtSpor(rad), r = gjeldende(rad);
     var v = info && info.video;
 
     // Fil
     var under = storrelse(rad.fil.size);
-    if (v) under += ' · ' + esc(v.navn) + (v.bredde ? ' · ' + v.bredde + ' × ' + v.hoyde : '') + (v.fps ? ' · ' + tall(v.fps, 0, 3) + ' fps' : '');
+    if (v) under += ' · ' + videoNavn(v.navn) + (v.bredde ? ' · ' + v.bredde + ' × ' + v.hoyde : '') + (v.fps ? ' · ' + tall(v.fps, 0, 3) + ' fps' : '');
     else if (info) under += ' · ' + T('ingen video', 'no video');
-    td[0].innerHTML = '<button type="button" class="fjern" aria-label="' + T('Fjern fra lista', 'Remove from list') + '" title="' + T('Fjern fra lista', 'Remove from list') + '">×</button><span class="fnavn">' + esc(rad.fil.name) + '</span><span class="liten">' + under + '</span>';
-    var fj = td[0].querySelector('.fjern');
-    fj.disabled = rad.status === 'jobber';
-    fj.onclick = function () { fjern(rad); };
+    c.under.textContent = under;
+    c.fjern.disabled = rad.status === 'jobber';
+    c.fjern.setAttribute('aria-label', T('Fjern fra lista', 'Remove from list') + ': ' + rad.fil.name);
+    c.fjern.title = T('Fjern fra lista', 'Remove from list');
 
     // Lydspor: velger når fila har flere spor, og så formatet til sporet
-    td[1].innerHTML = '';
-    if (info && info.lyd.length > 1) {
-      var sel = document.createElement('select');
-      sel.setAttribute('aria-label', T('Lydspor', 'Audio track'));
-      info.lyd.forEach(function (x, j) {
-        var o = document.createElement('option');
-        o.value = j;
-        o.textContent = (j + 1) + ': ' + x.navn + ', ' + kanalTekst(x.kanaler) + (x.stotte ? ' (' + T('støttes ikke', 'not supported') + ')' : '');
-        sel.appendChild(o);
-      });
-      sel.value = rad.spor;
-      sel.disabled = kjorer;
-      sel.onchange = function () { rad.spor = +sel.value; if (rad.status === 'feil' && rad.feilFra !== 'analyse') rad.status = 'klar'; tegnRad(rad); oppdater(); };
-      td[1].appendChild(sel);
-    }
-
+    sporValg(rad);
     if (s) {
       var bits = s.bits ? ' ' + s.bits + ' bit' + (s.flyt ? ' float' : '') : '';
-      var kode = s.type === 'pcm' && s.fourcc ? ' (' + esc(s.fourcc.trim()) + ')' : '';
-      td[1].insertAdjacentHTML('beforeend', '<span class="spor-navn">' + esc(s.navn.replace(/ float$/, '')) + bits + kode + '</span><span class="liten">' + (s.rate ? khz(s.rate) + ' · ' : '') + kanalTekst(s.kanaler) + '</span>');
-    } else td[1].textContent = '–';
+      var kode = s.type === 'pcm' && s.fourcc ? ' (' + s.fourcc.trim() + ')' : '';
+      c.sporNavn.textContent = s.navn.replace(/ float$/, '') + bits + kode;
+      c.sporInfo.textContent = (s.rate ? khz(s.rate) + ' · ' : '') + kanalTekst(s.kanaler);
+      c.sporInfo.hidden = false;
+    } else { c.sporNavn.textContent = '–'; c.sporInfo.hidden = true; }
 
     // Lengde
     var lengde = '';
@@ -336,27 +417,35 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
     else if (rad.status === 'ko') st = '<span class="muted">' + T('I kø', 'Queued') + '</span>';
     else if (rad.status === 'avbrutt') st = '<span class="status gul">' + T('Avbrutt', 'Cancelled') + '</span>';
     else if (r && r.stille) st = '<span class="status gul">' + T('Stille', 'Silent') + '</span><span class="liten">' + T('Under −60 dBFS. Lastes ikke ned med «Last ned alle».', 'Below −60 dBFS. Not included in "Download all".') + '</span>';
-    else if (r) st = '<span class="status gronn">' + T('Ferdig', 'Done') + '</span><span class="liten">' + khz(r.rate) + ' · ' + r.bits + ' bit · ' + kanalTekst(r.kanaler) + (r.omsamplet ? ' · ' + T('omsamplet', 'resampled') : ' · ' + T('kopiert', 'copied')) + '</span>';
+    else if (r) {
+      var b = behandling(r), deler = [khz(r.rate)];
+      if (b[0]) deler.push(b[0]);
+      deler.push(kanalTekst(r.kanaler), b[1]);
+      st = '<span class="status gronn">' + T('Ferdig', 'Done') + '</span><span class="liten">' + esc(deler.join(' · ')) + '</span>';
+    }
     else if (rad.resultat) st = '<span class="muted">' + T('Nytt valg: trekk ut på nytt', 'New settings: extract again') + '</span>';
     else st = '<span class="muted">' + T('Klar', 'Ready') + '</span>';
     td[5].innerHTML = st;
     if (rad.status === 'jobber') visFremdrift(rad);
 
-    // WAV-navn og nedlasting
-    td[6].innerHTML = '';
-    if (info && info.lyd.length && rad.status !== 'feil') {
-      rad.inp.value = navn(rad);
-      rad.inp.setAttribute('aria-label', T('WAV-navn', 'WAV name'));
-      td[6].appendChild(rad.inp);
-      if (dobbelt(rad)) { var w = document.createElement('span'); w.className = 'liten gul'; w.textContent = T('Samme navn som en annen fil i lista.', 'Same name as another file in the list.'); td[6].appendChild(w); }
-      if (r) {
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'btn lite' + (r.stille ? ' ghost' : '');
-        b.textContent = (r.stille ? T('Last ned likevel', 'Download anyway') : T('Last ned', 'Download')) + ' (' + storrelse(r.storrelse) + ')';
-        b.onclick = function () { lastNed(rad); };
-        td[6].appendChild(b);
-      }
-    } else td[6].innerHTML = '<span class="muted">–</span>';
+    tegnNavn(rad);
+  }
+
+  // WAV-navn og nedlasting. Feltet skrives aldri over mens noen skriver i det.
+  function tegnNavn(rad) {
+    var c = rad.celle, inp = rad.inp, fokus = document.activeElement === inp, vis = kanTrekkes(rad) || fokus, r = gjeldende(rad);
+    inp.hidden = !vis;
+    c.strek.hidden = vis;
+    inp.setAttribute('aria-label', T('WAV-navn', 'WAV name') + ': ' + rad.fil.name);
+    if (!fokus) inp.value = vis ? navn(rad) : '';
+    var m = vis && rad.merknad && rad.merknad === navn(rad);
+    c.merknad.hidden = !m;
+    if (m) c.merknad.textContent = T('Navnet var tatt, så det ble «' + rad.merknad + '».', 'The name was taken, so it became "' + rad.merknad + '".');
+    c.last.hidden = !(vis && r);
+    if (r) {
+      c.last.className = 'btn lite' + (r.stille ? ' ghost' : '');
+      c.last.textContent = (r.stille ? T('Last ned likevel', 'Download anyway') : T('Last ned', 'Download')) + ' (' + storrelse(r.storrelse) + ')';
+    }
   }
 
   function visFremdrift(rad) {
@@ -367,11 +456,20 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
     if (p) p.textContent = pr + ' %';
   }
 
+  function visMelding() {
+    var m = $('melding');
+    m.hidden = !melding;
+    if (!melding) { m.textContent = ''; return; }
+    m.textContent = melding.n === 1
+      ? T('«' + melding.navn + '» er allerede i lista, så den ble hoppet over.', '"' + melding.navn + '" is already in the list, so it was skipped.')
+      : T(melding.n + ' filer er allerede i lista, så de ble hoppet over.', melding.n + ' files are already in the list, so they were skipped.');
+  }
+
   function oppdater() {
     var n = rader.length, ferdig = 0, stille = 0, uten = 0, feil = 0, jobb = 0, ned = 0, ff = false;
     rader.forEach(function (r) {
-      var s = valgtSpor(r);
-      if (r.resultat && r.resultat.nokkel === nokkel(r)) { if (r.resultat.stille) stille++; else ferdig++; }
+      var s = valgtSpor(r), g = gjeldende(r);
+      if (g) { if (g.stille) stille++; else ferdig++; }
       if (r.status === 'utenLyd') uten++;
       if (r.status === 'feil' || (s && s.stotte)) feil++;
       if (trengerJobb(r)) jobb++;
@@ -400,26 +498,35 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
   }
 
   // ---------- Filer inn ----------
+  function sammeFil(a, b) { return a.name === b.name && a.size === b.size && a.lastModified === b.lastModified; }
   function leggTil(filer) {
+    var hoppet = [];
     Array.prototype.forEach.call(filer, function (f) {
-      var rad = { id: nesteId++, fil: f, status: 'leser', spor: 0, navnBruker: null };
-      rad.navnAuto = unikt(HaptLyd.wavNavn(f.name));
+      // Samme fil to ganger (samme navn, størrelse og tidspunkt) hoppes over
+      if (rader.some(function (r) { return sammeFil(r.fil, f); })) { hoppet.push(f.name); return; }
+      var rad = { id: nesteId++, fil: f, status: 'leser', spor: 0, navnBruker: null, navnAuto: null };
       rader.push(rad);
       lagRad(rad); tegnRad(rad);
       analyser(rad);
     });
-    oppdater();
+    melding = hoppet.length ? { n: hoppet.length, navn: hoppet[0] } : null;
+    visMelding(); oppdater();
   }
   function fjern(rad) {
     if (rad.status === 'jobber') return;
+    var i = rader.indexOf(rad), hadde = document.activeElement === rad.celle.fjern;
     if (rad.resultat && rad.resultat.url) URL.revokeObjectURL(rad.resultat.url);
-    rader.splice(rader.indexOf(rad), 1);
+    rader.splice(i, 1);
     rad.tr.remove();
-    rader.forEach(tegnRad);
-    oppdater();
+    fordelNavn(); rader.forEach(tegnNavn); oppdater();
+    // Tastaturet blir stående i lista: neste rad, eller feltet for å legge til filer
+    if (hadde) { var nb = rader[i] || rader[i - 1]; (nb && !nb.celle.fjern.disabled ? nb.celle.fjern : $('slipp')).focus(); }
   }
   $('fil').addEventListener('change', function () { if (this.files.length) leggTil(this.files); this.value = ''; });
   var slipp = $('slipp');
+  slipp.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); $('fil').click(); }
+  });
   ['dragenter', 'dragover'].forEach(function (t) { slipp.addEventListener(t, function () { slipp.classList.add('over'); }); });
   ['dragleave', 'drop'].forEach(function (t) { slipp.addEventListener(t, function () { slipp.classList.remove('over'); }); });
   // Slipp hvor som helst på siden; ellers åpner nettleseren fila og arbeidet forsvinner
@@ -439,14 +546,31 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
 
   // ---------- Uttrekk (én fil om gangen i en Web Worker) ----------
   function hentArbeider() { if (!arbeider) arbeider = new Worker('arbeider.js'); return arbeider; }
+  // Sjekk at nettleseren faktisk kan lese WAV-fila. I private vinduer holder Chrome store filer bare i minnet,
+  // og når plassen er brukt opp, blir fila stående uten innhold (nedlastingen avbrytes).
+  function lesbar(blob) {
+    var n = blob.size;
+    if (!n || typeof blob.arrayBuffer !== 'function') return Promise.resolve(true);
+    var pos = [n - 1];
+    for (var p = 0; p < n - 1; p += 128 * 1024 * 1024) pos.push(p);
+    if (n > 2) pos.push(Math.floor(n / 2));
+    var lest;
+    try { lest = pos.map(function (q) { return blob.slice(q, q + 1).arrayBuffer(); }); } catch (e) { return Promise.resolve(false); }
+    return Promise.all(lest).then(function (b) {
+      return b.every(function (x) { return x.byteLength === 1; });
+    }, function () { return false; });
+  }
   function trekkUt(rad) {
     return new Promise(function (ferdig) {
-      var w = hentArbeider(), deler = [], samlet = null, n = 0;
+      var w = hentArbeider(), deler = [], samlet = null, n = 0, avsluttet = false;
       if (rad.resultat && rad.resultat.url) URL.revokeObjectURL(rad.resultat.url);
       rad.resultat = null; rad.feil = null; rad.status = 'jobber'; rad.fremdrift = 0;
-      var nk = nokkel(rad), filnavn = navn(rad);
+      var nk = nokkel(rad);
       tegnRad(rad); oppdater();
-      function slutt() { aktiv = null; w.onmessage = null; w.onerror = null; tegnRad(rad); oppdater(); ferdig(); }
+      function slutt() {
+        if (avsluttet) return;
+        avsluttet = true; aktiv = null; w.onmessage = null; w.onerror = null; tegnRad(rad); oppdater(); ferdig();
+      }
       aktiv = { rad: rad, slutt: slutt };
       w.onmessage = function (e) {
         var m = e.data;
@@ -463,10 +587,18 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
           biter = biter.concat(deler);
           if (m.pad) biter.push(new Uint8Array(1));
           var blob = new Blob(biter, { type: 'audio/wav' }), res = m.resultat;
-          res.blob = blob; res.url = URL.createObjectURL(blob); res.nokkel = nk; res.storrelse = blob.size; res.deler = n;
-          res.stille = !(res.topp >= -60);
-          rad.resultat = res; rad.status = 'ferdig';
-          slutt();
+          biter = deler = samlet = null;
+          lesbar(blob).then(function (ok) {
+            if (avsluttet) return;
+            if (!ok) {
+              rad.status = 'feil'; rad.feilFra = 'uttrekk'; rad.feil = { kode: 'plass' };
+            } else {
+              res.blob = blob; res.url = URL.createObjectURL(blob); res.nokkel = nk; res.storrelse = blob.size; res.deler = n;
+              res.stille = !(res.topp >= -60);
+              rad.resultat = res; rad.status = 'ferdig';
+            }
+            slutt();
+          });
         } else if (m.type === 'feil') {
           rad.status = 'feil'; rad.feilFra = 'uttrekk'; rad.feil = { kode: m.kode, data: m.data, melding: m.melding };
           slutt();
@@ -478,7 +610,7 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
         arbeider = null; try { w.terminate(); } catch (e) {}
         slutt();
       };
-      w.postMessage({ type: 'trekk', id: rad.id, fil: rad.fil, spor: rad.spor, rate: oppsett.rate === 'kilde' ? 'kilde' : 48000, bits: oppsett.bits, navn: filnavn });
+      w.postMessage({ type: 'trekk', id: rad.id, fil: rad.fil, spor: rad.spor, rate: oppsett.rate === 'kilde' ? 'kilde' : 48000, bits: oppsett.bits });
     });
   }
   function kjor() {
@@ -525,11 +657,11 @@ table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monos
   $('tom').onclick = function () {
     if (kjorer) return;
     rader.forEach(function (r) { if (r.resultat && r.resultat.url) URL.revokeObjectURL(r.resultat.url); r.tr.remove(); });
-    rader = [];
-    oppdater();
+    rader = []; melding = null;
+    visMelding(); oppdater();
   };
 
-  window.addEventListener('hapt-sprak', function () { rader.forEach(tegnRad); oppdater(); });
+  window.addEventListener('hapt-sprak', function () { rader.forEach(tegnRad); visMelding(); oppdater(); });
   tegnOppsett(); oppdater();
   // Til testing: tilstanden kan leses av utenfra
   window.HaptLydSide = { rader: function () { return rader; } };

@@ -118,25 +118,37 @@
     return { aot: aot, rate: rate, utRate: utRate, kanaler: kan, sbr: sbr };
   }
 
-  // Kanalmaske fra QuickTime 'chan' (AudioChannelLayout). Etiketter 1–18 er de samme bitene som i WAV-masken.
+  // Kanalmaske fra QuickTime 'chan' (AudioChannelLayout), som ffmpeg 6.1 (mov_chan.c): hele taggen (oppsett << 16 |
+  // antall kanaler) slås opp i tabellen under. Ukjente tagger gir 0, og da brukes standardoppsettet for kanaltallet.
+  // ffmpeg gir bare masken og stokker ikke om kanalene, så det gjør ikke vi heller.
   var KANALTAGG = {
-    100: 0x4, 101: 0x3, 102: 0x3, 103: 0x3, 104: 0x3, // mono, stereo, stereo hodetelefon, matrise, MidSide
-    113: 0x7, 114: 0x7, 115: 0x107, 116: 0x33, 117: 0x37, 118: 0x37, 119: 0x37, 120: 0x37,
-    121: 0x3F, 122: 0x3F, 123: 0x3F, 124: 0x3F, 125: 0x13F, 126: 0xFF, 127: 0x63F, 128: 0x3F, 136: 0x33, 138: 0x37, 139: 0x3F
+    6553601: 0x4, 6619138: 0x3, 6684674: 0x3, 6750210: 0x60000000, 6815746: 0x3, 6881282: 0x3, 6946818: 0x3, 7077892: 0x33,
+    7143429: 0x37, 7208966: 0x137, 7274504: 0x737, 7340040: 0x2d033, 7405571: 0x7, 7471107: 0x7, 7536644: 0x107, 7602180: 0x107,
+    7667717: 0x607, 7733253: 0x607, 7798789: 0x607, 7864325: 0x607, 7929862: 0x60f, 7995398: 0x60f, 8060934: 0x60f, 8126470: 0x60f,
+    8192007: 0x70f, 8257544: 0x6cf, 8323080: 0x6cf, 8388616: 0x63f, 8454152: 0x6cf, 8519688: 0x6000060f, 8585219: 0x103, 8650756: 0x603,
+    8716291: 0xb, 8781828: 0x10b, 8847365: 0x60b, 8912900: 0xf, 8978437: 0x10f, 9043973: 0x60b, 9109510: 0x707, 9175047: 0x637,
+    9240582: 0x707, 9306119: 0x70f, 9371655: 0x637, 9437192: 0x737, 9699335: 0x6c7, 9764866: 0xc, 9830403: 0x7, 9895940: 0x107,
+    9961476: 0xf, 10027012: 0x10b, 10092549: 0x10f, 10158086: 0x707, 10223623: 0x637, 10289159: 0x70f, 10354695: 0xe0f, 10420231: 0x260f,
+    10485768: 0x63f, 10551304: 0x6cf, 10616840: 25769805327, 10682376: 6442452495, 10747912: 0x560f, 10813448: 0xf0f, 10878984: 0x270f, 10944520: 0x2e0f,
+    11010052: 0xf, 11075589: 0x10f, 11141126: 0x6c3, 11206662: 0x837, 11272198: 0x137, 11337735: 0x6cb, 11403271: 0x83f, 11468807: 0x13f,
+    11534343: 0x6c7, 11599880: 0x6cf, 11665416: 0x6f3, 11730952: 0x7c7, 11796489: 0x6fb, 11862025: 0x7cf, 11927559: 0x70f
   };
   function lesChan(u8, b) {
     if (!b || b.til - b.fra < 16) return 0;
     var o = b.fra + 4, tagg = u32(u8, o), bitmap = u32(u8, o + 4), n = u32(u8, o + 8);
-    if (tagg === 0x10000) return bitmap >>> 0;
+    if (tagg === 0x10000) return bitmap < 0x40000 ? bitmap : 0;
     if (tagg === 0) {
-      var m = 0;
-      for (var i = 0; i < n && o + 12 + i * 20 + 4 <= b.til; i++) {
-        var et = u32(u8, o + 12 + i * 20);
-        if (et >= 1 && et <= 18) m |= 1 << (et - 1); else return 0;
+      // Etiketter: 1–18 er de samme bitene som i WAV-masken, 35–39 er brede, LFE2 og stereo-nedmiks
+      if (b.til - o < 12 + n * 20) return 0;
+      var m = 0, EKSTRA = { 35: 2147483648, 36: 4294967296, 37: 34359738368, 38: 0x20000000, 39: 0x40000000 };
+      for (var i = 0; i < n; i++) {
+        var et = u32(u8, o + 12 + i * 20), bit = et >= 1 && et <= 18 ? Math.pow(2, et - 1) : EKSTRA[et] || 0;
+        if (!bit) return 0;
+        if (Math.floor(m / bit) % 2 === 0) m += bit;
       }
-      return m >>> 0;
+      return m;
     }
-    return KANALTAGG[tagg >>> 16] || 0;
+    return KANALTAGG[tagg] || 0;
   }
 
   function lydBeskrivelse(u8, e, qt, stsdVersjon) {
@@ -158,6 +170,8 @@
     var enda = r.boks('enda');
     r.le = enda ? u16(u8, enda.fra) !== 0 : null;
     r.chan = lesChan(u8, r.boks('chan'));
+    var srat = r.boks('srat');
+    if (srat && srat.til - srat.fra >= 8 && u32(u8, srat.fra + 4) > 0) r.rate = u32(u8, srat.fra + 4);
     return r;
   }
 
@@ -288,27 +302,132 @@
     return r;
   }
 
-  // Edit-liste: første spor med innhold (tomme edits er forsinkelse og hoppes over, som når ffmpeg bare tar lyden)
-  function vindu(t, mediaTotal, rate) {
-    var start = 0, slutt = mediaTotal;
-    var skala = t.skala || rate;
-    var e = (t.edits || []).filter(function (x) { return x.mediaTid >= 0; });
-    if (e.length) {
-      start = Math.round(e[0].mediaTid * rate / skala);
-      if (e.length === 1 && e[0].varighet > 0 && t.filmSkala) {
-        var lengde = e[0].varighet * rate / t.filmSkala;
-        // Edit-varigheten er ofte rundet til filmens tidsskala (ofte 1/1000 s). Er avviket mindre enn det, bruk hele.
-        if (start + lengde < mediaTotal - rate / t.filmSkala - 1) slutt = Math.max(start, Math.round(start + lengde));
+  // ---------- Pakker og edit-lister, som ffmpeg 6.1 ----------
+  // ffmpeg deler et PCM-spor i pakker. «Gammel» modus (stts har én oppføring med varighet 1): hver chunk deles i
+  // pakker på opptil 1024 rammer, og tiden T teller rammer. Ellers er hver sample en pakke med tid fra stts.
+  // Pakkene samles i løp: { off, size (byte per pakke), rammer (per pakke), ts, dur (T per pakke), antall }.
+  function pcmLop(spor) {
+    var tb = spor.tab, bpf = spor.kodek.fmt.bpf, st = tb.stsc, lop = [], s = 0, e = 0, T = 0, c, n, off;
+    function chunk(c) { while (e + 1 < st.length && st[e + 1][0] - 1 <= c) e++; return Math.min(st.length ? st[e][1] : 0, tb.antallSampler - s); }
+    if (spor.gammelPcm) {
+      for (c = 0; c < tb.antallChunk && s < tb.antallSampler; c++) {
+        n = chunk(c); off = tb.chunk(c); s += n;
+        var hele = Math.floor(n / 1024), rest = n - hele * 1024;
+        if (hele) { lop.push({ off: off, size: 1024 * bpf, rammer: 1024, ts: T, dur: 1024, antall: hele }); T += hele * 1024; off += hele * 1024 * bpf; }
+        if (rest) { lop.push({ off: off, size: rest * bpf, rammer: rest, ts: T, dur: rest, antall: 1 }); T += rest; }
+      }
+      return { lop: lop, slutt: T };
+    }
+    // Én pakke per sample. Fast størrelse fra stsz som er mindre enn en ramme eller ikke går opp i rammer, er
+    // gammel QuickTime-stil (ofte 1): da er hver sample én ramme. For stor fast størrelse rettes også, som i ffmpeg.
+    var fast = tb.fastStorrelse, si = 0, sl = tb.stts.length ? tb.stts[0][0] : 0;
+    if (fast > 0 && (fast < bpf || fast % bpf)) fast = bpf;
+    function sttsNeste() { while (sl === 0 && si + 1 < tb.stts.length) { si++; sl = tb.stts[si][0]; } return tb.stts.length ? tb.stts[si][1] : 0; }
+    for (c = 0; c < tb.antallChunk && s < tb.antallSampler; c++) {
+      n = chunk(c); off = tb.chunk(c);
+      if (fast > bpf && c + 1 < tb.antallChunk) { var neste = tb.chunk(c + 1); if (neste > off && n * fast > neste - off) fast = bpf; }
+      var cur = null, j = 0;
+      while (j < n) {
+        var dur = sttsNeste(), size, k;
+        if (fast > 0) { size = fast; k = Math.max(1, Math.min(n - j, sl > 0 ? sl : n - j)); }
+        else { size = tb.storrelse(s); k = 1; }
+        if (cur && cur.size === size && cur.dur === dur) cur.antall += k;
+        else { cur = { off: off, size: size, rammer: Math.floor(size / bpf), ts: T, dur: dur, antall: k }; lop.push(cur); }
+        off += size * k; T += dur * k; s += k; j += k; sl -= k;
       }
     }
-    return { start: Math.min(start, mediaTotal), slutt: slutt, flere: e.length > 1 };
+    return { lop: lop, slutt: T };
+  }
+
+  // Minste pakkegrense som er ≥ X (pakkestartene og slutten)
+  function grenseLop(lop, X, slutt) {
+    if (X <= 0) return 0;
+    for (var i = 0; i < lop.length; i++) {
+      var l = lop[i], end = l.ts + l.antall * l.dur;
+      if (X <= l.ts) return l.ts;
+      if (X <= end) return l.dur > 0 ? Math.min(end, l.ts + Math.ceil((X - l.ts) / l.dur) * l.dur) : end;
+    }
+    return slutt;
+  }
+  function grenseStts(stts, X) {
+    if (X <= 0) return 0;
+    var T = 0;
+    for (var i = 0; i < stts.length; i++) {
+      var end = T + stts[i][0] * stts[i][1];
+      if (X <= T) return T;
+      if (X <= end) return stts[i][1] > 0 ? Math.min(end, T + Math.ceil((X - T) / stts[i][1]) * stts[i][1]) : end;
+      T = end;
+    }
+    return T;
+  }
+
+  // Lengden av tomme edits (mediatid −1) helt først i edit-lista, i filmens tidsskala
+  function tomStart(ed) {
+    var s = 0;
+    for (var i = 0; ed && i < ed.length && ed[i].mediaTid < 0; i++) s += ed[i].varighet;
+    return s;
+  }
+
+  // Hvilke tidsrom [S, E) av mediet som spilles, i pakketid T, og { stille: sekunder } for tomme edits.
+  // Som ffmpeg: første edit med innhold starter nøyaktig på mediatiden, senere edits starter på første hele pakke,
+  // og alle slutter på første pakkegrense ved eller etter slutten av editen. Tomme edits først hoppes over.
+  // Unntak, så WAV-fila følger tidslinja til videoen: en tom edit etter lyd blir stillhet like lang som editen,
+  // og tomme edits først blir stillhet når videosporet starter med det samme hullet. Da kuttes all lyden nøyaktig
+  // på edit-grensene, så hver del havner på riktig sted. Uten edit-liste: hele mediet.
+  function utvalg(t, grense, slutt, tilT, videoHull) {
+    var ed = t.edits;
+    if (!ed || !ed.length || !t.filmSkala || !t.skala) return [[0, slutt]];
+    var forste = 0, i;
+    while (forste < ed.length && ed[forste].mediaTid < 0) forste++;
+    var hull = tomStart(ed), startStille = hull > 0 && hull === videoHull, tidslinje = startStille;
+    for (i = forste + 1; i < ed.length; i++) if (ed[i].mediaTid < 0 && ed[i].varighet > 0) tidslinje = true;
+    var ut = [], forsteLyd = true;
+    for (i = startStille ? 0 : forste; i < ed.length; i++) {
+      var e = ed[i];
+      if (e.mediaTid < 0) { if (tidslinje && e.varighet > 0) ut.push({ stille: e.varighet / t.filmSkala }); continue; }
+      var mt = tilT(e.mediaTid), d = tilT(Math.round(e.varighet * t.skala / t.filmSkala));
+      var S = tidslinje || forsteLyd ? mt : grense(mt), E = tidslinje ? mt + d : grense(mt + d);
+      forsteLyd = false;
+      S = Math.min(S, slutt); E = Math.min(E, slutt);
+      if (E > S) ut.push([S, E]);
+    }
+    return ut;
+  }
+
+  // Går gjennom PCM-rammene i utvalget i rekkefølge: cb(off i fila, antall rammer). Stillhet gir cb(null, antall).
+  function pcmGjennom(spor, cb) {
+    var lop = spor.lop, bpf = spor.kodek.fmt.bpf;
+    spor.utvalg.forEach(function (u) {
+      if (u.stille != null) { if (u.stille > 0) cb(null, u.stille); return; }
+      var S = u[0], E = u[1];
+      for (var i = 0; i < lop.length; i++) {
+        var l = lop[i], end = l.ts + l.antall * l.dur;
+        if (end <= S || l.dur <= 0 && (l.ts < S || l.ts >= E)) continue;
+        if (l.ts >= E) break;
+        var a = Math.max(S, l.ts), b = Math.min(E, end);
+        if (l.dur === l.rammer && l.size === l.rammer * bpf) {
+          // Sammenhengende rammer: rett fram
+          if (b > a) cb(l.off + (a - l.ts) * bpf, b - a);
+          continue;
+        }
+        var j0 = l.dur > 0 ? Math.floor((a - l.ts) / l.dur) : 0, j1 = l.dur > 0 ? Math.ceil((b - l.ts) / l.dur) : l.antall;
+        for (var j = j0; j < j1; j++) {
+          var pts = l.ts + j * l.dur, fa = 0, fb = l.rammer;
+          if (l.dur > 0) {
+            if (pts < a) fa = Math.round((a - pts) * l.rammer / l.dur);
+            if (pts + l.dur > b) fb = Math.round((b - pts) * l.rammer / l.dur);
+          }
+          if (fb > fa) cb(l.off + j * l.size + fa * bpf, fb - fa);
+        }
+      }
+    });
   }
 
   var VIDEO = {
     apch: 'ProRes 422 HQ', apcn: 'ProRes 422', apcs: 'ProRes 422 LT', apco: 'ProRes 422 Proxy', ap4h: 'ProRes 4444', ap4x: 'ProRes 4444 XQ',
     nclc: 'NotchLC', Hap1: 'HAP', Hap5: 'HAP Alpha', HapY: 'HAP Q', HapM: 'HAP Q Alpha', HapA: 'HAP Alpha-Only', Hap7: 'HAP R',
     avc1: 'H.264', avc3: 'H.264', hvc1: 'H.265', hev1: 'H.265', AVdn: 'DNxHD', AVdh: 'DNxHR', mp4v: 'MPEG-4', jpeg: 'Motion JPEG', mjpa: 'Motion JPEG',
-    av01: 'AV1', vp09: 'VP9', png: 'PNG', 'png ': 'PNG', rle: 'Animation', 'rle ': 'Animation', DXDI: 'DXV', DXD3: 'DXV', 'v210': 'Ukomprimert 10 bit', '2vuy': 'Ukomprimert 8 bit'
+    av01: 'AV1', vp09: 'VP9', png: 'PNG', 'png ': 'PNG', rle: 'Animation', 'rle ': 'Animation', DXDI: 'DXV', DXD3: 'DXV', 'v210': 'Uncompressed 10-bit', '2vuy': 'Uncompressed 8-bit'
   };
 
   // ---------- Analyse av hele fila ----------
@@ -324,6 +443,12 @@
       var fragmentert = !!finn(rot, 'mvex');
       var res = { qt: qt, merke: m.ftyp ? m.ftyp.merke : 'qt  ', moovForst: null, varighet: filmSkala ? filmVarighet / filmSkala : 0, lyd: [], video: null, fragmentert: fragmentert, _u8: u8 };
       res.moovPos = m.pos;
+      // Hullet først i videosporet (tomme edits), så lyden kan få samme hull
+      var videoHull = 0;
+      rot.filter(function (b) { return b.type === 'trak'; }).some(function (trak) {
+        var t = lesSpor(u8, trak, qt, filmSkala);
+        if (t && t.tab && t.tab.stsd && t.handler === 'vide') { videoHull = tomStart(t.edits); return true; }
+      });
       rot.filter(function (b) { return b.type === 'trak'; }).forEach(function (trak) {
         var t = lesSpor(u8, trak, qt, filmSkala);
         if (!t || !t.tab || !t.tab.stsd) return;
@@ -332,9 +457,9 @@
         if (t.handler === 'vide' && !res.video) {
           var tb = tabeller(u8, t), e0 = besk[0];
           var frames = tb.antallSampler, dur = t.skala ? t.mediaVarighet / t.skala : 0;
-          // Lengde etter edit-lista (det som faktisk spilles), ellers mediets lengde
-          var ed = (t.edits || []).filter(function (x) { return x.mediaTid >= 0; });
-          var vis = ed.length && filmSkala && ed.every(function (x) { return x.varighet > 0; }) ? ed.reduce(function (s, x) { return s + x.varighet; }, 0) / filmSkala : dur;
+          // Lengde på tidslinja etter edit-lista (også tomme edits), ellers mediets lengde
+          var ed = t.edits || [], medInnhold = ed.filter(function (x) { return x.mediaTid >= 0; });
+          var vis = medInnhold.length && filmSkala && medInnhold.every(function (x) { return x.varighet > 0; }) ? ed.reduce(function (s, x) { return s + x.varighet; }, 0) / filmSkala : dur;
           res.video = {
             fourcc: e0 ? e0.type : '', navn: e0 ? (VIDEO[e0.type] || e0.type) : '',
             bredde: e0 ? u16(u8, e0.fra + 24) : 0, hoyde: e0 ? u16(u8, e0.fra + 26) : 0,
@@ -346,6 +471,9 @@
         var spor = { indeks: res.lyd.length, id: t.id, aktiv: t.aktiv, spor: t };
         if (!besk.length) { spor.stotte = { kode: 'odelagt' }; res.lyd.push(spor); return; }
         var d = lydBeskrivelse(u8, besk[0], qt, stsdVer);
+        // Samplerate 0 (f.eks. over 65535 Hz i en 16.16-verdi): bruk tidsskalaen til mediet, som ffmpeg.
+        // Er tidsskalaen det samme tallet med de høye bitene kuttet bort, er det også tidsskalaen som gjelder.
+        if ((!d.rate || (t.skala > 65535 && t.skala % 65536 === Math.round(d.rate))) && t.skala > 1) d.rate = t.skala;
         spor.fourcc = d.fourcc; spor.rate = d.rate; spor.kanaler = d.kanaler;
         var k = kodek(u8, d);
         spor.kodek = k;
@@ -370,31 +498,44 @@
         if (!tb2.antallSampler || !tb2.antallChunk) {
           if (!spor.stotte) spor.stotte = { kode: fragmentert ? 'fragmentert' : 'tomt-spor' };
         }
-        // Lengde i sampler
+        if (!spor.stotte && !(spor.rate > 0)) spor.stotte = { kode: 'ingen-rate' };
+        // ffmpeg 6.1 skriver 24-bits PCM i MP4 med pcmC = 32 bit, men stsz = 3 byte per kanal. stsz stemmer med dataene.
+        if (k.type === 'pcm' && (d.fourcc === 'ipcm' || d.fourcc === 'fpcm') && tb2.fastStorrelse > 0 && tb2.fastStorrelse !== k.fmt.bpf && tb2.fastStorrelse % d.kanaler === 0) {
+          var nb = tb2.fastStorrelse / d.kanaler;
+          if (k.fmt.enc === 's' ? nb >= 1 && nb <= 4 : nb === 4 || nb === 8) { k.fmt.bytes = nb; k.fmt.bits = nb * 8; k.fmt.bpf = tb2.fastStorrelse; k.bits = nb * 8; spor.bits = k.bits; }
+        }
+        // Lengde i rammer etter edit-lista
         if (k.type === 'pcm' && !spor.stotte) {
-          var gml = tb2.stts.length === 1 && tb2.stts[0][1] === 1;
-          spor.gammelPcm = gml;
+          spor.gammelPcm = tb2.stts.length === 1 && tb2.stts[0][1] === 1;
+          var pl = pcmLop(spor), rate = d.rate;
+          spor.lop = pl.lop;
+          // I gammel modus teller T rammer; edit-tidene står i mediets tidsskala
+          var omr = spor.gammelPcm && t.skala && t.skala !== rate ? rate / t.skala : 1;
+          spor.utvalg = utvalg(t, function (X) { return grenseLop(pl.lop, X, pl.slutt); }, pl.slutt, function (x) { return Math.round(x * omr); }, videoHull)
+            .map(function (u) { return u.stille != null ? { stille: Math.round(u.stille * rate) } : u; });
           var tot = 0;
-          if (gml) tot = tb2.antallSampler;
-          else {
-            // Hver sample er en pakke med flere rammer: summer bytes
-            for (var s = 0; s < tb2.antallSampler; s++) tot += tb2.storrelse(s);
-            tot = Math.floor(tot / k.fmt.bpf);
-          }
-          spor.mediaRammer = tot;
-          var v = vindu(t, tot, d.rate);
-          spor.vindu = v;
-          spor.rammer = v.slutt - v.start;
-          spor.varighet = spor.rammer / d.rate;
+          pcmGjennom(spor, function (o, n) { tot += n; });
+          spor.rammer = tot;
+          spor.varighet = tot / rate;
         } else if (k.type === 'wc' && !spor.stotte) {
+          // Komprimert: tidsrommene regnes i sekunder og velges ut av det dekodede signalet
           var sum = 0;
           for (var x = 0; x < tb2.stts.length; x++) sum += tb2.stts[x][0] * tb2.stts[x][1];
-          var ms = t.skala || spor.rate;
-          var start = 0, ed2 = (t.edits || []).filter(function (x) { return x.mediaTid >= 0; });
-          if (ed2.length) start = ed2[0].mediaTid;
-          else if (k.preskip) start = k.preskip * ms / 48000; // Opus uten edit-liste: bruk pre-skip
-          spor.hopp = start / ms; // sekunder som skal hoppes over i starten (encoderforsinkelse)
-          spor.varighet = Math.max(0, (sum - start) / ms);
+          var ms = t.skala || spor.rate, sek = [];
+          var ut2 = utvalg(t, function (X) { return grenseStts(tb2.stts, X); }, sum, function (v) { return v; }, videoHull);
+          if (!t.edits || !t.edits.length) ut2 = [[k.preskip ? Math.round(k.preskip * ms / 48000) : 0, sum]]; // Opus uten edit-liste: hopp over pre-skip
+          // Med stillhet følger lyden tidslinja, så slutten kuttes nøyaktig også her
+          var forrige = -1, varighet = 0, harStille = ut2.some(function (x) { return x.stille != null; });
+          for (var u = 0; u < ut2.length; u++) {
+            if (ut2[u].stille != null) { sek.push(ut2[u]); varighet += ut2[u].stille; continue; }
+            if (ut2[u][0] < forrige) { spor.stotte = { kode: 'edits' }; break; }
+            forrige = ut2[u][1];
+            varighet += (ut2[u][1] - ut2[u][0]) / ms;
+            // Det dekoderen gir etter siste pakke tas med, som i ffmpeg (ikke når lyden følger tidslinja)
+            sek.push([ut2[u][0] / ms, ut2[u][1] >= sum && !harStille ? Infinity : ut2[u][1] / ms]);
+          }
+          spor.utvalg = sek;
+          spor.varighet = varighet;
         }
         res.lyd.push(spor);
       });
@@ -407,22 +548,14 @@
   function biter(spor, maksBit) {
     var tb = spor.tab, ut = [], s = 0, e = 0, st = tb.stsc;
     if (spor.kodek.type === 'pcm') {
-      var bpf = spor.kodek.fmt.bpf, pos = 0, v = spor.vindu, maksR = Math.max(1, Math.floor(maksBit / bpf));
-      for (var c = 0; c < tb.antallChunk && pos < v.slutt; c++) {
-        while (e + 1 < st.length && st[e + 1][0] - 1 <= c) e++;
-        var n = st.length ? st[e][1] : 0, rammer, bytes;
-        if (spor.gammelPcm) { rammer = Math.min(n, tb.antallSampler - s); bytes = rammer * bpf; }
-        else { bytes = 0; for (var i = 0; i < n && s + i < tb.antallSampler; i++) bytes += tb.storrelse(s + i); rammer = Math.floor(bytes / bpf); }
-        s += n;
-        if (rammer <= 0) { if (s >= tb.antallSampler) break; continue; }
-        var off = tb.chunk(c), a = Math.max(pos, v.start), b = Math.min(pos + rammer, v.slutt);
-        for (var r = a; r < b; r += maksR) {
-          var k = Math.min(maksR, b - r);
-          ut.push({ off: off + (r - pos) * bpf, len: k * bpf, rammer: k });
+      var bpf = spor.kodek.fmt.bpf, maksR = Math.max(1, Math.floor(maksBit / bpf));
+      pcmGjennom(spor, function (off, n) {
+        if (off === null) { ut.push({ stille: true, off: -1, len: 0, rammer: n }); return; }
+        for (var r = 0; r < n; r += maksR) {
+          var k = Math.min(maksR, n - r);
+          ut.push({ off: off + r * bpf, len: k * bpf, rammer: k });
         }
-        pos += rammer;
-        if (s >= tb.antallSampler) break;
-      }
+      });
     } else {
       // Komprimert: én bit per pakke, med tidsstempel i mediets tidsskala
       var dts = 0, ti = 0, tl = tb.stts.length ? tb.stts[0][0] : 0;
@@ -449,11 +582,13 @@
     var blokker = [], cur = null;
     for (var i = 0; i < liste.length; i++) {
       var b = liste[i];
+      // Stillhet leses ikke fra fila
+      if (b.stille) { blokker.push({ stille: true, biter: [b] }); cur = null; continue; }
       if (cur && b.off >= cur.slutt && b.off - cur.slutt <= glipe && b.off + b.len - cur.start <= maksBlokk) { cur.biter.push(b); cur.slutt = b.off + b.len; }
       else { cur = { start: b.off, slutt: b.off + b.len, biter: [b] }; blokker.push(cur); }
     }
     var neste = 0, igang = [];
-    function fyll() { while (igang.length < samtidig && neste < blokker.length) { var bl = blokker[neste++]; igang.push({ bl: bl, p: les(fil, bl.start, bl.slutt) }); } }
+    function fyll() { while (igang.length < samtidig && neste < blokker.length) { var bl = blokker[neste++]; igang.push({ bl: bl, p: bl.stille ? Promise.resolve(null) : les(fil, bl.start, bl.slutt) }); } }
     return (async function () {
       fyll();
       while (igang.length) {
@@ -461,9 +596,9 @@
         var x = igang.shift(), tv = Date.now(), u8 = await x.p;
         if (valg.tid) valg.tid.venting += Date.now() - tv;
         fyll();
-        if (u8.length < x.bl.slutt - x.bl.start) throw feil('avkortet');
+        if (!x.bl.stille && u8.length < x.bl.slutt - x.bl.start) throw feil('avkortet');
         for (var j = 0; j < x.bl.biter.length; j++) {
-          var bit = x.bl.biter[j], r = valg.vedBit(bit, u8, bit.off - x.bl.start);
+          var bit = x.bl.biter[j], r = valg.vedBit(bit, u8, x.bl.stille ? 0 : bit.off - x.bl.start);
           if (r && r.then) await r;
         }
       }
