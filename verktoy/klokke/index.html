@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>hapt-o-clock – HAPT verktøy</title>
+<title data-en="hapt-o-clock – HAPT tools">hapt-o-clock – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <link rel="stylesheet" href="klokke.css">
@@ -13,29 +13,29 @@
 </head>
 <body class="klokke">
 <header class="site">
-  <a class="brand" href="../" title="Tilbake til verktøyene"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>o-clock</span></a>
-  <a class="topp-tilbake" href="../">← verktøy</a>
+  <a class="brand" href="../" title="Tilbake til verktøyene" data-en-title="Back to the tools"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>o-clock</span></a>
+  <a class="topp-tilbake" href="../" data-en="← tools">← verktøy</a>
   <span class="topp-luft"></span>
-  <span class="taster"><span><kbd>Space</kbd>T1</span><span><kbd>↩</kbd>T2</span><span><kbd>M</kbd>melding</span><span><kbd>F</kbd>fullskjerm</span></span>
+  <span class="taster"><span><kbd>Space</kbd>T1</span><span><kbd>↩</kbd>T2</span><span data-en="<kbd>M</kbd>message"><kbd>M</kbd>melding</span><span data-en="<kbd>F</kbd>fullscreen"><kbd>F</kbd>fullskjerm</span></span>
   <span class="skille"></span>
-  <div class="utgang" role="group" aria-label="Utgang">
-    <button type="button" data-ut="clock" title="Timerne og meldingen">Klokke</button>
-    <button type="button" data-ut="black" title="Svart scene">Svart</button>
-    <button type="button" data-ut="logo" title="Logoen på svart">Logo</button>
+  <div class="utgang" role="group" aria-label="Utgang" data-en-aria-label="Output">
+    <button type="button" data-ut="clock" title="Timerne og meldingen" data-en-title="The timers and the message" data-en="Clock">Klokke</button>
+    <button type="button" data-ut="black" title="Svart scene" data-en-title="Black stage" data-en="Black">Svart</button>
+    <button type="button" data-ut="logo" title="Logoen på svart" data-en-title="The logo on black">Logo</button>
   </div>
   <button class="knapp" type="button" id="apneScene" title="Åpner scenen på skjerm 2 i fullskjerm, eller i et eget vindu">Åpne scene</button>
   <span class="skille"></span>
-  <button class="knapp" type="button" id="apneInnst" title="Innstillinger">Innstillinger</button>
+  <button class="knapp" type="button" id="apneInnst" title="Innstillinger" data-en-title="Settings" data-en="Settings">Innstillinger</button>
 </header>
 
 <main class="drift">
   <aside class="side">
     <div class="seksjon">
-      <h3>Melding</h3>
-      <input type="text" id="utkast" placeholder="Skriv melding …" autocomplete="off">
+      <h3 data-en="Message">Melding</h3>
+      <input type="text" id="utkast" placeholder="Skriv melding …" data-en-placeholder="Type a message …" autocomplete="off">
       <div class="melding-knapper">
-        <button class="knapp" type="button" id="tilBank" title="Legg meldingen i banken">+ Bank</button>
-        <button class="knapp" type="button" id="visMelding" title="Vis eller skjul meldingen på scenen (M)"><span class="prik"></span><span>Vis melding</span></button>
+        <button class="knapp" type="button" id="tilBank" title="Legg meldingen i banken" data-en-title="Add the message to the bank">+ Bank</button>
+        <button class="knapp" type="button" id="visMelding" title="Vis eller skjul meldingen på scenen (M)" data-en-title="Show or hide the message on stage (M)"><span class="prik"></span><span>Vis melding</span></button>
       </div>
       <div class="pa-scenen" id="paScenen" hidden></div>
     </div>
@@ -44,9 +44,9 @@
       <div class="bank" id="bank"></div>
     </div>
     <div class="seksjon">
-      <h3>Utgang <span class="hoyre" id="sceneTekst">Scenen er ikke åpen</span></h3>
+      <h3><span data-en="Output">Utgang</span> <span class="hoyre" id="sceneTekst">Scenen er ikke åpen</span></h3>
       <div class="forhand lukket" id="forhand"><canvas id="forhandLerret"></canvas></div>
-      <p class="note" style="font-size:12px">Med to skjermer i Chrome eller Edge går «Åpne scene» rett i fullskjerm på skjerm 2, og kontrollene flytter til et eget vindu her (nettleseren spør om lov første gang). Esc på scenen avslutter. Ellers åpnes scenen i et eget vindu som du drar dit og setter i fullskjerm med «Fullskjerm» eller F.</p>
+      <p class="note" style="font-size:12px" data-en="With two screens in Chrome or Edge, “Open stage” goes straight to fullscreen on screen 2, and the controls move to a separate window here (the browser asks for permission the first time). Esc on the stage exits. Otherwise the stage opens in a separate window that you drag into place and set to fullscreen with “Fullscreen” or F.">Med to skjermer i Chrome eller Edge går «Åpne scene» rett i fullskjerm på skjerm 2, og kontrollene flytter til et eget vindu her (nettleseren spør om lov første gang). Esc på scenen avslutter. Ellers åpnes scenen i et eget vindu som du drar dit og setter i fullskjerm med «Fullskjerm» eller F.</p>
     </div>
   </aside>
   <section class="timere" id="timere"></section>
@@ -54,14 +54,14 @@
 
 <dialog class="innst" id="innst">
   <div class="innst-hode">
-    <h2>Innstillinger</h2>
-    <button class="knapp" type="button" id="lukkInnst">Ferdig</button>
+    <h2 data-en="Settings">Innstillinger</h2>
+    <button class="knapp" type="button" id="lukkInnst" data-en="Done">Ferdig</button>
     <div class="fanelinje" id="innstFaner">
       <button class="fane" type="button" data-side="t0">Timer 1</button>
       <button class="fane" type="button" data-side="t1">Timer 2</button>
-      <button class="fane" type="button" data-side="scene">Scene</button>
+      <button class="fane" type="button" data-side="scene" data-en="Stage">Scene</button>
       <button class="fane" type="button" data-side="presets">Presets</button>
-      <button class="fane" type="button" data-side="kp">Kjøreplan</button>
+      <button class="fane" type="button" data-side="kp" data-en="Rundown">Kjøreplan</button>
       <button class="fane" type="button" data-side="fil">Show</button>
     </div>
   </div>

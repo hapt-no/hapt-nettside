@@ -3,6 +3,9 @@
 (function (root) {
   'use strict';
 
+  // Tekst på valgt språk (HaptSprak fra tema.js); norsk når den mangler, f.eks. i node
+  function tr(no, en) { return root && root.HaptSprak ? root.HaptSprak.t(no, en) : no; }
+
   // CVT med redusert blanking (VESA CVT 1.2). versjon 1 eller 2.
   function cvtRB(hAktiv, vAktiv, hz, versjon, eksakt) {
     var vSync;
@@ -62,9 +65,9 @@
 
   function sjekkTiming(t) {
     var feil = [];
-    if (t.hAktiv > 4095 || t.vAktiv > 4095) feil.push('EDID kan bare beskrive opptil 4095 piksler i hver retning i en DTD.');
-    if (t.klokke > 655.35) feil.push('Pikselklokka (' + t.klokke.toFixed(2) + ' MHz) er over 655,35 MHz, som er det høyeste en DTD kan beskrive. Prøv CVT-RB v2 eller lavere frekvens.');
-    if (t.vFp > 63 || t.vSync > 63) feil.push('Vertikal front porch eller sync er for stor for DTD.');
+    if (t.hAktiv > 4095 || t.vAktiv > 4095) feil.push(tr('EDID kan bare beskrive opptil 4095 piksler i hver retning i en DTD.', 'A DTD in an EDID can only describe up to 4095 pixels in each direction.'));
+    if (t.klokke > 655.35) feil.push(tr('Pikselklokka (' + t.klokke.toFixed(2) + ' MHz) er over 655,35 MHz, som er det høyeste en DTD kan beskrive. Prøv CVT-RB v2 eller lavere frekvens.', 'The pixel clock (' + t.klokke.toFixed(2) + ' MHz) is above 655.35 MHz, the highest a DTD can describe. Try CVT-RB v2 or a lower refresh rate.'));
+    if (t.vFp > 63 || t.vSync > 63) feil.push(tr('Vertikal front porch eller sync er for stor for DTD.', 'Vertical front porch or sync is too large for a DTD.'));
     return feil;
   }
 
@@ -181,9 +184,9 @@
 
   function les(bytes) {
     var r = { feil: [], timinger: [], vic: [], blokker: Math.floor(bytes.length / 128) };
-    if (bytes.length < 128) { r.feil.push('For kort: en EDID er minst 128 byte, denne er ' + bytes.length + '.'); return r; }
+    if (bytes.length < 128) { r.feil.push(tr('For kort: en EDID er minst 128 byte, denne er ' + bytes.length + '.', 'Too short: an EDID is at least 128 bytes, this one is ' + bytes.length + '.')); return r; }
     var hode = [0, 255, 255, 255, 255, 255, 255, 0];
-    if (hode.some(function (v, i) { return bytes[i] !== v; })) r.feil.push('Starten (header) er ikke en gyldig EDID.');
+    if (hode.some(function (v, i) { return bytes[i] !== v; })) r.feil.push(tr('Starten (header) er ikke en gyldig EDID.', 'The header is not a valid EDID header.'));
     r.sjekksum = [];
     for (var bl = 0; bl < r.blokker; bl++) {
       var s = 0; for (var i = 0; i < 128; i++) s += bytes[bl * 128 + i];

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Testbilde – HAPT verktøy</title>
+<title data-en="Test pattern – HAPT tools">Testbilde – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <script src="../tema.js"></script>
@@ -28,27 +28,27 @@
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="./" aria-current="page">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
-  <h1>Testbilde</h1>
-  <p class="lead">Lag et testbilde i riktig oppløsning, med panelkart og nummer på hvert panel. Har du et pixelmap, får hver flate sitt eget testbilde på riktig plass.</p>
+  <h1 data-en="Test pattern">Testbilde</h1>
+  <p class="lead" data-en="Make a test pattern at the right resolution, with a panel map and a number on every panel. If you have a pixel map, each surface gets its own test pattern in the right place.">Lag et testbilde i riktig oppløsning, med panelkart og nummer på hvert panel. Har du et pixelmap, får hver flate sitt eget testbilde på riktig plass.</p>
 
   <div class="grid">
     <div>
       <div class="card">
-        <h2>Pixelmap</h2>
-        <label class="slipp btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px">Last inn pixelmap (PNG eller kartfil)</label>
+        <h2 data-en="Pixel map">Pixelmap</h2>
+        <label class="slipp btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px" data-en="Load pixel map (PNG or map file)">Last inn pixelmap (PNG eller kartfil)</label>
         <input id="kartfil" type="file" accept="image/png,image/jpeg,image/webp,.json,application/json" hidden>
-        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap">Bruk kartet fra Pixelmap-siden</button></div>
+        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap" data-en="Use the map from the Pixel map page">Bruk kartet fra Pixelmap-siden</button></div>
         <div id="kartInfo" hidden>
           <p class="note" id="kartTekst"></p>
           <div id="kartFlater"></div>
-          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart">Fjern pixelmap</button></div>
+          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart" data-en="Remove pixel map">Fjern pixelmap</button></div>
         </div>
-        <p class="note">Fra et bilde finner verktøyet flatene selv (alt som ikke er svart, delt opp etter farge) og leser navnet som står på hver flate. Første gang lastes tekstgjenkjenningen ned (ca. 6 MB). Sjekk og rett navn og panelstørrelse etterpå.</p>
+        <p class="note" data-en="From an image the tool finds the surfaces itself (everything that is not black, split by colour) and reads the name written on each surface. The first time, the text recognition is downloaded (about 6 MB). Check and correct names and panel sizes afterwards.">Fra et bilde finner verktøyet flatene selv (alt som ikke er svart, delt opp etter farge) og leser navnet som står på hver flate. Første gang lastes tekstgjenkjenningen ned (ca. 6 MB). Sjekk og rett navn og panelstørrelse etterpå.</p>
       </div>
 
       <div class="card" id="enkelt">
         <div class="field">
-          <label for="mal">Oppløsning</label>
+          <label for="mal" data-en="Resolution">Oppløsning</label>
           <select id="mal">
             <option value="1920x1080">1920 × 1080 (Full HD)</option>
             <option value="3840x2160">3840 × 2160 (UHD)</option>
@@ -56,49 +56,49 @@
             <option value="1920x1200">1920 × 1200</option>
             <option value="2560x1440">2560 × 1440</option>
             <option value="4096x2160">4096 × 2160 (DCI 4K)</option>
-            <option value="1080x1920">1080 × 1920 (stående)</option>
-            <option value="egen">Egen</option>
+            <option value="1080x1920" data-en="1080 × 1920 (portrait)">1080 × 1920 (stående)</option>
+            <option value="egen" data-en="Custom">Egen</option>
           </select>
         </div>
         <div class="row">
-          <div class="field"><label for="w">Bredde (px)</label><input id="w" type="number" min="16" max="16384" value="1920"></div>
-          <div class="field"><label for="h">Høyde (px)</label><input id="h" type="number" min="16" max="16384" value="1080"></div>
+          <div class="field"><label for="w" data-en="Width (px)">Bredde (px)</label><input id="w" type="number" min="16" max="16384" value="1920"></div>
+          <div class="field"><label for="h" data-en="Height (px)">Høyde (px)</label><input id="h" type="number" min="16" max="16384" value="1080"></div>
         </div>
         <div class="row">
-          <div class="field"><label for="pw">Panel bredde (px)</label><input id="pw" type="number" min="0" value="0"></div>
-          <div class="field"><label for="ph">Panel høyde (px)</label><input id="ph" type="number" min="0" value="0"></div>
+          <div class="field"><label for="pw" data-en="Panel width (px)">Panel bredde (px)</label><input id="pw" type="number" min="0" value="0"></div>
+          <div class="field"><label for="ph" data-en="Panel height (px)">Panel høyde (px)</label><input id="ph" type="number" min="0" value="0"></div>
         </div>
-        <p class="note" style="margin-top:-6px">0 = uten panelkart. Kom du fra LED-kalkulatoren, er dette fylt ut.</p>
-        <div class="field"><label for="tittel">Tekst</label><input id="tittel" type="text" placeholder="F.eks. Hovedskjerm"></div>
+        <p class="note" style="margin-top:-6px" data-en="0 = no panel map. If you came from the LED calculator, this is already filled in.">0 = uten panelkart. Kom du fra LED-kalkulatoren, er dette fylt ut.</p>
+        <div class="field"><label for="tittel" data-en="Text">Tekst</label><input id="tittel" type="text" placeholder="F.eks. Hovedskjerm" data-en-placeholder="E.g. Main screen"></div>
       </div>
 
       <div class="card">
-        <h2>Tekst på alle flater</h2>
-        <div class="field"><label for="prosjekt">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026"></div>
-        <div class="field"><label for="fritekst">Fritekst</label><input id="fritekst" type="text" placeholder="F.eks. Sal A · 15. oktober"></div>
-        <p class="note" style="margin-top:-4px">Kommer øverst på hvert testbilde, over logoen.</p>
+        <h2 data-en="Text on all surfaces">Tekst på alle flater</h2>
+        <div class="field"><label for="prosjekt" data-en="Project">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026" data-en-placeholder="E.g. AGM 2026"></div>
+        <div class="field"><label for="fritekst" data-en="Free text">Fritekst</label><input id="fritekst" type="text" placeholder="F.eks. Sal A · 15. oktober" data-en-placeholder="E.g. Hall A · 15 October"></div>
+        <p class="note" style="margin-top:-4px" data-en="Shown at the top of every test pattern, above the logo.">Kommer øverst på hvert testbilde, over logoen.</p>
       </div>
 
       <div class="card">
-        <h2>Innhold</h2>
-        <label class="check"><input type="checkbox" id="o-paneler" checked> Panelkart med nummer</label>
-        <label class="check"><input type="checkbox" id="o-rutenett" checked> Rutenett</label>
-        <label class="check"><input type="checkbox" id="o-sirkel" checked> Sirkel og kryss</label>
-        <label class="check"><input type="checkbox" id="o-diag"> Diagonaler</label>
-        <label class="check"><input type="checkbox" id="o-farger" checked> Fargestriper og gråtrapp</label>
-        <label class="check"><input type="checkbox" id="o-kant" checked> Kantlinje og piler</label>
-        <label class="check"><input type="checkbox" id="o-logo" checked> HAPT-logo</label>
-        <label class="check"><input type="checkbox" id="o-tekst" checked> Oppløsning og tekst</label>
+        <h2 data-en="Content">Innhold</h2>
+        <label class="check"><input type="checkbox" id="o-paneler" checked> <span data-en="Panel map with numbers">Panelkart med nummer</span></label>
+        <label class="check"><input type="checkbox" id="o-rutenett" checked> <span data-en="Grid">Rutenett</span></label>
+        <label class="check"><input type="checkbox" id="o-sirkel" checked> <span data-en="Circle and crosshair">Sirkel og kryss</span></label>
+        <label class="check"><input type="checkbox" id="o-diag"> <span data-en="Diagonals">Diagonaler</span></label>
+        <label class="check"><input type="checkbox" id="o-farger" checked> <span data-en="Colour bars and grey scale">Fargestriper og gråtrapp</span></label>
+        <label class="check"><input type="checkbox" id="o-kant" checked> <span data-en="Border and edge arrows">Kantlinje og piler</span></label>
+        <label class="check"><input type="checkbox" id="o-logo" checked> <span data-en="HAPT logo">HAPT-logo</span></label>
+        <label class="check"><input type="checkbox" id="o-tekst" checked> <span data-en="Resolution and text">Oppløsning og tekst</span></label>
         <div class="row" style="margin-top:10px">
-          <div class="field"><label for="ruter">Rutenett hver (px)</label><input id="ruter" type="number" min="8" value="120"></div>
-          <div class="field"><label for="farge">Linjefarge</label>
-            <select id="farge"><option value="#1a8fd1">HAPT-blå</option><option value="#ffffff">Hvit</option><option value="#ffd400">Gul</option><option value="#00ff00">Grønn</option><option value="flate">Ulik per flate</option></select>
+          <div class="field"><label for="ruter" data-en="Grid spacing (px)">Rutenett hver (px)</label><input id="ruter" type="number" min="8" value="120"></div>
+          <div class="field"><label for="farge" data-en="Line colour">Linjefarge</label>
+            <select id="farge"><option value="#1a8fd1" data-en="HAPT blue">HAPT-blå</option><option value="#ffffff" data-en="White">Hvit</option><option value="#ffd400" data-en="Yellow">Gul</option><option value="#00ff00" data-en="Green">Grønn</option><option value="flate" data-en="Different per surface">Ulik per flate</option></select>
           </div>
         </div>
       </div>
 
       <div class="btns">
-        <button class="btn" type="button" id="last">Last ned PNG</button>
+        <button class="btn" type="button" id="last" data-en="Download PNG">Last ned PNG</button>
       </div>
     </div>
 
@@ -250,8 +250,8 @@
       ctx.fillStyle = '#fff'; ctx.fillText(tekst, W / 2, ty);
       var under = [];
       if (tittel) under.push(tittel);
-      if (harPaneler) under.push(kol + ' × ' + rad + ' paneler à ' + pw + ' × ' + ph + ' px');
-      if (kart) under.push('Posisjon ' + ox + ', ' + oy);
+      if (harPaneler) under.push(kol + ' × ' + rad + HaptSprak.t(' paneler à ', ' panels of ') + pw + ' × ' + ph + ' px');
+      if (kart) under.push(HaptSprak.t('Posisjon ', 'Position ') + ox + ', ' + oy);
       if (under.length) {
         ctx.font = font(mk * 0.03, 400);
         var y2 = $('o-farger').checked ? H / 2 + mk * 0.06 + midtH * 1.45 + mk * 0.06 : H / 2 + mk * 0.06;
@@ -292,7 +292,7 @@
       cv.width = kart.bredde; cv.height = kart.hoyde;
       ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
       kart.flater.forEach(function (f, i) { tegnTest(f.x, f.y, f.b, f.h, f.pw, f.ph, f.navn, linjeFarge(i)); });
-      $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px med ' + kart.flater.length + ' flater. Lagres som PNG i full oppløsning.';
+      $('info').textContent = kart.bredde + ' × ' + kart.hoyde + HaptSprak.t(' px med ', ' px with ') + kart.flater.length + (kart.flater.length === 1 ? HaptSprak.t(' flate', ' surface') : HaptSprak.t(' flater', ' surfaces')) + HaptSprak.t('. Lagres som PNG i full oppløsning.', '. Saved as PNG at full resolution.');
       return;
     }
     var W = Math.max(16, Math.min(16384, Math.round(+$('w').value || 1920)));
@@ -301,19 +301,19 @@
     cv.width = W; cv.height = H;
     tegnTest(0, 0, W, H, pw, ph, $('tittel').value.trim(), linjeFarge(0));
     var harP = $('o-paneler').checked && pw > 0 && ph > 0;
-    $('info').textContent = W + ' × ' + H + ' px' + (harP ? ', ' + Math.ceil(W / pw) + ' × ' + Math.ceil(H / ph) + ' paneler' : '') + '. Lagres som PNG i full oppløsning.';
+    $('info').textContent = W + ' × ' + H + ' px' + (harP ? ', ' + Math.ceil(W / pw) + ' × ' + Math.ceil(H / ph) + HaptSprak.t(' paneler', ' panels') : '') + HaptSprak.t('. Lagres som PNG i full oppløsning.', '. Saved as PNG at full resolution.');
   }
 
   function visKart() {
     $('enkelt').hidden = !!kart;
     $('kartInfo').hidden = !kart;
     if (!kart) { tegn(); return; }
-    $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + ' flater funnet.';
+    $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + (kart.flater.length === 1 ? HaptSprak.t(' flate funnet.', ' surface found.') : HaptSprak.t(' flater funnet.', ' surfaces found.'));
     var boks = $('kartFlater'); boks.innerHTML = '';
     kart.flater.forEach(function (f) {
       var d = document.createElement('div'); d.className = 'kartflate';
-      d.innerHTML = '<div><label>Navn</label><input type="text" data-k="navn"></div><div><label>Panel b</label><input type="number" min="0" data-k="pw"></div><div><label>Panel h</label><input type="number" min="0" data-k="ph"></div>' +
-        '<div class="kartmal"><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>Bredde</label><input type="number" min="1" data-k="b"></div><div><label>Høyde</label><input type="number" min="1" data-k="h"></div></div>';
+      d.innerHTML = '<div><label>' + HaptSprak.t('Navn', 'Name') + '</label><input type="text" data-k="navn"></div><div><label>' + HaptSprak.t('Panel b', 'Panel w') + '</label><input type="number" min="0" data-k="pw"></div><div><label>Panel h</label><input type="number" min="0" data-k="ph"></div>' +
+        '<div class="kartmal"><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>' + HaptSprak.t('Bredde', 'Width') + '</label><input type="number" min="1" data-k="b"></div><div><label>' + HaptSprak.t('Høyde', 'Height') + '</label><input type="number" min="1" data-k="h"></div></div>';
       d.querySelectorAll('[data-k]').forEach(function (inp) {
         inp.value = f[inp.dataset.k];
         inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(+inp.min, Math.round(+inp.value || 0)) : inp.value; tegn(); });
@@ -335,10 +335,12 @@
   });
   $('fraPixelmap').onclick = function () {
     var k = HaptPixelmap.hent();
-    if (!k || !k.flater.length) { alert('Fant ikke noe kart. Lag et på Pixelmap-siden først.'); return; }
+    if (!k || !k.flater.length) { alert(HaptSprak.t('Fant ikke noe kart. Lag et på Pixelmap-siden først.', 'No map found. Make one on the Pixel map page first.')); return; }
     kart = k; visKart();
   };
   $('fjernKart').onclick = function () { kart = null; visKart(); };
+  // Språkbytte: bygg flatelista og tegn testbildet på nytt (statusen fra leskart.js skrives på nytt der)
+  window.addEventListener('hapt-sprak', function () { if (kart) visKart(); else tegn(); });
 
   $('mal').addEventListener('change', function () {
     if (this.value === 'egen') return;

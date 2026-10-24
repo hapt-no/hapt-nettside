@@ -9,7 +9,7 @@ body.klokke header.site { display: flex; flex-wrap: nowrap; align-items: center;
 body.klokke header.site .brand { padding: 0; gap: 8px; align-items: baseline; }
 body.klokke header.site .brand img { height: 17px; align-self: center; }
 body.klokke header.site .brand span { font-size: 19px; }
-body.klokke header.site .tema { margin: 0; }
+body.klokke header.site .valg { margin: 0; }
 .topp-tilbake { color: var(--muted); text-decoration: none; font-size: 12.5px; white-space: nowrap; }
 .topp-luft { flex: 1; }
 .taster { display: flex; gap: 12px; color: var(--muted); font-size: 11.5px; white-space: nowrap; }
@@ -148,6 +148,8 @@ dialog.innst::backdrop { background: rgba(0,0,0,.55); }
 .prad .flytt { display: flex; gap: 3px; }
 .feil { color: var(--danger); font-size: 13px; margin-top: 8px; }
 
+/* Topplinja har fått språkvalg og blir bredere: tastehjelpen og tilbake-lenken går bort tidligere */
+@media (max-width: 1240px) { .taster { display: none; } }
 /* Smal skjerm: alt under hverandre, siden ruller */
 @media (max-width: 1100px) {
   .taster { display: none; }
@@ -159,10 +161,12 @@ dialog.innst::backdrop { background: rgba(0,0,0,.55); }
   .tall-boks { height: 120px; flex: none; }
   .liste { max-height: 420px; border-top: 1px solid var(--line); }
 }
-@media (max-width: 700px) {
+@media (max-width: 940px) {
   body.klokke header.site { height: auto; flex-wrap: wrap; padding: 10px 14px; row-gap: 8px; }
   .topp-luft, .skille, .topp-tilbake { display: none; }
   body.klokke header.site .brand { margin-right: auto; }
+}
+@media (max-width: 700px) {
   .kontroll { padding: 14px 16px; }
   .prad { grid-template-columns: minmax(0, 1fr) 1fr; }
 }

@@ -29,6 +29,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var topp = document.querySelector('header.site');
     var mork = topp && topp.querySelector('.logo-mork'), lys = topp && topp.querySelector('.logo-lys');
+    var t = window.HaptSprak ? HaptSprak.t : function (no) { return no; };
     var boks = document.createElement('div');
     boks.className = 'pinlas';
     boks.innerHTML =
@@ -36,14 +37,15 @@
         '<div class="merke">' +
           (mork ? '<img class="logo-mork" alt="HAPT" src="' + mork.getAttribute('src') + '">' : '<b>HAPT</b>') +
           (lys ? '<img class="logo-lys" alt="" src="' + lys.getAttribute('src') + '">' : '') +
-          '<span>verktøy</span>' +
+          '<span data-en="tools">verktøy</span>' +
         '</div>' +
-        '<label for="pinkode">PIN-kode</label>' +
+        '<label for="pinkode" data-en="PIN code">PIN-kode</label>' +
         '<input id="pinkode" type="password" inputmode="numeric" autocomplete="off" enterkeyhint="go" maxlength="20">' +
         '<p class="pinfeil" aria-live="polite"></p>' +
-        '<button class="btn" type="submit">Lås opp</button>' +
+        '<button class="btn" type="submit" data-en="Unlock">Lås opp</button>' +
       '</form>';
     document.body.appendChild(boks);
+    if (window.HaptSprak) HaptSprak.bruk(boks);
     var felt = boks.querySelector('input'), feil = boks.querySelector('.pinfeil');
     felt.focus();
     felt.addEventListener('input', function () { feil.textContent = ''; felt.removeAttribute('aria-invalid'); });
@@ -59,7 +61,7 @@
         rot.classList.remove('laast');
         if (window.haptMidtstillFane) window.haptMidtstillFane();
       } else {
-        feil.textContent = 'Feil kode. Prøv igjen.';
+        feil.textContent = t('Feil kode. Prøv igjen.', 'Wrong code. Try again.');
         felt.setAttribute('aria-invalid', 'true');
         felt.select();
       }

@@ -2,6 +2,8 @@
 // Kartformat (kartfil .json): { bredde, hoyde, navn, flater: [{ navn, x, y, b, h, pw, ph }] }
 (function (root) {
   'use strict';
+  // Språk: HaptSprak (tema.js) når det finnes, ellers norsk
+  var T = function (no, en) { return root && root.HaptSprak ? root.HaptSprak.t(no, en) : no; };
 
   var farger = ['#1a8fd1', '#e0a43a', '#4cc38a', '#d9576b', '#a678e0', '#3fc1c9', '#e07a3a', '#c9c94c', '#7d9be0', '#e078b8', '#8ad14c', '#c98a5a'];
   function farge(i) { return farger[i % farger.length]; }
@@ -14,11 +16,11 @@
   // Gjør en innlest kartfil trygg å bruke
   function les(k) {
     var tall = function (v, min, maks) { v = Math.round(+v || 0); return Math.max(min, Math.min(maks, v)); };
-    if (!k || !Array.isArray(k.flater)) throw new Error('Ikke en kartfil');
+    if (!k || !Array.isArray(k.flater)) throw new Error(T('Ikke en kartfil', 'Not a map file'));
     return {
       bredde: tall(k.bredde, 16, 16384), hoyde: tall(k.hoyde, 16, 16384), navn: String(k.navn || ''),
       flater: k.flater.slice(0, 200).map(function (f, i) {
-        return { navn: String(f.navn || 'Flate ' + (i + 1)).slice(0, 60), x: tall(f.x, 0, 16384), y: tall(f.y, 0, 16384), b: tall(f.b, 1, 16384), h: tall(f.h, 1, 16384), pw: tall(f.pw, 0, 4096), ph: tall(f.ph, 0, 4096) };
+        return { navn: String(f.navn || T('Flate ', 'Surface ') + (i + 1)).slice(0, 60), x: tall(f.x, 0, 16384), y: tall(f.y, 0, 16384), b: tall(f.b, 1, 16384), h: tall(f.h, 1, 16384), pw: tall(f.pw, 0, 4096), ph: tall(f.ph, 0, 4096) };
       })
     };
   }
@@ -27,7 +29,7 @@
     var ut = [];
     for (var i = 0; i < kart.flater.length; i++) for (var j = i + 1; j < kart.flater.length; j++) {
       var a = kart.flater[i], b = kart.flater[j];
-      if (a.x < b.x + b.b && b.x < a.x + a.b && a.y < b.y + b.h && b.y < a.y + a.h) ut.push(a.navn + ' og ' + b.navn);
+      if (a.x < b.x + b.b && b.x < a.x + a.b && a.y < b.y + b.h && b.y < a.y + a.h) ut.push(a.navn + T(' og ', ' and ') + b.navn);
     }
     return ut;
   }

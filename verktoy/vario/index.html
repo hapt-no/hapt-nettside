@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Stumpfl Vario – HAPT verktøy</title>
+<title data-en="Stumpfl Vario – HAPT tools">Stumpfl Vario – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <script src="../tema.js"></script>
@@ -31,57 +31,57 @@ ol.steg li { padding: 4px 0; }
   </header>
 
   <h1>Stumpfl Vario</h1>
-  <p class="lead">Skriv inn hvor stort bildet skal være, så får du rammestørrelse, deleliste, tegning av hvor hver del skal, bein og duk.</p>
+  <p class="lead" data-en="Enter the image size you need and get the frame size, parts list, a drawing showing where each part goes, legs and screen surface.">Skriv inn hvor stort bildet skal være, så får du rammestørrelse, deleliste, tegning av hvor hver del skal, bein og duk.</p>
 
   <div class="grid">
     <div>
       <div class="card">
-        <div class="seg" role="group" aria-label="Mål gjelder">
-          <button type="button" data-modus="bilde" aria-pressed="true">Bildeflate</button>
-          <button type="button" data-modus="ramme">Rammemål</button>
+        <div class="seg" role="group" aria-label="Mål gjelder" data-en-aria-label="Dimensions apply to">
+          <button type="button" data-modus="bilde" aria-pressed="true" data-en="Image area">Bildeflate</button>
+          <button type="button" data-modus="ramme" data-en="Frame size">Rammemål</button>
         </div>
         <div class="row">
-          <div class="field"><label for="b">Bredde (cm)</label><input id="b" type="number" min="100" step="5" value="400"></div>
-          <div class="field"><label for="h">Høyde (cm)</label><input id="h" type="number" min="100" step="5" value="225"></div>
+          <div class="field"><label for="b" data-en="Width (cm)">Bredde (cm)</label><input id="b" type="number" min="100" step="5" value="400"></div>
+          <div class="field"><label for="h" data-en="Height (cm)">Høyde (cm)</label><input id="h" type="number" min="100" step="5" value="225"></div>
         </div>
-        <div class="field"><label for="format">Regn høyde fra format</label>
-          <select id="format"><option value="">Skriv høyden selv</option><option value="1.7778">16:9</option><option value="1.6">16:10</option><option value="1.3333">4:3</option><option value="1">1:1</option><option value="2">2:1</option><option value="3">3:1</option></select>
+        <div class="field"><label for="format" data-en="Height from aspect ratio">Regn høyde fra format</label>
+          <select id="format"><option value="" data-en="Enter height manually">Skriv høyden selv</option><option value="1.7778">16:9</option><option value="1.6">16:10</option><option value="1.3333">4:3</option><option value="1">1:1</option><option value="2">2:1</option><option value="3">3:1</option></select>
         </div>
         <div class="row">
           <div class="field"><label for="profil">System</label>
-            <select id="profil"><option value="auto" selected>Velg selv</option><option value="32">Vario 32</option><option value="64">Vario 64</option></select>
+            <select id="profil"><option value="auto" selected data-en="Automatic">Velg selv</option><option value="32">Vario 32</option><option value="64">Vario 64</option></select>
           </div>
-          <div class="field"><label for="uk">Underkant over gulv (cm)</label><input id="uk" type="number" min="0" value="80"></div>
+          <div class="field"><label for="uk" data-en="Bottom edge above floor (cm)">Underkant over gulv (cm)</label><input id="uk" type="number" min="0" value="80"></div>
         </div>
       </div>
       <div class="card">
-        <h2>Duk</h2>
+        <h2 data-en="Screen surface">Duk</h2>
         <div class="dukvalg" id="duker"></div>
       </div>
     </div>
 
     <div>
       <div class="kpis">
-        <div class="kpi"><b id="k-bilde">–</b><span>Bildeflate</span></div>
-        <div class="kpi"><b id="k-ramme">–</b><span>Rammemål</span></div>
+        <div class="kpi"><b id="k-bilde">–</b><span data-en="Image area">Bildeflate</span></div>
+        <div class="kpi"><b id="k-ramme">–</b><span data-en="Frame size">Rammemål</span></div>
         <div class="kpi"><b id="k-system">–</b><span>System</span></div>
-        <div class="kpi"><b id="k-vekt">–</b><span>Vekt, ca.</span></div>
+        <div class="kpi"><b id="k-vekt">–</b><span data-en="Weight, approx.">Vekt, ca.</span></div>
       </div>
       <div id="adv"></div>
       <div class="card">
-        <div class="preview luft"><svg id="tegning" role="img" aria-label="Tegning av rammen sett bakfra"></svg></div>
-        <p class="note">Sett bakfra, slik du bygger den på gulvet. Tallene er lengden på hvert element i cm. Hjørnene har 50 cm ben.</p>
+        <div class="preview luft"><svg id="tegning" role="img" aria-label="Tegning av rammen sett bakfra" data-en-aria-label="Drawing of the frame seen from the back"></svg></div>
+        <p class="note" data-en="Seen from the back, as you build it on the floor. The numbers are the length of each element in cm. Each corner has 50 cm arms.">Sett bakfra, slik du bygger den på gulvet. Tallene er lengden på hvert element i cm. Hjørnene har 50 cm ben.</p>
       </div>
       <div class="card">
-        <h2>Deleliste</h2>
+        <h2 data-en="Parts list">Deleliste</h2>
         <table class="res" id="deler"></table>
         <div class="btns" style="margin-top:16px"><button class="btn ghost" type="button" id="kopier">Kopier deleliste</button></div>
       </div>
       <div class="card">
-        <h2>Byggeoppskrift</h2>
+        <h2 data-en="Build steps">Byggeoppskrift</h2>
         <ol class="steg" id="steg"></ol>
       </div>
-      <p class="note">Bygget på Stumpfls standardstørrelser, manual og delelister (Vario 32-elementer: 30, 45, 60, 65, 70, 80, 85, 90, 100 og 110 cm). Vario 64 er regnet med de samme lengdene, men der er bare 100 cm-elementet bekreftet, så sjekk etikettene. Vekt er hentet fra Stumpfl for standardstørrelser og anslått for andre.</p>
+      <p class="note" data-en="Based on Stumpfl's standard sizes, manual and parts lists (Vario 32 elements: 30, 45, 60, 65, 70, 80, 85, 90, 100 and 110 cm). Vario 64 is calculated with the same lengths, but only the 100 cm element is confirmed for it, so check the labels. Weight is taken from Stumpfl for standard sizes and estimated for others.">Bygget på Stumpfls standardstørrelser, manual og delelister (Vario 32-elementer: 30, 45, 60, 65, 70, 80, 85, 90, 100 og 110 cm). Vario 64 er regnet med de samme lengdene, men der er bare 100 cm-elementet bekreftet, så sjekk etikettene. Vekt er hentet fra Stumpfl for standardstørrelser og anslått for andre.</p>
     </div>
   </div>
 </div>
@@ -90,16 +90,25 @@ ol.steg li { padding: 4px 0; }
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var modus = 'bilde', sisteTekst = '';
+  var modus = 'bilde', sisteTekst = '', kopiert = false;
+  var t = HaptSprak.t;
   var farger = { 110: '#1a8fd1', 100: '#4cc38a', 90: '#e0a43a', 85: '#d9576b', 80: '#a678e0', 70: '#3fc1c9', 65: '#e07a3a', 60: '#c9c94c', 45: '#e078b8', 30: '#8ad14c' };
 
   HaptVario.duker.forEach(function (d, i) {
     var l = document.createElement('label');
     l.innerHTML = '<input type="radio" name="duk" value="' + d.id + '"' + (i === 0 ? ' checked' : '') + '><span></span><small></small>';
-    l.querySelector('span').textContent = d.navn + ' (' + d.type.toLowerCase() + ')';
-    l.querySelector('small').textContent = 'Gain ' + d.gain + (d.vinkel ? ', ' + d.vinkel : '') + ', sømløs opptil ' + d.bredde + ' cm. ' + d.note + '.';
     $('duker').appendChild(l);
   });
+  // Teksten på dukvalgene skrives på nytt ved språkbytte
+  function dukTekst() {
+    HaptVario.duker.forEach(function (d, i) {
+      var l = $('duker').children[i];
+      l.querySelector('span').textContent = d.navn + ' (' + t(d.type, d.typeEn).toLowerCase() + ')';
+      l.querySelector('small').textContent = t('Gain ' + d.gain + (d.vinkel ? ', ' + d.vinkel : '') + ', sømløs opptil ' + d.bredde + ' cm. ' + d.note + '.',
+        'Gain ' + d.gain.replace(/,/g, '.') + (d.vinkel ? ', ' + d.vinkel : '') + ', seamless up to ' + d.bredde + ' cm. ' + d.noteEn + '.');
+    });
+  }
+  function kopierTekst() { $('kopier').textContent = kopiert ? t('Kopiert', 'Copied') : t('Kopier deleliste', 'Copy parts list'); }
 
   function regn() {
     if ($('format').value) $('h').value = Math.round(+$('b').value / +$('format').value / 5) * 5;
@@ -115,44 +124,47 @@ ol.steg li { padding: 4px 0; }
     $('k-vekt').textContent = r.vekt + ' kg';
 
     var adv = r.advarsler.slice();
-    if (r.standard) adv.unshift('Dette er en standardstørrelse fra Stumpfl.');
+    if (r.standard) adv.unshift(t('Dette er en standardstørrelse fra Stumpfl.', 'This is a Stumpfl standard size.'));
     $('adv').innerHTML = '';
     adv.forEach(function (t, i) { var p = document.createElement('p'); p.className = i === 0 && r.standard ? 'note' : 'warn'; p.style.margin = '0 0 12px'; p.textContent = t; $('adv').appendChild(p); });
 
     // Deleliste
-    var rader = [['Hjørner', '4']];
-    r.deler.forEach(function (d) { rader.push(['Element ' + d.lengde + ' cm', d.antall]); });
-    if (r.midtstotte) rader.push(['Midtstøtte (topp- og bunnstykke)', r.midtstotter + ' sett']);
-    rader.push(['Bein ' + (r.bein ? r.bein.navn : '(ingen passer)'), r.beinAntall + (r.midtbein ? ' (' + r.midtbein + ' midtbein)' : '')]);
-    rader.push(['Duk', r.duk.navn + ', ' + r.bilde[0] + ' × ' + r.bilde[1] + ' cm' + (r.skjoter ? ', ' + r.skjoter + ' sveis' : '')]);
-    rader.push(['Kant på duken', r.system.kant + ' cm svart']);
-    rader.push(['Overkant over gulv', r.overkant + ' cm']);
-    var t = $('deler'); t.innerHTML = '';
+    // Tredje felt i en rad er elementlengden (for fargen), så den ikke må leses ut av teksten
+    var rader = [[t('Hjørner', 'Corners'), '4']];
+    r.deler.forEach(function (d) { rader.push(['Element ' + d.lengde + ' cm', d.antall, d.lengde]); });
+    if (r.midtstotte) rader.push([t('Midtstøtte (topp- og bunnstykke)', 'Centre support (top and bottom piece)'), r.midtstotter + t(' sett', r.midtstotter > 1 ? ' sets' : ' set')]);
+    rader.push([t('Bein ', 'Legs ') + (r.bein ? r.bein.navn : t('(ingen passer)', '(none fits)')), r.beinAntall + (r.midtbein ? ' (' + r.midtbein + t(' midtbein)', r.midtbein > 1 ? ' centre legs)' : ' centre leg)') : '')]);
+    rader.push([t('Duk', 'Screen surface'), r.duk.navn + ', ' + r.bilde[0] + ' × ' + r.bilde[1] + ' cm' + (r.skjoter ? ', ' + r.skjoter + t(' sveis', r.skjoter > 1 ? ' seams' : ' seam') : '')]);
+    rader.push([t('Kant på duken', 'Black border on surface'), r.system.kant + t(' cm svart', ' cm')]);
+    rader.push([t('Overkant over gulv', 'Top edge above floor'), r.overkant + ' cm']);
+    var tab = $('deler'); tab.innerHTML = '';
     rader.forEach(function (x) {
       var tr = document.createElement('tr'); tr.innerHTML = '<td></td><td></td>';
       tr.children[0].textContent = x[0]; tr.children[1].textContent = x[1];
-      var f = /Element (\d+)/.exec(x[0]);
-      if (f) tr.children[0].innerHTML = '<span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:8px;background:' + farger[f[1]] + '"></span>' + tr.children[0].textContent;
-      t.appendChild(tr);
+      if (x[2]) tr.children[0].innerHTML = '<span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:8px;background:' + farger[x[2]] + '"></span>' + tr.children[0].textContent;
+      tab.appendChild(tr);
     });
 
     // Byggeoppskrift
     var side = function (l) { return l.length ? '50 + ' + l.join(' + ') + ' + 50' : '50 + 50'; };
     var steg = [
-      'Legg ut de 4 hjørnene på gulvet, med forsiden ned.',
-      'Topp og bunn (' + r.ramme[0] + ' cm): ' + side(r.bunn) + '.',
-      'Sidene (' + r.ramme[1] + ' cm): ' + side(r.venstre) + '.',
-      'Sett sammen etter etikettene. Står det to tilpasningsdeler på samme side, kommer 110-elementene mellom dem.'
+      t('Legg ut de 4 hjørnene på gulvet, med forsiden ned.', 'Lay the 4 corners out on the floor, face down.'),
+      t('Topp og bunn (', 'Top and bottom (') + r.ramme[0] + ' cm): ' + side(r.bunn) + '.',
+      t('Sidene (', 'Sides (') + r.ramme[1] + ' cm): ' + side(r.venstre) + '.',
+      t('Sett sammen etter etikettene. Står det to tilpasningsdeler på samme side, kommer 110-elementene mellom dem.', 'Assemble according to the labels. If a side has two filler elements, the 110 elements go between them.')
     ];
-    if (r.midtstotte) steg.push('Midtstøtte' + (r.midtstotter > 1 ? 'r (' + r.midtstotter + ')' : '') + ': toppstykke + ' + r.midt.join(' + ') + ' + bunnstykke, plassert ' + (r.midtstotter > 1 ? 'jevnt fordelt.' : 'midt på.'));
-    steg.push('Fest duken med trykknappene: start i hjørnene, så midt på hver side, og fyll ut mellom.');
-    steg.push(r.bein ? 'Monter ' + r.beinAntall + ' × ' + r.bein.navn + '-bein' + (r.midtbein ? ' (inkl. midtbein)' : '') + ' og still underkanten til ' + (+$('uk').value || 0) + ' cm. Sett på stagene mot rammen.' : 'Ingen standardbein når så høyt. Heng lerretet (EasyFly-klemmer, maks 30 kg per klemme, alltid sikring) eller bygg det opp.');
-    steg.push('Reis lerretet med to personer' + (r.vekt > 40 ? ', helst tre' : '') + '.');
+    if (r.midtstotte) steg.push(t('Midtstøtte' + (r.midtstotter > 1 ? 'r (' + r.midtstotter + ')' : '') + ': toppstykke + ' + r.midt.join(' + ') + ' + bunnstykke, plassert ' + (r.midtstotter > 1 ? 'jevnt fordelt.' : 'midt på.'),
+      'Centre support' + (r.midtstotter > 1 ? 's (' + r.midtstotter + ')' : '') + ': top piece + ' + r.midt.join(' + ') + ' + bottom piece, ' + (r.midtstotter > 1 ? 'spaced evenly.' : 'placed in the middle.')));
+    steg.push(t('Fest duken med trykknappene: start i hjørnene, så midt på hver side, og fyll ut mellom.', 'Attach the surface with the snap fasteners: start at the corners, then the middle of each side, and fill in between.'));
+    steg.push(r.bein ? t('Monter ' + r.beinAntall + ' × ' + r.bein.navn + '-bein' + (r.midtbein ? ' (inkl. midtbein)' : '') + ' og still underkanten til ' + (+$('uk').value || 0) + ' cm. Sett på stagene mot rammen.',
+      'Fit ' + r.beinAntall + ' × ' + r.bein.navn + ' legs' + (r.midtbein ? ' (incl. centre legs)' : '') + ' and set the bottom edge to ' + (+$('uk').value || 0) + ' cm. Attach the braces to the frame.')
+      : t('Ingen standardbein når så høyt. Heng lerretet (EasyFly-klemmer, maks 30 kg per klemme, alltid sikring) eller bygg det opp.', 'No standard leg reaches that high. Fly the screen (EasyFly clamps, max 30 kg per clamp, always with a safety) or raise it on a riser.'));
+    steg.push(t('Reis lerretet med to personer' + (r.vekt > 40 ? ', helst tre' : '') + '.', 'Raise the screen with two people' + (r.vekt > 40 ? ', preferably three' : '') + '.'));
     $('steg').innerHTML = '';
     steg.forEach(function (s) { var li = document.createElement('li'); li.textContent = s; $('steg').appendChild(li); });
 
     tegn(r);
-    sisteTekst = r.system.navn + ' ' + r.ramme[0] + ' × ' + r.ramme[1] + ' cm (bilde ' + r.bilde[0] + ' × ' + r.bilde[1] + ')\n' +
+    sisteTekst = r.system.navn + ' ' + r.ramme[0] + ' × ' + r.ramme[1] + ' cm (' + t('bilde ', 'image ') + r.bilde[0] + ' × ' + r.bilde[1] + ')\n' +
       rader.map(function (x) { return x[0] + ': ' + x[1]; }).join('\n') + '\n\n' + steg.map(function (s, i) { return (i + 1) + '. ' + s; }).join('\n');
   }
 
@@ -196,7 +208,7 @@ ol.steg li { padding: 4px 0; }
     for (var m = 1; m <= r.midtstotter; m++) {
       var mx = Math.round(W * m / (r.midtstotter + 1));
       s += '<line x1="' + mx + '" y1="0" x2="' + mx + '" y2="' + H + '" stroke="#7d828a" stroke-width="' + tk * 0.8 + '" stroke-dasharray="' + tk * 2 + ' ' + tk + '"/>';
-      s += '<text x="' + (mx + tk * 1.5) + '" y="' + (H * 0.25) + '" fill="#b9bdc3" font-size="' + fs * 0.9 + '">midtstøtte</text>';
+      s += '<text x="' + (mx + tk * 1.5) + '" y="' + (H * 0.25) + '" fill="#b9bdc3" font-size="' + fs * 0.9 + '">' + t('midtstøtte', 'centre support') + '</text>';
     }
     // Bein
     if (leg > 0) {
@@ -221,9 +233,10 @@ ol.steg li { padding: 4px 0; }
   $('h').addEventListener('input', function () { $('format').value = ''; });
   document.querySelectorAll('input, select').forEach(function (el) { el.addEventListener('input', regn); el.addEventListener('change', regn); });
   $('kopier').onclick = function () {
-    var k = this;
-    navigator.clipboard.writeText(sisteTekst).then(function () { k.textContent = 'Kopiert'; setTimeout(function () { k.textContent = 'Kopier deleliste'; }, 1500); });
+    navigator.clipboard.writeText(sisteTekst).then(function () { kopiert = true; kopierTekst(); setTimeout(function () { kopiert = false; kopierTekst(); }, 1500); });
   };
+  window.addEventListener('hapt-sprak', function () { dukTekst(); kopierTekst(); regn(); });
+  dukTekst(); kopierTekst();
   regn();
 })();
 </script>

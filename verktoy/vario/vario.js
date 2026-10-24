@@ -5,6 +5,9 @@
 (function (root) {
   'use strict';
 
+  // Tekst følger språkvalget på siden (HaptSprak fra tema.js). Uten den (f.eks. i node) blir det norsk.
+  function t(no, en) { return root && root.HaptSprak ? root.HaptSprak.t(no, en) : no; }
+
   var HJORNE = 50;
   var system = {
     32: {
@@ -33,10 +36,10 @@
   };
 
   var duker = [
-    { id: 'white-ci', navn: 'Flex White CI', type: 'Front', gain: '1,02', vinkel: '±50°', bredde: 210, note: '100 % lystett' },
-    { id: 'rear-ci', navn: 'Flex Rear CI', type: 'Bak', gain: '1,18', vinkel: '±45°', bredde: 210, note: 'SeamlessOptic som tillegg over 210 cm' },
-    { id: 'rear-mo', navn: 'Flex Rear MO', type: 'Bak', gain: '2,25', vinkel: '±45°', bredde: 305, note: 'Høy gain, smalere betraktningsvinkel' },
-    { id: 'dual-mo', navn: 'Flex Dual MO', type: 'Front og bak', gain: '0,62 / 0,78', vinkel: '', bredde: 305, note: 'Bilde synlig fra begge sider' }
+    { id: 'white-ci', navn: 'Flex White CI', type: 'Front', typeEn: 'Front', gain: '1,02', vinkel: '±50°', bredde: 210, note: '100 % lystett', noteEn: '100% opaque' },
+    { id: 'rear-ci', navn: 'Flex Rear CI', type: 'Bak', typeEn: 'Rear', gain: '1,18', vinkel: '±45°', bredde: 210, note: 'SeamlessOptic som tillegg over 210 cm', noteEn: 'SeamlessOptic available as an option above 210 cm' },
+    { id: 'rear-mo', navn: 'Flex Rear MO', type: 'Bak', typeEn: 'Rear', gain: '2,25', vinkel: '±45°', bredde: 305, note: 'Høy gain, smalere betraktningsvinkel', noteEn: 'High gain, narrower viewing angle' },
+    { id: 'dual-mo', navn: 'Flex Dual MO', type: 'Front og bak', typeEn: 'Front and rear', gain: '0,62 / 0,78', vinkel: '', bredde: 305, note: 'Bilde synlig fra begge sider', noteEn: 'Image visible from both sides' }
   ];
 
   var bein = [
@@ -103,9 +106,9 @@
     var s = system[p];
     var r = tilRamme(p);
     ob = nermesteSide(r[0], s.deler); oh = nermesteSide(r[1], s.deler);
-    if (!ob || !oh) { res.feil = 'Klarer ikke å bygge den størrelsen.'; return res; }
-    if (ob !== Math.round(r[0]) || oh !== Math.round(r[1])) res.advarsler.push('Justert til nærmeste størrelse som kan bygges: ' + ob + ' × ' + oh + ' cm ramme.');
-    if (p === 32 && ((ob > 460 && oh > 310) || ob > 910 || oh > 345)) res.advarsler.push('Større enn Stumpfl lager Vario 32 som standard. Vurder Vario 64.');
+    if (!ob || !oh) { res.feil = t('Klarer ikke å bygge den størrelsen.', 'Cannot build that size.'); return res; }
+    if (ob !== Math.round(r[0]) || oh !== Math.round(r[1])) res.advarsler.push(t('Justert til nærmeste størrelse som kan bygges: ' + ob + ' × ' + oh + ' cm ramme.', 'Adjusted to the nearest size that can be built: ' + ob + ' × ' + oh + ' cm frame.'));
+    if (p === 32 && ((ob > 460 && oh > 310) || ob > 910 || oh > 345)) res.advarsler.push(t('Større enn Stumpfl lager Vario 32 som standard. Vurder Vario 64.', 'Larger than any standard Stumpfl Vario 32. Consider Vario 64.'));
 
     var bunn = rekkefolge(fyll(ob - 2 * HJORNE, s.deler));
     var side = rekkefolge(fyll(oh - 2 * HJORNE, s.deler));
@@ -137,14 +140,14 @@
     res.duk = duk;
     res.skjoter = Math.max(0, Math.ceil(res.bilde[1] / duk.bredde) - 1);
     if (res.bilde[1] > duk.bredde && res.bilde[0] <= duk.bredde) res.skjoter = 0; // kan legges på tvers
-    if (p === 64 && (ob >= 800 || (ob >= 708 && oh >= 450)) && duk.type !== 'Front') res.advarsler.push('Stumpfl leverer ikke bakprojeksjonsduk i denne størrelsen på Vario 64 som standard.');
+    if (p === 64 && (ob >= 800 || (ob >= 708 && oh >= 450)) && duk.type !== 'Front') res.advarsler.push(t('Stumpfl leverer ikke bakprojeksjonsduk i denne størrelsen på Vario 64 som standard.', 'Stumpfl does not supply a rear projection surface in this size for Vario 64 as standard.'));
 
     // Bein
     var uk = valg.underkant || 0;
     var passer = bein.filter(function (b) { return b.profil.indexOf(p) >= 0 && uk >= b.min && uk <= b.maks; });
     res.bein = passer[0] || null;
     res.beinAntall = 2 + res.midtbein;
-    if (!res.bein) res.advarsler.push('Ingen standardbein gir ' + uk + ' cm til underkant. Høyeste er ' + (p === 32 ? 'AT32/64 (146 cm)' : 'AT64 (176 cm)') + '. Heng lerretet eller bygg det opp.');
+    if (!res.bein) res.advarsler.push(t('Ingen standardbein gir ' + uk + ' cm til underkant. Høyeste er ' + (p === 32 ? 'AT32/64 (146 cm)' : 'AT64 (176 cm)') + '. Heng lerretet eller bygg det opp.', 'No standard leg gives ' + uk + ' cm to the bottom edge. The tallest is ' + (p === 32 ? 'AT32/64 (146 cm)' : 'AT64 (176 cm)') + '. Fly the screen or raise it on a riser.'));
     res.overkant = uk + oh;
     return res;
   }

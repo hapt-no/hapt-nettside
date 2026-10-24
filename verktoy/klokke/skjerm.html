@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>hapt-o-clock – scene</title>
+<title data-en="hapt-o-clock – stage">hapt-o-clock – scene</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
 <script src="../las.js"></script>
 <style>
 html, body { margin: 0; padding: 0; height: 100%; background: #000; overflow: hidden; }
@@ -19,7 +20,7 @@ body.skjul-peker, body.skjul-peker * { cursor: none; }
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="hint" id="hint">Klikk eller trykk F for fullskjerm · Esc går ut</div>
+<div class="hint" id="hint" data-en="Click or press F for fullscreen · Esc exits">Klikk eller trykk F for fullskjerm · Esc går ut</div>
 <script src="../logo-animasjon.js"></script>
 <script src="klokke-kjerne.js"></script>
 <script src="klokke-skjerm.js"></script>
@@ -33,7 +34,11 @@ body.skjul-peker, body.skjul-peker * { cursor: none; }
   les();
   var kanal = 'BroadcastChannel' in window ? new BroadcastChannel('hapt-klokke') : null;
   if (kanal) kanal.onmessage = function (e) { if (e.data && e.data.show) show = K.rens(e.data.show); };
-  window.addEventListener('storage', function (e) { if (e.key === NOKKEL) les(); });
+  window.addEventListener('storage', function (e) {
+    if (e.key === NOKKEL) les();
+    // Språket følger operatorvinduet (NO/EN i tema.js, som her ikke har topplinje eller knapper)
+    if (e.key === 'hapt-lang' && window.HaptSprak && (e.newValue === 'en' ? 'en' : 'no') !== HaptSprak.kode()) HaptSprak.sett(e.newValue);
+  });
 
   function storrelse() {
     var dpr = window.devicePixelRatio || 1;

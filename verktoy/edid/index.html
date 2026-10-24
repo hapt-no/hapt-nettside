@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>EDID – HAPT verktøy</title>
+<title data-en="EDID – HAPT tools">EDID – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <script src="../tema.js"></script>
@@ -25,51 +25,51 @@
   </header>
 
   <h1>EDID</h1>
-  <p class="lead">Lag en EDID-fil som får kilden til å sende akkurat den oppløsningen du vil ha, for eksempel til en LED-vegg. Filen lastes inn i en EDID-emulator, en matrise eller en prosessor. Du kan også lese en EDID du har fra før.</p>
+  <p class="lead" data-en="Create an EDID file that makes the source output exactly the resolution you want, for example for an LED wall. Load the file into an EDID emulator, a matrix or a processor. You can also read an existing EDID.">Lag en EDID-fil som får kilden til å sende akkurat den oppløsningen du vil ha, for eksempel til en LED-vegg. Filen lastes inn i en EDID-emulator, en matrise eller en prosessor. Du kan også lese en EDID du har fra før.</p>
 
-  <div class="seg" role="group" aria-label="Velg" style="max-width:360px">
-    <button type="button" data-fane="lag" aria-pressed="true">Lag EDID</button>
-    <button type="button" data-fane="les">Les EDID</button>
+  <div class="seg" role="group" aria-label="Velg" data-en-aria-label="Choose" style="max-width:360px">
+    <button type="button" data-fane="lag" aria-pressed="true" data-en="Create EDID">Lag EDID</button>
+    <button type="button" data-fane="les" data-en="Read EDID">Les EDID</button>
   </div>
 
   <div class="grid" data-side="lag">
     <div>
       <div class="card">
-        <div class="field"><label for="navn">Navn på skjermen (maks 13 tegn)</label><input id="navn" type="text" maxlength="13" value="HAPT LED"></div>
-        <h2 style="margin-top:6px">Foretrukket oppløsning</h2>
+        <div class="field"><label for="navn" data-en="Display name (max 13 characters)">Navn på skjermen (maks 13 tegn)</label><input id="navn" type="text" maxlength="13" value="HAPT LED"></div>
+        <h2 style="margin-top:6px" data-en="Preferred resolution">Foretrukket oppløsning</h2>
         <div class="row">
-          <div class="field"><label for="w1">Bredde (px)</label><input id="w1" type="number" min="64" max="4095" value="1920"></div>
-          <div class="field"><label for="h1">Høyde (px)</label><input id="h1" type="number" min="64" max="4095" value="1080"></div>
+          <div class="field"><label for="w1" data-en="Width (px)">Bredde (px)</label><input id="w1" type="number" min="64" max="4095" value="1920"></div>
+          <div class="field"><label for="h1" data-en="Height (px)">Høyde (px)</label><input id="h1" type="number" min="64" max="4095" value="1080"></div>
         </div>
-        <div class="field"><label for="hz1">Frekvens (Hz)</label>
+        <div class="field"><label for="hz1" data-en="Refresh rate (Hz)">Frekvens (Hz)</label>
           <select id="hz1"><option>23.976</option><option>24</option><option>25</option><option>29.97</option><option>30</option><option>48</option><option>50</option><option>59.94</option><option selected>60</option><option>100</option><option>119.88</option><option>120</option></select>
         </div>
-        <label class="check"><input type="checkbox" id="to"> Legg til en oppløsning til</label>
+        <label class="check"><input type="checkbox" id="to"> <span data-en="Add another resolution">Legg til en oppløsning til</span></label>
         <div id="andre" hidden>
           <div class="row">
-            <div class="field"><label for="w2">Bredde (px)</label><input id="w2" type="number" min="64" max="4095" value="1920"></div>
-            <div class="field"><label for="h2">Høyde (px)</label><input id="h2" type="number" min="64" max="4095" value="1080"></div>
+            <div class="field"><label for="w2" data-en="Width (px)">Bredde (px)</label><input id="w2" type="number" min="64" max="4095" value="1920"></div>
+            <div class="field"><label for="h2" data-en="Height (px)">Høyde (px)</label><input id="h2" type="number" min="64" max="4095" value="1080"></div>
           </div>
-          <div class="field"><label for="hz2">Frekvens (Hz)</label>
+          <div class="field"><label for="hz2" data-en="Refresh rate (Hz)">Frekvens (Hz)</label>
             <select id="hz2"><option>23.976</option><option>24</option><option>25</option><option>29.97</option><option>30</option><option>48</option><option selected>50</option><option>59.94</option><option>60</option><option>100</option><option>119.88</option><option>120</option></select>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Valg</h2>
+        <h2 data-en="Options">Valg</h2>
         <div class="field"><label for="cvt">Timing</label>
-          <select id="cvt"><option value="1" selected>CVT redusert blanking v1 (mest kompatibel)</option><option value="2">CVT redusert blanking v2 (lavere pikselklokke)</option></select>
+          <select id="cvt"><option value="1" selected data-en="CVT reduced blanking v1 (most compatible)">CVT redusert blanking v1 (mest kompatibel)</option><option value="2" data-en="CVT reduced blanking v2 (lower pixel clock)">CVT redusert blanking v2 (lavere pikselklokke)</option></select>
         </div>
-        <label class="check"><input type="checkbox" id="eksakt" checked> Treff frekvensen nøyaktig</label>
-        <label class="check"><input type="checkbox" id="hdmi" checked> HDMI (legg til CTA-861-blokk)</label>
-        <label class="check"><input type="checkbox" id="lyd"> Lyd over HDMI (2 kanaler PCM)</label>
-        <label class="check"><input type="checkbox" id="kunEgen"> Bare mine oppløsninger (fjern 640×480, 800×600, 1024×768)</label>
+        <label class="check"><input type="checkbox" id="eksakt" checked> <span data-en="Hit the refresh rate exactly">Treff frekvensen nøyaktig</span></label>
+        <label class="check"><input type="checkbox" id="hdmi" checked> <span data-en="HDMI (add CTA-861 block)">HDMI (legg til CTA-861-blokk)</span></label>
+        <label class="check"><input type="checkbox" id="lyd"> <span data-en="Audio over HDMI (2-channel PCM)">Lyd over HDMI (2 kanaler PCM)</span></label>
+        <label class="check"><input type="checkbox" id="kunEgen"> <span data-en="Only my resolutions (remove 640×480, 800×600, 1024×768)">Bare mine oppløsninger (fjern 640×480, 800×600, 1024×768)</span></label>
         <div class="row" style="margin-top:10px">
-          <div class="field"><label for="mmB">Fysisk bredde (mm)</label><input id="mmB" type="number" min="0" value="0"></div>
-          <div class="field"><label for="mmH">Fysisk høyde (mm)</label><input id="mmH" type="number" min="0" value="0"></div>
+          <div class="field"><label for="mmB" data-en="Physical width (mm)">Fysisk bredde (mm)</label><input id="mmB" type="number" min="0" value="0"></div>
+          <div class="field"><label for="mmH" data-en="Physical height (mm)">Fysisk høyde (mm)</label><input id="mmH" type="number" min="0" value="0"></div>
         </div>
-        <p class="note" style="margin-top:0">Fysisk størrelse kan stå på 0. «Treff nøyaktig» justerer blankingen litt slik at for eksempel 50 Hz blir 50,000 og ikke 49,7.</p>
+        <p class="note" style="margin-top:0" data-en="Physical size can be left at 0. &quot;Hit the refresh rate exactly&quot; adjusts the blanking slightly so that, for example, 50 Hz becomes 50.000 rather than 49.7.">Fysisk størrelse kan stå på 0. «Treff nøyaktig» justerer blankingen litt slik at for eksempel 50 Hz blir 50,000 og ikke 49,7.</p>
       </div>
     </div>
 
@@ -78,7 +78,7 @@
         <table class="res" id="lagTabell"></table>
         <div id="lagFeil"></div>
         <div class="btns" style="margin-top:16px">
-          <button class="btn" type="button" id="lastBin">Last ned .bin</button>
+          <button class="btn" type="button" id="lastBin" data-en="Download .bin">Last ned .bin</button>
           <button class="btn ghost" type="button" id="kopierHex">Kopier som hex</button>
         </div>
       </div>
@@ -91,14 +91,14 @@
   <div class="grid" data-side="les" hidden>
     <div>
       <div class="card">
-        <label class="slipp" id="slipp" for="fil">Slipp en .bin-fil her, eller trykk for å velge</label>
+        <label class="slipp" id="slipp" for="fil" data-en="Drop a .bin file here, or click to choose one">Slipp en .bin-fil her, eller trykk for å velge</label>
         <input id="fil" type="file" accept=".bin,.dat,.edid,.txt,.hex,application/octet-stream" hidden>
-        <div class="field"><label for="hexInn">Eller lim inn hex</label><textarea id="hexInn" placeholder="00 FF FF FF FF FF FF 00 ..."></textarea></div>
-        <button class="btn" type="button" id="lesKnapp">Les</button>
+        <div class="field"><label for="hexInn" data-en="Or paste hex">Eller lim inn hex</label><textarea id="hexInn" placeholder="00 FF FF FF FF FF FF 00 ..."></textarea></div>
+        <button class="btn" type="button" id="lesKnapp" data-en="Read">Les</button>
       </div>
     </div>
     <div>
-      <div class="card"><table class="res" id="lesTabell"><tr><td>Ingen EDID lest ennå.</td><td></td></tr></table></div>
+      <div class="card"><table class="res" id="lesTabell"><tr><td data-en="No EDID read yet.">Ingen EDID lest ennå.</td><td></td></tr></table></div>
     </div>
   </div>
 </div>
@@ -107,8 +107,9 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var nf = function (n, d) { return n.toLocaleString('nb-NO', { minimumFractionDigits: d, maximumFractionDigits: d }); };
-  var sisteBytes = [];
+  var t_ = function (no, en) { return HaptSprak.t(no, en); };
+  var nf = function (n, d) { return n.toLocaleString(HaptSprak.en() ? 'en-GB' : 'nb-NO', { minimumFractionDigits: d, maximumFractionDigits: d }); };
+  var sisteBytes = [], sistLest = null, kopiert = false;
 
   function fyllTabell(tabell, rader) {
     tabell.innerHTML = '';
@@ -135,21 +136,21 @@
     // Timinger en EDID ikke kan beskrive gir en ødelagt fil, så nedlasting og kopiering stenges til de er rettet
     var ugyldig = feil.length > 0;
     $('lastBin').disabled = ugyldig; $('kopierHex').disabled = ugyldig;
-    if (ugyldig) feil.push('Filen lages ikke før dette er rettet.');
-    if ($('hdmi').checked && Math.max.apply(null, t.map(function (x) { return x.klokke; })) > 340) feil.push('Pikselklokka er over 340 MHz. Det krever HDMI 2.0 hele veien, og ikke alle kilder godtar det uten HDMI 2.0-blokk.');
+    if (ugyldig) feil.push(t_('Filen lages ikke før dette er rettet.', 'No file is made until this is fixed.'));
+    if ($('hdmi').checked && Math.max.apply(null, t.map(function (x) { return x.klokke; })) > 340) feil.push(t_('Pikselklokka er over 340 MHz. Det krever HDMI 2.0 hele veien, og ikke alle kilder godtar det uten HDMI 2.0-blokk.', 'The pixel clock is above 340 MHz. That needs HDMI 2.0 end to end, and not all sources accept it without an HDMI 2.0 block.'));
 
     var rader = [];
     t.forEach(function (x, i) {
-      rader.push([i ? 'Oppløsning 2' : 'Foretrukket', timingTekst(x)]);
-      rader.push(['Pikselklokke', nf(x.klokke, 2) + ' MHz']);
-      rader.push(['Linjefrekvens', nf(x.hKhz, 3) + ' kHz']);
-      rader.push(['Total (aktiv + blanking)', x.totalH + ' × ' + x.totalV]);
+      rader.push([i ? t_('Oppløsning 2', 'Resolution 2') : t_('Foretrukket', 'Preferred'), timingTekst(x)]);
+      rader.push([t_('Pikselklokke', 'Pixel clock'), nf(x.klokke, 2) + ' MHz']);
+      rader.push([t_('Linjefrekvens', 'Line frequency'), nf(x.hKhz, 3) + ' kHz']);
+      rader.push([t_('Total (aktiv + blanking)', 'Total (active + blanking)'), x.totalH + ' × ' + x.totalV]);
     });
     var bytes = HaptEdid.lag({
       navn: $('navn').value || 'HAPT', timinger: t, mmB: +$('mmB').value, mmH: +$('mmH').value,
       kunEgen: $('kunEgen').checked, hdmi: $('hdmi').checked, lyd: $('lyd').checked && $('hdmi').checked
     });
-    rader.push(['Størrelse', bytes.length + ' byte (' + (bytes.length / 128) + ' blokk' + (bytes.length > 128 ? 'er' : '') + ')']);
+    rader.push([t_('Størrelse', 'Size'), t_(bytes.length + ' byte (' + (bytes.length / 128) + ' blokk' + (bytes.length > 128 ? 'er' : '') + ')', bytes.length + ' bytes (' + (bytes.length / 128) + ' block' + (bytes.length > 128 ? 's' : '') + ')')]);
     fyllTabell($('lagTabell'), rader);
     $('lagFeil').innerHTML = '';
     feil.forEach(function (f) { var p = document.createElement('p'); p.className = 'warn'; p.textContent = f; $('lagFeil').appendChild(p); });
@@ -165,26 +166,27 @@
   }
 
   function vis(bytes) {
+    sistLest = bytes;
     var r = HaptEdid.les(bytes);
     var rader = [];
-    r.feil.forEach(function (f) { rader.push(['Feil', f, 'feil']); });
+    r.feil.forEach(function (f) { rader.push([t_('Feil', 'Error'), f, 'feil']); });
     if (bytes.length >= 128) {
-      rader.push(['Sjekksum', r.sjekksum.map(function (ok, i) { return 'blokk ' + i + ': ' + (ok ? 'ok' : 'feil'); }).join(', '), r.sjekksum.every(Boolean) ? 'ok' : 'feil']);
-      if (r.navn) rader.push(['Navn', r.navn]);
-      rader.push(['Produsent / produkt', r.produsent + ' / ' + r.produkt]);
-      rader.push(['Serienummer', r.serieTekst || String(r.serie)]);
-      rader.push(['Laget', 'uke ' + r.uke + ', ' + r.år]);
-      rader.push(['EDID-versjon', r.versjon + (r.digital ? ', digital' : ', analog')]);
-      if (r.cm[0]) rader.push(['Fysisk størrelse', r.cm[0] + ' × ' + r.cm[1] + ' cm']);
+      rader.push([t_('Sjekksum', 'Checksum'), r.sjekksum.map(function (ok, i) { return t_('blokk ', 'block ') + i + ': ' + (ok ? 'ok' : t_('feil', 'error')); }).join(', '), r.sjekksum.every(Boolean) ? 'ok' : 'feil']);
+      if (r.navn) rader.push([t_('Navn', 'Name'), r.navn]);
+      rader.push([t_('Produsent / produkt', 'Manufacturer / product'), r.produsent + ' / ' + r.produkt]);
+      rader.push([t_('Serienummer', 'Serial number'), r.serieTekst || String(r.serie)]);
+      rader.push([t_('Laget', 'Manufactured'), t_('uke ', 'week ') + r.uke + ', ' + r.år]);
+      rader.push([t_('EDID-versjon', 'EDID version'), r.versjon + (r.digital ? ', digital' : ', analog')]);
+      if (r.cm[0]) rader.push([t_('Fysisk størrelse', 'Physical size'), r.cm[0] + ' × ' + r.cm[1] + ' cm']);
       r.timinger.forEach(function (t, i) {
-        rader.push([(i === 0 ? 'Foretrukket' : 'Timing ' + (i + 1)) + ' (' + t.kilde + ')', timingTekst(t) + ', ' + nf(t.klokke, 2) + ' MHz']);
+        rader.push([(i === 0 ? t_('Foretrukket', 'Preferred') : 'Timing ' + (i + 1)) + ' (' + t.kilde + ')', timingTekst(t) + ', ' + nf(t.klokke, 2) + ' MHz']);
       });
-      if (r.vic.length) rader.push(['CTA-formater', r.vic.map(function (v) { return v.navn + (v.naturlig ? ' (naturlig)' : ''); }).join(', ')]);
-      if (r.standard.length) rader.push(['Standardtiminger', r.standard.join(', ')]);
-      if (r.etablerte.length) rader.push(['Eldre faste', r.etablerte.join(', ')]);
-      if (r.grenser) rader.push(['Grenser', r.grenser.minV + '–' + r.grenser.maxV + ' Hz, ' + r.grenser.minH + '–' + r.grenser.maxH + ' kHz, maks ' + r.grenser.maxMhz + ' MHz']);
-      rader.push(['HDMI', r.cta ? (r.cta.hdmi ? 'ja' + (r.cta.hdmi2 ? ', HDMI 2.0' : '') : 'CTA-blokk uten HDMI-merke') : 'nei (DVI)']);
-      if (r.cta) rader.push(['Lyd', r.cta.lyd ? 'ja' : 'nei']);
+      if (r.vic.length) rader.push([t_('CTA-formater', 'CTA formats'), r.vic.map(function (v) { return v.navn + (v.naturlig ? t_(' (naturlig)', ' (native)') : ''); }).join(', ')]);
+      if (r.standard.length) rader.push([t_('Standardtiminger', 'Standard timings'), r.standard.join(', ')]);
+      if (r.etablerte.length) rader.push([t_('Eldre faste', 'Established timings'), r.etablerte.join(', ')]);
+      if (r.grenser) rader.push([t_('Grenser', 'Range limits'), r.grenser.minV + '–' + r.grenser.maxV + ' Hz, ' + r.grenser.minH + '–' + r.grenser.maxH + ' kHz, ' + t_('maks ', 'max ') + r.grenser.maxMhz + ' MHz']);
+      rader.push(['HDMI', r.cta ? (r.cta.hdmi ? t_('ja', 'yes') + (r.cta.hdmi2 ? ', HDMI 2.0' : '') : t_('CTA-blokk uten HDMI-merke', 'CTA block without HDMI identifier')) : t_('nei (DVI)', 'no (DVI)')]);
+      if (r.cta) rader.push([t_('Lyd', 'Audio'), r.cta.lyd ? t_('ja', 'yes') : t_('nei', 'no')]);
     }
     fyllTabell($('lesTabell'), rader);
   }
@@ -206,9 +208,9 @@
     document.body.appendChild(a); a.click(); a.remove();
   };
   $('kopierHex').onclick = function () {
-    var k = this;
-    navigator.clipboard.writeText(hex(sisteBytes)).then(function () { k.textContent = 'Kopiert'; setTimeout(function () { k.textContent = 'Kopier som hex'; }, 1500); });
+    navigator.clipboard.writeText(hex(sisteBytes)).then(function () { kopiert = true; kopiKnapp(); setTimeout(function () { kopiert = false; kopiKnapp(); }, 1500); });
   };
+  function kopiKnapp() { $('kopierHex').textContent = kopiert ? t_('Kopiert', 'Copied') : t_('Kopier som hex', 'Copy as hex'); }
 
   function lesFil(f) {
     var rd = new FileReader();
@@ -227,7 +229,10 @@
   slipp.addEventListener('drop', function (ev) { if (ev.dataTransfer.files[0]) lesFil(ev.dataTransfer.files[0]); });
   $('lesKnapp').onclick = function () { vis(HaptEdid.fraTekst($('hexInn').value)); };
 
-  lag();
+  // Språkbytte: tegn tabellene og knappen på nytt
+  window.addEventListener('hapt-sprak', function () { lag(); kopiKnapp(); if (sistLest) vis(sistLest); });
+
+  lag(); kopiKnapp();
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "52d8f32f79c6475f979f4aadb143f1bb"}'></script><!-- End Cloudflare Web Analytics -->

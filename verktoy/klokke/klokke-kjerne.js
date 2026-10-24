@@ -11,6 +11,13 @@
   }
   function kopi(o) { return JSON.parse(JSON.stringify(o)); }
 
+  // Språk: norsk, eller engelsk når verktøyenes språkvalg (tema.js) står på EN. Uten HaptSprak (node) alltid norsk.
+  function T(no, en) { return root.HaptSprak ? root.HaptSprak.t(no, en) : no; }
+  // Tekst som blir stående på skjermen (feilmeldinger): bytter språk når den gjøres om til tekst på nytt
+  function tekst(no, en) { return { no: no, en: en, toString: function () { return T(no, en); } }; }
+  // Feil med begge språk: message på språket nå, tekst for å vise den på nytt etter et bytte
+  function feil(no, en) { var e = new Error(T(no, en)); e.tekst = tekst(no, en); return e; }
+
   // ---------- Tid som tekst ----------
 
   // Hele sekunder som vises, rundet opp: en 5-minutters timer viser 5:00 hele første sekund,
@@ -64,7 +71,7 @@
     return {
       id: id, name: navn, mode: 'countdown', duration: 300, phase: 'stopped', held: 300, anchor: null,
       warp: null, countTo: null, activePreset: null, next: null,
-      endAction: 'overtime', endMessage: 'TIDEN ER UTE', warningAt: 60, dangerAt: 30, warpWarnPercent: 20,
+      endAction: 'overtime', endMessage: T('TIDEN ER UTE', 'TIME\'S UP'), warningAt: 60, dangerAt: 30, warpWarnPercent: 20,
       colors: kopi(STANDARDFARGER), placement: plassering
     };
   }
@@ -137,11 +144,11 @@
 
   // Warp: kjører fortere eller saktere så nedtellingen når 0:00 på klokkeslettet
   function warpPlan(t, k, na) {
-    if (t.mode !== 'countdown') return { feil: 'Warp virker bare på nedtelling.' };
+    if (t.mode !== 'countdown') return { feil: tekst('Warp virker bare på nedtelling.', 'Warp only works on a countdown.') };
     var rest = t.phase === 'stopped' ? t.duration : igjen(t, na);
-    if (rest <= 0) return { feil: 'Warp virker ikke i overtid.' };
+    if (rest <= 0) return { feil: tekst('Warp virker ikke i overtid.', 'Warp does not work in overtime.') };
     var til = sekTil(k, na);
-    if (til <= 0) return { feil: 'Sluttiden er nå.' };
+    if (til <= 0) return { feil: tekst('Sluttiden er nå.', 'The end time is now.') };
     var f = rest / til;
     return { warp: { target: k, factor: f, over: Math.abs(f - 1) * 100 > t.warpWarnPercent, percent: Math.round((f - 1) * 100) } };
   }
@@ -176,19 +183,21 @@
   function presetTekst(p) {
     if (p.mode === 'clock') return '⧗';
     if (p.mode === 'countup') return '▲';
-    if (p.countTo) return 'til ' + klokkeslettTekst(p.countTo);
+    if (p.countTo) return T('til ', 'until ') + klokkeslettTekst(p.countTo);
     return formatSek(Math.round(p.duration));
   }
 
   // ---------- Showet ----------
 
+  // Standardinnholdet (presets, banken, meldingen ved 0:00) lages på språket som er valgt når showet lages.
+  // Etterpå er det showets eget innhold, som operatoren kan endre, og det byttes ikke ved språkbytte.
   function nyttShow() {
     return {
       versjon: 1,
       timers: [nyTimer(0, 'Timer 1', { x: 50, y: 100 / 3, size: 40, visible: true, background: '#000000' }),
                nyTimer(1, 'Timer 2', { x: 50, y: 200 / 3, size: 40, visible: true, background: '#000000' })],
-      presets: [nyPreset('Innslag 5 min', 300), nyPreset('Pause 15 min', 900), nyPreset('Keynote 30 min', 1800), nyPreset('Klokkeslett', 0, 'clock')],
-      bank: ['God morgen!', 'Vennligst slå av mobiltelefon', 'Vi starter om 5 minutter'],
+      presets: [nyPreset(T('Innslag 5 min', 'Segment 5 min'), 300), nyPreset(T('Pause 15 min', 'Break 15 min'), 900), nyPreset('Keynote 30 min', 1800), nyPreset(T('Klokkeslett', 'Time of day'), 0, 'clock')],
+      bank: [T('God morgen!', 'Good morning!'), T('Vennligst slå av mobiltelefon', 'Please switch off your mobile phone'), T('Vi starter om 5 minutter', 'We start in 5 minutes')],
       draft: '', message: '', messageVisible: false,
       output: 'clock', layout: 'stacked', dim: 1, messageLift: 0, messageScale: 100,
       logo: null, rundown: null
@@ -293,8 +302,8 @@
   }
   function avvikTekst(a) {
     var s = Math.round(a);
-    if (s === 0) return 'i rute';
-    return s > 0 ? '+' + formatSek(s) + ' bak plan' : '−' + formatSek(-s) + ' foran plan';
+    if (s === 0) return T('i rute', 'on schedule');
+    return s > 0 ? '+' + formatSek(s) + T(' bak plan', ' behind') : '−' + formatSek(-s) + T(' foran plan', ' ahead');
   }
 
   function forberedNeste(s, etter) {
@@ -432,7 +441,8 @@
     });
     if (!punkter.length) {
       var sett = sisteOverskrift.filter(Boolean).join(', ');
-      throw new Error('Fant ikke kolonnene for tittel og varighet' + (sett ? '. Overskriftene var: ' + sett + '.' : '.'));
+      throw feil('Fant ikke kolonnene for tittel og varighet' + (sett ? '. Overskriftene var: ' + sett + '.' : '.'),
+        'Could not find the title and duration columns' + (sett ? '. The headers were: ' + sett + '.' : '.'));
     }
     var arkNavn = ark.length === 1 && ark[0].navn && !/^(Sheet|Ark)/.test(ark[0].navn) ? ark[0].navn : null;
     var detalj = kolonner.filter(function (k) { return ['subject', 'emne', 'beskrivelse', 'description', 'notes', 'notater', 'innhold'].indexOf(k.toLowerCase()) >= 0; })[0] || null;
@@ -469,10 +479,10 @@
   function lesZip(b) {
     var slutt = -1;
     for (var o = b.length - 22; o >= Math.max(0, b.length - 65557); o--) if (u32(b, o) === 0x06054b50) { slutt = o; break; }
-    if (slutt < 0) throw new Error('Ikke en Excel-fil (.xlsx): fant ikke innholdslista');
+    if (slutt < 0) throw feil('Ikke en Excel-fil (.xlsx): fant ikke innholdslista', 'Not an Excel file (.xlsx): could not find the file directory');
     var n = u16(b, slutt + 10), p = u32(b, slutt + 16), filer = {};
     for (var i = 0; i < n; i++) {
-      if (u32(b, p) !== 0x02014b50) throw new Error('Ødelagt Excel-fil');
+      if (u32(b, p) !== 0x02014b50) throw feil('Ødelagt Excel-fil', 'Corrupt Excel file');
       var nl = u16(b, p + 28), el = u16(b, p + 30), kl = u16(b, p + 32);
       var navn = new TextDecoder().decode(b.subarray(p + 46, p + 46 + nl));
       filer[navn] = { metode: u16(b, p + 10), str: u32(b, p + 20), hode: u32(b, p + 42) };
@@ -485,7 +495,7 @@
     if (!f) return null;
     var h = f.hode, start = h + 30 + u16(b, h + 26) + u16(b, h + 28), data = b.subarray(start, start + f.str);
     var ut = f.metode === 0 ? data : f.metode === 8 ? await inflate(data) : null;
-    if (!ut) throw new Error('Ukjent komprimering i Excel-filen');
+    if (!ut) throw feil('Ukjent komprimering i Excel-filen', 'Unknown compression in the Excel file');
     return new TextDecoder().decode(ut);
   }
   function xmlTekst(s) {
@@ -498,7 +508,7 @@
   async function lesXlsx(bytes, inflate) {
     var b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes), filer = lesZip(b);
     var bok = await zipFil(b, filer, 'xl/workbook.xml', inflate);
-    if (!bok) throw new Error('Ikke en Excel-fil (.xlsx): mangler xl/workbook.xml');
+    if (!bok) throw feil('Ikke en Excel-fil (.xlsx): mangler xl/workbook.xml', 'Not an Excel file (.xlsx): xl/workbook.xml is missing');
     var delt = [], ss = await zipFil(b, filer, 'xl/sharedStrings.xml', inflate);
     if (ss) (ss.match(/<si[\s>][\s\S]*?<\/si>|<si\/>/g) || []).forEach(function (si) {
       si = si.replace(/<rPh[\s\S]*?<\/rPh>/g, '');
@@ -532,12 +542,12 @@
       for (var rr = 1; rr <= maksRad; rr++) { var linje = []; for (var kk = 0; kk <= maksKol; kk++) linje.push(rader[rr] && rader[rr][kk] != null ? rader[rr][kk] : ''); ut.push(linje); }
       ark.push({ navn: attr(tag, 'name') || '', rader: ut });
     }
-    if (!ark.length) throw new Error('Fant ingen ark i Excel-filen');
+    if (!ark.length) throw feil('Fant ingen ark i Excel-filen', 'No sheets found in the Excel file');
     return ark;
   }
 
   var api = {
-    lagId: lagId, kopi: kopi, vistSek: vistSek, formatSek: formatSek, format: format, klokke: klokke, lesTid: lesTid,
+    lagId: lagId, kopi: kopi, T: T, tekst: tekst, feil: feil, vistSek: vistSek, formatSek: formatSek, format: format, klokke: klokke, lesTid: lesTid,
     lesKlokkeslett: lesKlokkeslett, klokkeslettTekst: klokkeslettTekst, sekTil: sekTil,
     nyTimer: nyTimer, igjen: igjen, start: start, pause: pause, stopp: stopp, veksle: veksle, juster: juster, settTid: settTid,
     settModus: settModus, lastInn: lastInn, startTil: startTil, stopperPaNull: stopperPaNull, erPaNull: erPaNull,

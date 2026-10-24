@@ -62,26 +62,28 @@ header.site nav a { color: var(--muted); text-decoration: none; padding: 6px 10p
 header.site nav a:hover { color: var(--fg); }
 header.site nav a[aria-current="page"] { color: var(--fg); font-weight: 600; }
 header.site nav a[aria-current="page"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--accent); border-radius: 1px; }
-.tema { display: inline-flex; background: var(--surface2); border-radius: 10px; padding: 3px; gap: 2px; margin-bottom: 14px; }
+.valg { display: flex; gap: 8px; margin-bottom: 14px; }
+.tema { display: inline-flex; background: var(--surface2); border-radius: 10px; padding: 3px; gap: 2px; }
 .tema button { background: none; border: 0; border-radius: 7px; color: var(--muted); font: 500 13px var(--ui); padding: 4px 11px; cursor: pointer; }
 .tema button[aria-pressed="true"] { background: var(--raised); color: var(--fg); font-weight: 600; }
 .tema button:hover { color: var(--fg); }
-/* Smal skjerm (under 980 px får ikke alle fanene plass på én linje ved siden av logo og fargevalg):
+/* Smal skjerm (under 1100 px får ikke alle fanene plass på én linje ved siden av logo og fargevalg):
    logo og fargevalg på første linje, fanene på én linje under som kan sveipes */
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
   header.site { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 12px; margin-bottom: 24px; }
   header.site .brand { padding-bottom: 12px; }
-  header.site .tema { grid-column: 2; grid-row: 1; margin-bottom: 12px; }
+  header.site .valg { grid-column: 2; grid-row: 1; margin-bottom: 12px; }
   header.site nav { grid-column: 1 / -1; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -10px; padding-right: 28px;
     -webkit-mask-image: linear-gradient(to left, transparent, #000 28px); mask-image: linear-gradient(to left, transparent, #000 28px); }
   header.site nav::-webkit-scrollbar { display: none; }
   header.site nav a { flex: none; padding: 8px 10px 12px; }
   header.site nav a[aria-current="page"]::after { bottom: 0; }
 }
-/* Helt smal skjerm: fargevalget får sin egen linje, så det ikke legger seg over «verktøy» */
-@media (max-width: 340px) {
+/* Helt smal skjerm: språk- og fargevalget får sin egen linje, så det ikke legger seg over «verktøy» */
+@media (max-width: 600px) {
   header.site { grid-template-columns: minmax(0, 1fr); }
-  header.site .tema { grid-column: 1; grid-row: auto; justify-self: start; }
+  header.site .valg { grid-column: 1; grid-row: 2; justify-self: start; }
+  header.site nav { grid-row: 3; }
 }
 
 h1 { font-family: var(--font); font-weight: 500; font-size: clamp(28px, 4vw, 38px); letter-spacing: -0.01em; line-height: 1.1; margin: 0 0 8px; }
