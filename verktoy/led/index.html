@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>LED-vegg – HAPT verktøy</title>
+<title data-en="LED wall – HAPT tools">LED-vegg – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <script src="../tema.js"></script>
@@ -41,38 +41,42 @@ details[open] summary { margin-bottom: 14px; }
     <nav><a href="./" aria-current="page">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
-  <h1>LED-vegg</h1>
-  <p class="lead">Velg panel og størrelse. Du får oppløsning, vekt, strøm og hvor mange kurser og nettverksporter veggen trenger.</p>
+  <h1 data-en="LED wall">LED-vegg</h1>
+  <p class="lead" data-en="Choose a panel and size. You get resolution, weight, power, and how many circuits and network ports the wall needs.">Velg panel og størrelse. Du får oppløsning, vekt, strøm og hvor mange kurser og nettverksporter veggen trenger.</p>
 
   <div class="grid">
     <div>
       <div class="card">
         <div class="field">
-          <label for="panel">Panel</label>
+          <label for="produsent" data-en="Manufacturer">Produsent</label>
+          <select id="produsent"></select>
+        </div>
+        <div class="field">
+          <label for="panel" data-en="Panel type">Panel</label>
           <select id="panel"></select>
         </div>
-        <div class="seg" role="group" aria-label="Regn ut fra">
-          <button type="button" data-modus="antall" aria-pressed="true">Antall paneler</button>
-          <button type="button" data-modus="maal">Ønsket mål</button>
-          <button type="button" data-modus="format">Bredde og format</button>
+        <div class="seg" role="group" aria-label="Regn ut fra" data-en-aria-label="Calculate from">
+          <button type="button" data-modus="antall" aria-pressed="true" data-en="Panel count">Antall paneler</button>
+          <button type="button" data-modus="maal" data-en="Target size">Ønsket mål</button>
+          <button type="button" data-modus="format" data-en="Width and ratio">Bredde og format</button>
         </div>
 
         <div data-vis="antall">
           <div class="row">
-            <div class="field"><label for="kol">Paneler i bredden</label><input id="kol" type="number" min="1" max="200" value="8"></div>
+            <div class="field"><label for="kol" data-en="Panels wide">Paneler i bredden</label><input id="kol" type="number" min="1" max="200" value="8"></div>
             <div class="field"><label for="rad">Paneler i høyden</label><input id="rad" type="number" min="1" max="200" value="5"></div>
           </div>
         </div>
         <div data-vis="maal" hidden>
           <div class="row">
-            <div class="field"><label for="mb">Bredde (m)</label><input id="mb" type="number" min="0.1" step="0.1" value="6"></div>
-            <div class="field"><label for="mh">Høyde (m)</label><input id="mh" type="number" min="0.1" step="0.1" value="3.5"></div>
+            <div class="field"><label for="mb" data-en="Width (m)">Bredde (m)</label><input id="mb" type="number" min="0.1" step="0.1" value="6"></div>
+            <div class="field"><label for="mh" data-en="Height (m)">Høyde (m)</label><input id="mh" type="number" min="0.1" step="0.1" value="3.5"></div>
           </div>
         </div>
         <div data-vis="format" hidden>
           <div class="row">
-            <div class="field"><label for="fb">Bredde (m)</label><input id="fb" type="number" min="0.1" step="0.1" value="6"></div>
-            <div class="field"><label for="ff">Format</label>
+            <div class="field"><label for="fb" data-en="Width (m)">Bredde (m)</label><input id="fb" type="number" min="0.1" step="0.1" value="6"></div>
+            <div class="field"><label for="ff" data-en="Aspect ratio">Format</label>
               <select id="ff">
                 <option value="1.7778" selected>16:9</option>
                 <option value="1.6">16:10</option>
@@ -80,115 +84,115 @@ details[open] summary { margin-bottom: 14px; }
                 <option value="2.3333">21:9</option>
                 <option value="3.5556">32:9</option>
                 <option value="1">1:1</option>
-                <option value="0.5625">9:16 (stående)</option>
+                <option value="0.5625" data-en="9:16 (portrait)">9:16 (stående)</option>
               </select>
             </div>
           </div>
         </div>
         <div data-vis="maal format" hidden>
-          <label>Nærmeste muligheter</label>
+          <label data-en="Closest options">Nærmeste muligheter</label>
           <div class="forslag" id="forslag"></div>
         </div>
 
         <div id="blandingBoks" hidden>
           <label class="check"><input type="checkbox" id="bland"> <span id="blandTekst">Bland inn små paneler</span></label>
-          <div class="field" id="smaPlassBoks" hidden><label for="smaPlass">Små paneler står</label>
-            <select id="smaPlass"><option value="topp" selected>Øverst</option><option value="bunn">Nederst</option></select>
+          <div class="field" id="smaPlassBoks" hidden><label for="smaPlass" data-en="Small panels at">Små paneler står</label>
+            <select id="smaPlass"><option value="topp" selected data-en="Top">Øverst</option><option value="bunn" data-en="Bottom">Nederst</option></select>
           </div>
         </div>
         <div class="row luft-topp">
-          <div class="field"><label for="lagerStor" id="lagerStorTekst">Du har (stk)</label><input id="lagerStor" type="number" min="0" step="1" placeholder="Ikke oppgitt"></div>
-          <div class="field" id="lagerSmaBoks" hidden><label for="lagerSma" id="lagerSmaTekst">Du har små (stk)</label><input id="lagerSma" type="number" min="0" step="1" placeholder="Ikke oppgitt"></div>
+          <div class="field"><label for="lagerStor" id="lagerStorTekst">Du har (stk)</label><input id="lagerStor" type="number" min="0" step="1" placeholder="Ikke oppgitt" data-en-placeholder="Not set"></div>
+          <div class="field" id="lagerSmaBoks" hidden><label for="lagerSma" id="lagerSmaTekst">Du har små (stk)</label><input id="lagerSma" type="number" min="0" step="1" placeholder="Ikke oppgitt" data-en-placeholder="Not set"></div>
         </div>
         <p class="note" id="lagerNote" style="margin-top:4px"></p>
       </div>
 
       <div class="card">
-        <h2>Strøm</h2>
+        <h2 data-en="Power">Strøm</h2>
         <div class="field">
-          <label for="nett">Strømnett</label>
+          <label for="nett" data-en="Mains supply">Strømnett</label>
           <select id="nett">
-            <option value="1">230 V enfase</option>
-            <option value="3tn" selected>400 V TN, 3-fase</option>
-            <option value="3it">230 V IT, 3-fase</option>
+            <option value="1" data-en="230 V single-phase">230 V enfase</option>
+            <option value="3tn" selected data-en="400 V TN, 3-phase">400 V TN, 3-fase</option>
+            <option value="3it" data-en="230 V IT, 3-phase">230 V IT, 3-fase</option>
           </select>
         </div>
         <div class="row">
-          <div class="field"><label for="kurs">Kurs (A)</label>
+          <div class="field"><label for="kurs" data-en="Circuit (A)">Kurs (A)</label>
             <select id="kurs"><option>10</option><option selected>16</option><option>32</option><option>63</option></select>
           </div>
-          <div class="field"><label for="margin">Maks last på kurs</label>
+          <div class="field"><label for="margin" data-en="Max load per circuit">Maks last på kurs</label>
             <select id="margin"><option value="1">100 %</option><option value="0.8" selected>80 %</option><option value="0.7">70 %</option></select>
           </div>
         </div>
-        <p class="note">Kurs-regnestykket bruker panelets maks effekt, så du er på den sikre siden også med helt hvitt bilde.</p>
+        <p class="note" data-en="The circuit count uses the panel's max power, so you are on the safe side even with a full white image.">Kurs-regnestykket bruker panelets maks effekt, så du er på den sikre siden også med helt hvitt bilde.</p>
       </div>
 
       <div class="card">
         <h2>Data</h2>
         <div class="field">
-          <label for="prosessor">Prosessor</label>
+          <label for="prosessor" data-en="Processor">Prosessor</label>
           <select id="prosessor">
-            <option value="nova" selected>NovaStar, 1G-porter</option>
-            <option value="nova-pro">NovaStar med A10s/A8s Pro-kort</option>
-            <option value="colorlight">Colorlight, 1G-porter</option>
-            <option value="brompton">Brompton Tessera, 1G-porter</option>
-            <option value="egen">Egendefinert</option>
+            <option value="nova" selected data-en="NovaStar, 1G ports">NovaStar, 1G-porter</option>
+            <option value="nova-pro" data-en="NovaStar with A10s/A8s Pro cards">NovaStar med A10s/A8s Pro-kort</option>
+            <option value="colorlight" data-en="Colorlight, 1G ports">Colorlight, 1G-porter</option>
+            <option value="brompton" data-en="Brompton Tessera, 1G ports">Brompton Tessera, 1G-porter</option>
+            <option value="egen" data-en="Custom">Egendefinert</option>
           </select>
         </div>
         <div class="row">
           <div class="field"><label for="kap">Px per port (60 Hz, 8 bit)</label><input id="kap" type="number" step="1000" value="655360"></div>
-          <div class="field"><label for="ppp">Porter per prosessor</label><input id="ppp" type="number" min="1" value="16"></div>
+          <div class="field"><label for="ppp" data-en="Ports per processor">Porter per prosessor</label><input id="ppp" type="number" min="1" value="16"></div>
         </div>
         <div class="row">
-          <div class="field"><label for="hz">Bildefrekvens (Hz)</label>
+          <div class="field"><label for="hz" data-en="Frame rate (Hz)">Bildefrekvens (Hz)</label>
             <select id="hz"><option>23.98</option><option>24</option><option>25</option><option>29.97</option><option>30</option><option>48</option><option>50</option><option>59.94</option><option selected>60</option><option>100</option><option>120</option></select>
           </div>
-          <div class="field"><label for="bit">Bitdybde</label>
+          <div class="field"><label for="bit" data-en="Bit depth">Bitdybde</label>
             <select id="bit"><option selected>8</option><option>10</option><option>12</option></select>
           </div>
         </div>
         <div class="row">
-          <div class="field"><label for="kabling">Kabling</label>
+          <div class="field"><label for="kabling" data-en="Cabling">Kabling</label>
             <select id="kabling">
-              <option value="fri">Fritt</option>
-              <option value="kol" selected>Hele kolonner</option>
-              <option value="rad">Hele rader</option>
+              <option value="fri" data-en="Free">Fritt</option>
+              <option value="kol" selected data-en="Whole columns">Hele kolonner</option>
+              <option value="rad" data-en="Whole rows">Hele rader</option>
             </select>
           </div>
           <div class="field"><label for="backup">Backup</label>
             <select id="backup">
-              <option value="ingen">Ingen</option>
-              <option value="port" selected>Backup-porter</option>
-              <option value="prosessor">Egen prosessor</option>
+              <option value="ingen" data-en="None">Ingen</option>
+              <option value="port" selected data-en="Backup ports">Backup-porter</option>
+              <option value="prosessor" data-en="Separate processor">Egen prosessor</option>
             </select>
           </div>
         </div>
-        <div class="field"><label for="start">Kablene kommer fra</label>
-          <select id="start"><option value="nede" selected>Nede (bakkestablet)</option><option value="oppe">Oppe (hengt)</option></select>
+        <div class="field"><label for="start" data-en="Cables come from">Kablene kommer fra</label>
+          <select id="start"><option value="nede" selected data-en="Below (ground stacked)">Nede (bakkestablet)</option><option value="oppe" data-en="Above (flown)">Oppe (hengt)</option></select>
         </div>
         <p class="note" id="data-note"></p>
       </div>
 
       <div class="card">
         <details id="egetPanel">
-          <summary>Legg til eget panel</summary>
-          <div class="field"><label for="ep-navn">Navn</label><input id="ep-navn" type="text" placeholder="F.eks. ROE CB5"></div>
+          <summary data-en="Add custom panel">Legg til eget panel</summary>
+          <div class="field"><label for="ep-navn" data-en="Name">Navn</label><input id="ep-navn" type="text" placeholder="F.eks. ROE CB5" data-en-placeholder="E.g. ROE CB5"></div>
           <div class="row">
-            <div class="field"><label for="ep-b">Bredde (mm)</label><input id="ep-b" type="number" value="500"></div>
-            <div class="field"><label for="ep-h">Høyde (mm)</label><input id="ep-h" type="number" value="500"></div>
+            <div class="field"><label for="ep-b" data-en="Width (mm)">Bredde (mm)</label><input id="ep-b" type="number" value="500"></div>
+            <div class="field"><label for="ep-h" data-en="Height (mm)">Høyde (mm)</label><input id="ep-h" type="number" value="500"></div>
           </div>
           <div class="row">
-            <div class="field"><label for="ep-px">Piksler bredde</label><input id="ep-px" type="number" value="192"></div>
-            <div class="field"><label for="ep-py">Piksler høyde</label><input id="ep-py" type="number" value="192"></div>
+            <div class="field"><label for="ep-px" data-en="Pixels wide">Piksler bredde</label><input id="ep-px" type="number" value="192"></div>
+            <div class="field"><label for="ep-py" data-en="Pixels high">Piksler høyde</label><input id="ep-py" type="number" value="192"></div>
           </div>
           <div class="row3">
-            <div class="field"><label for="ep-kg">Vekt (kg)</label><input id="ep-kg" type="number" step="0.1" value="8"></div>
-            <div class="field"><label for="ep-maks">Maks W</label><input id="ep-maks" type="number" value="160"></div>
-            <div class="field"><label for="ep-snitt">Snitt W</label><input id="ep-snitt" type="number" value="55"></div>
+            <div class="field"><label for="ep-kg" data-en="Weight (kg)">Vekt (kg)</label><input id="ep-kg" type="number" step="0.1" value="8"></div>
+            <div class="field"><label for="ep-maks" data-en="Max W">Maks W</label><input id="ep-maks" type="number" value="160"></div>
+            <div class="field"><label for="ep-snitt" data-en="Avg W">Snitt W</label><input id="ep-snitt" type="number" value="55"></div>
           </div>
-          <button class="btn" type="button" id="ep-lagre">Lagre panel</button>
-          <p class="note">Lagres bare i denne nettleseren.</p>
+          <button class="btn" type="button" id="ep-lagre" data-en="Save panel">Lagre panel</button>
+          <p class="note" data-en="Saved in this browser only.">Lagres bare i denne nettleseren.</p>
           <ul class="egne-liste" id="egne"></ul>
         </details>
       </div>
@@ -196,33 +200,33 @@ details[open] summary { margin-bottom: 14px; }
 
     <div>
       <div class="kpis">
-        <div class="kpi"><b id="k-maal">–</b><span>Størrelse (b × h)</span></div>
-        <div class="kpi"><b id="k-opp">–</b><span>Oppløsning</span></div>
-        <div class="kpi"><b id="k-antall">–</b><span>Paneler</span></div>
-        <div class="kpi"><b id="k-vekt">–</b><span>Vekt, bare paneler</span></div>
+        <div class="kpi"><b id="k-maal">–</b><span data-en="Size (w × h)">Størrelse (b × h)</span></div>
+        <div class="kpi"><b id="k-opp">–</b><span data-en="Resolution">Oppløsning</span></div>
+        <div class="kpi"><b id="k-antall">–</b><span data-en="Panels">Paneler</span></div>
+        <div class="kpi"><b id="k-vekt">–</b><span data-en="Weight, panels only">Vekt, bare paneler</span></div>
       </div>
       <div class="card">
-        <div class="seg" role="group" aria-label="Vis" id="visning" style="max-width:340px">
-          <button type="button" data-vis-tegning="paneler" aria-pressed="true">Paneler</button>
+        <div class="seg" role="group" aria-label="Vis" data-en-aria-label="View" id="visning" style="max-width:340px">
+          <button type="button" data-vis-tegning="paneler" aria-pressed="true" data-en="Panels">Paneler</button>
           <button type="button" data-vis-tegning="data">Data</button>
-          <button type="button" data-vis-tegning="strom">Strøm</button>
+          <button type="button" data-vis-tegning="strom" data-en="Power">Strøm</button>
         </div>
-        <div class="preview luft"><svg id="vegg" role="img" aria-label="Tegning av veggen"></svg></div>
+        <div class="preview luft"><svg id="vegg" role="img" aria-label="Tegning av veggen" data-en-aria-label="Drawing of the wall"></svg></div>
       </div>
       <div class="card">
-        <h2>Kablingsforslag</h2>
+        <h2 data-en="Suggested cabling">Kablingsforslag</h2>
         <div id="kabling-ut" class="kabling"></div>
       </div>
       <div class="card">
         <table class="res" id="tabell"></table>
         <div id="advarsler"></div>
         <div class="btns" style="margin-top:16px">
-          <a class="btn" id="tilTestbilde" href="../testbilde/">Lag testbilde for denne veggen</a>
-          <a class="btn ghost" id="tilPixelmap" href="../pixelmap/">Legg til i pixelmap</a>
+          <a class="btn" id="tilTestbilde" href="../testbilde/" data-en="Make a test pattern for this wall">Lag testbilde for denne veggen</a>
+          <a class="btn ghost" id="tilPixelmap" href="../pixelmap/" data-en="Add to pixel map">Legg til i pixelmap</a>
           <button class="btn ghost" type="button" id="kopier">Kopier oppsummering</button>
         </div>
       </div>
-      <p class="note">Paneltallene er fra produsentens datablad og bør sjekkes mot panelene dere faktisk har. Vekt er uten rigg, bakker og kabler. Portkapasiteten skaleres med bildefrekvens (60 Hz ÷ valgt Hz) og bitdybde. Et panel deles aldri mellom to porter.</p>
+      <p class="note" data-en="Panel figures are from the manufacturer's datasheet and should be checked against the panels you actually have. Weight excludes rigging, frames and cables. Port capacity is scaled by frame rate (60 Hz ÷ selected Hz) and bit depth. A panel is never split between two ports.">Paneltallene er fra produsentens datablad og bør sjekkes mot panelene dere faktisk har. Vekt er uten rigg, bakker og kabler. Portkapasiteten skaleres med bildefrekvens (60 Hz ÷ valgt Hz) og bitdybde. Et panel deles aldri mellom to porter.</p>
     </div>
   </div>
 </div>
@@ -233,21 +237,50 @@ details[open] summary { margin-bottom: 14px; }
   var $ = function (id) { return document.getElementById(id); };
   var modus = 'antall';
   var valgtForslag = 0;
-  var nf = function (n, d) { return n.toLocaleString('nb-NO', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+  var T_ = HaptSprak.t;
+  var nf = function (n, d) { return n.toLocaleString(HaptSprak.kode() === 'en' ? 'en-GB' : 'nb-NO', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+  // Panelnavn til visning: «inne»/«ute» i de innebygde navnene (paneler.js) oversettes på engelsk
+  var erInnebygd = function (p) { return HaptPaneler.innebygd.some(function (x) { return x.id === p.id; }); };
+  var pnavn = function (p) { return HaptSprak.en() && erInnebygd(p) ? p.navn.replace(/ inne$/, ' indoor').replace(/ ute$/, ' outdoor') : p.navn; };
 
-  function fyllPaneler(velg) {
-    var sel = $('panel'), gammel = velg || sel.value;
+  // Produsent først, så type. Produsenten er første ord i navnet; egne paneler samles under EGNE.
+  var EGNE = '_egne';
+  var produsentAv = function (p) { return erInnebygd(p) ? p.navn.split(' ')[0] : EGNE; };
+
+  function fyllTyper(velg) {
+    var sel = $('panel'), k = $('produsent').value;
+    var liste = HaptPaneler.alle().filter(function (p) { return produsentAv(p) === k; });
+    var kort = function (p) { var n = pnavn(p); return k !== EGNE && n.indexOf(k + ' ') === 0 ? n.slice(k.length + 1) : n; };
+    var antall = {};
+    liste.forEach(function (p) { antall[kort(p)] = (antall[kort(p)] || 0) + 1; });
     sel.innerHTML = '';
-    HaptPaneler.alle().forEach(function (p) {
+    liste.forEach(function (p) {
       var o = document.createElement('option');
-      o.value = p.id; o.textContent = p.navn + '  (' + p.b + '×' + p.h + ' mm, ' + p.px + '×' + p.py + ' px)';
+      // Samme navn i to størrelser (UR Pro 50 × 100 og 50 × 50): skill dem med målet
+      o.value = p.id; o.textContent = kort(p) + (antall[kort(p)] > 1 ? ', ' + cm(p) + ' cm' : '');
       sel.appendChild(o);
     });
-    if (gammel && HaptPaneler.finn(gammel)) sel.value = gammel;
+    if (velg && liste.some(function (p) { return p.id === velg; })) sel.value = velg;
+  }
+
+  function fyllPaneler(velg) {
+    var alle = HaptPaneler.alle(), gammel = velg || $('panel').value;
+    var valgt = gammel && HaptPaneler.finn(gammel);
+    if (!valgt) { var pk = $('produsent').value; valgt = alle.filter(function (p) { return produsentAv(p) === pk; })[0] || alle[0]; }
+    var prod = [];
+    alle.forEach(function (p) { var k = produsentAv(p); if (prod.indexOf(k) < 0) prod.push(k); });
+    var ps = $('produsent'); ps.innerHTML = '';
+    prod.forEach(function (k) {
+      var o = document.createElement('option');
+      o.value = k; o.textContent = k === EGNE ? T_('Egne paneler', 'Your panels') : k;
+      ps.appendChild(o);
+    });
+    ps.value = produsentAv(valgt);
+    fyllTyper(valgt.id);
     var ul = $('egne'); ul.innerHTML = '';
     HaptPaneler.egne().forEach(function (p) {
       var li = document.createElement('li');
-      li.innerHTML = '<span></span><button type="button">Slett</button>';
+      li.innerHTML = '<span></span><button type="button">' + T_('Slett', 'Delete') + '</button>';
       li.firstChild.textContent = p.navn;
       li.lastChild.onclick = function () {
         HaptPaneler.lagreEgne(HaptPaneler.egne().filter(function (x) { return x.id !== p.id; }));
@@ -296,7 +329,7 @@ details[open] summary { margin-bottom: 14px; }
     liste.forEach(function (f, i) {
       var b = document.createElement('button'); b.type = 'button';
       if (i === valgtForslag) b.className = 'valgt';
-      b.innerHTML = f.c + ' × ' + (lite ? nf(f.r / 2, 1) : f.r) + ' paneler <small>' + nf(f.c * p.b / 1000, 2) + ' × ' + nf(f.r * u.h / 1000, 2) + ' m, ' + (f.c * p.px) + ' × ' + (f.r * u.py) + ' px, ' + format((f.c * p.b) / (f.r * u.h)) + '</small>';
+      b.innerHTML = f.c + ' × ' + (lite ? nf(f.r / 2, 1) : f.r) + T_(' paneler <small>', ' panels <small>') + nf(f.c * p.b / 1000, 2) + ' × ' + nf(f.r * u.h / 1000, 2) + ' m, ' + (f.c * p.px) + ' × ' + (f.r * u.py) + ' px, ' + format((f.c * p.b) / (f.r * u.h)) + '</small>';
       b.onclick = function () { valgtForslag = i; regn(); };
       boks.appendChild(b);
     });
@@ -305,11 +338,11 @@ details[open] summary { margin-bottom: 14px; }
 
   var sisteTekst = '';
   var prosessorer = {
-    nova: { kap: 655360, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'NovaStar: 655 360 px per port ved 60 Hz og 8 bit (nyere MX-serie: ca. 659 000). 10 og 12 bit halverer kapasiteten.' },
-    'nova-pro': { kap: 659722, ppp: 20, bit: { 8: 1, 10: 0.75, 12: 0.5 }, note: 'NovaStar MX med A10s/A8s Pro-kort: 659 722 px ved 8 bit og 494 792 px ved 10 bit (60 Hz). 12 bit er regnet som halv kapasitet.' },
-    colorlight: { kap: 650000, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'Colorlight: ca. 650 000 px per 1G-port ved 60 Hz og 8 bit (X- og Z-serien). Porter per prosessor: X8 = 8, X16 = 16. 10 og 12 bit er regnet som halv kapasitet; sjekk i LEDVISION.' },
-    brompton: { kap: 525000, ppp: 8, bit: { 8: 1, 10: 1, 12: 1 }, note: 'Brompton Tessera: ca. 525 000 px per 1G-port ved 60 Hz. Bitdybde er ikke regnet inn her, så sjekk portlasten i Tessera.' },
-    egen: { note: 'Skriv inn kapasitet per port ved 60 Hz og 8 bit. 10 og 12 bit er regnet som halv kapasitet.' , bit: { 8: 1, 10: 0.5, 12: 0.5 } }
+    nova: { kap: 655360, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'NovaStar: 655 360 px per port ved 60 Hz og 8 bit (nyere MX-serie: ca. 659 000). 10 og 12 bit halverer kapasiteten.', noteEn: 'NovaStar: 655,360 px per port at 60 Hz and 8 bit (newer MX series: approx. 659,000). 10 and 12 bit halve the capacity.' },
+    'nova-pro': { kap: 659722, ppp: 20, bit: { 8: 1, 10: 0.75, 12: 0.5 }, note: 'NovaStar MX med A10s/A8s Pro-kort: 659 722 px ved 8 bit og 494 792 px ved 10 bit (60 Hz). 12 bit er regnet som halv kapasitet.', noteEn: 'NovaStar MX with A10s/A8s Pro cards: 659,722 px at 8 bit and 494,792 px at 10 bit (60 Hz). 12 bit is counted as half capacity.' },
+    colorlight: { kap: 650000, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'Colorlight: ca. 650 000 px per 1G-port ved 60 Hz og 8 bit (X- og Z-serien). Porter per prosessor: X8 = 8, X16 = 16. 10 og 12 bit er regnet som halv kapasitet; sjekk i LEDVISION.', noteEn: 'Colorlight: approx. 650,000 px per 1G port at 60 Hz and 8 bit (X and Z series). Ports per processor: X8 = 8, X16 = 16. 10 and 12 bit are counted as half capacity; check in LEDVISION.' },
+    brompton: { kap: 525000, ppp: 8, bit: { 8: 1, 10: 1, 12: 1 }, note: 'Brompton Tessera: ca. 525 000 px per 1G-port ved 60 Hz. Bitdybde er ikke regnet inn her, så sjekk portlasten i Tessera.', noteEn: 'Brompton Tessera: approx. 525,000 px per 1G port at 60 Hz. Bit depth is not included here, so check the port load in Tessera.' },
+    egen: { note: 'Skriv inn kapasitet per port ved 60 Hz og 8 bit. 10 og 12 bit er regnet som halv kapasitet.', noteEn: 'Enter the capacity per port at 60 Hz and 8 bit. 10 and 12 bit are counted as half capacity.' , bit: { 8: 1, 10: 0.5, 12: 0.5 } }
   };
 
   function data(p, c, r, n) {
@@ -326,7 +359,7 @@ details[open] summary { margin-bottom: 14px; }
     var ppp = Math.max(1, +$('ppp').value || 1);
     var backupPorter = backup === 'ingen' ? 0 : porter;
     var antProsessorer = backup === 'port' ? Math.ceil((porter * 2) / ppp) : Math.ceil(porter / ppp) * (backup === 'prosessor' ? 2 : 1);
-    $('data-note').textContent = pr.note;
+    $('data-note').textContent = T_(pr.note, pr.noteEn);
     // Får ikke ett panel plass på en port, finnes det ikke noe fornuftig antall porter: vis strek i stedet for ∞
     if (!perPort) { porter = '–'; backupPorter = backup === 'ingen' ? 0 : '–'; antProsessorer = '–'; }
     return { hz: hz, bit: bit, kap: kap, perPort: perPort, porter: porter, backup: backup, backupPorter: backupPorter, prosessorer: antProsessorer };
@@ -352,13 +385,13 @@ details[open] summary { margin-bottom: 14px; }
 
   function oppdaterLagerfelt(p, lite) {
     $('blandingBoks').hidden = !HaptPaneler.lite(p);
-    if (HaptPaneler.lite(p)) $('blandTekst').textContent = 'Bland inn ' + cm(HaptPaneler.lite(p)) + ' cm (samme pitch)';
+    if (HaptPaneler.lite(p)) $('blandTekst').textContent = T_('Bland inn ' + cm(HaptPaneler.lite(p)) + ' cm (samme pitch)', 'Mix in ' + cm(HaptPaneler.lite(p)) + ' cm panels (same pitch)');
     $('smaPlassBoks').hidden = !lite;
     $('lagerSmaBoks').hidden = !lite;
-    $('lagerStorTekst').textContent = 'Du har ' + cm(p) + ' cm (stk)';
-    if (lite) $('lagerSmaTekst').textContent = 'Du har ' + cm(lite) + ' cm (stk)';
+    $('lagerStorTekst').textContent = T_('Du har ' + cm(p) + ' cm (stk)', 'You have ' + cm(p) + ' cm (pcs)');
+    if (lite) $('lagerSmaTekst').textContent = T_('Du har ' + cm(lite) + ' cm (stk)', 'You have ' + cm(lite) + ' cm (pcs)');
     $('rad').step = lite ? '0.5' : '1';
-    $('rad').previousElementSibling.textContent = lite ? 'Paneler i høyden (0,5 = lite panel)' : 'Paneler i høyden';
+    $('rad').previousElementSibling.textContent = lite ? T_('Paneler i høyden (0,5 = lite panel)', 'Panels high (0.5 = small panel)') : T_('Paneler i høyden', 'Panels high');
     if (document.activeElement !== $('lagerStor')) $('lagerStor').value = lagerFor(p.id) == null ? '' : lagerFor(p.id);
     if (lite && document.activeElement !== $('lagerSma')) $('lagerSma').value = lagerFor(lite.id) == null ? '' : lagerFor(lite.id);
   }
@@ -386,16 +419,17 @@ details[open] summary { margin-bottom: 14px; }
     var blandet = lite && plan.s > 0;
     // Lagerstatus
     var mangler = [];
-    if (T != null && antStore > T) mangler.push((antStore - T) + ' stk ' + cm(p));
-    if (lite && S != null && antSma > S) mangler.push((antSma - S) + ' stk ' + cm(lite));
+    var stk = T_(' stk ', ' pcs '), og = T_(' og ', ' and ');
+    if (T != null && antStore > T) mangler.push((antStore - T) + stk + cm(p));
+    if (lite && S != null && antSma > S) mangler.push((antSma - S) + stk + cm(lite));
     var lagerTekst = '';
     if (T != null || (lite && S != null)) {
-      lagerTekst = 'Veggen bruker ' + antStore + ' stk ' + cm(p) + (lite ? ' og ' + antSma + ' stk ' + cm(lite) : '') + ' cm. ';
+      lagerTekst = T_('Veggen bruker ', 'The wall uses ') + antStore + stk + cm(p) + (lite ? og + antSma + stk + cm(lite) : '') + ' cm. ';
       var over = [];
-      if (T != null) over.push((T - antStore) + ' stk ' + cm(p));
-      if (lite && S != null) over.push((S - antSma) + ' stk ' + cm(lite));
-      lagerTekst += mangler.length ? 'Du mangler ' + mangler.join(' og ') + ' cm.' : 'Du har nok, med ' + over.join(' og ') + ' cm til overs.';
-    } else if (lite) lagerTekst = 'Skriv inn hvor mange du har, så bytter kalkulatoren ut store med to små der det trengs.';
+      if (T != null) over.push((T - antStore) + stk + cm(p));
+      if (lite && S != null) over.push((S - antSma) + stk + cm(lite));
+      lagerTekst += mangler.length ? T_('Du mangler ', 'You are short of ') + mangler.join(og) + ' cm.' : T_('Du har nok, med ' + over.join(og) + ' cm til overs.', 'You have enough, with ' + over.join(og) + ' cm spare.');
+    } else if (lite) lagerTekst = T_('Skriv inn hvor mange du har, så bytter kalkulatoren ut store med to små der det trengs.', 'Enter how many you have and the calculator swaps a large panel for two small ones where needed.');
     $('lagerNote').textContent = lagerTekst;
     $('lagerNote').className = mangler.length ? 'warn' : 'note';
 
@@ -417,29 +451,29 @@ details[open] summary { margin-bottom: 14px; }
 
     $('k-maal').textContent = nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m';
     $('k-opp').textContent = W + ' × ' + H;
-    $('k-antall').textContent = blandet ? antStore + ' + ' + antSma + ' små' : c + ' × ' + r + ' = ' + n;
+    $('k-antall').textContent = blandet ? antStore + ' + ' + antSma + T_(' små', ' small') : c + ' × ' + r + ' = ' + n;
     $('k-vekt').textContent = nf(kg, 0) + ' kg';
 
     var rader = [
-      ['Paneler', blandet ? antStore + ' × ' + cm(p) + ' cm og ' + antSma + ' × ' + cm(lite) + ' cm  (' + c + ' kolonner à ' + plan.t + ' + ' + plan.s + ')' : c + ' × ' + r + ' = ' + n + ' × ' + cm(p) + ' cm'],
-      ['Format', format(bmm / hmm) + '  (' + nf(bmm / hmm, 3) + ')'],
+      [T_('Paneler', 'Panels'), blandet ? antStore + ' × ' + cm(p) + T_(' cm og ', ' cm and ') + antSma + ' × ' + cm(lite) + ' cm  (' + c + T_(' kolonner à ', ' columns of ') + plan.t + ' + ' + plan.s + ')' : c + ' × ' + r + ' = ' + n + ' × ' + cm(p) + ' cm'],
+      [T_('Format', 'Aspect ratio'), format(bmm / hmm) + '  (' + nf(bmm / hmm, 3) + ')'],
       ['Diagonal', nf(diag, 2) + ' m  (' + nf(diag / 0.0254, 0) + '″)'],
-      ['Areal', nf(bmm * hmm / 1e6, 2) + ' m²'],
-      ['Piksler totalt', nf(W * H, 0)],
-      ['Pikselavstand', nf(pitch, 2) + ' mm'],
-      ['Korteste fine seeravstand', 'ca. ' + nf(pitch, 1) + ' m'],
-      ['Effekt maks', nf(maks / 1000, 2) + ' kW'],
-      ['Effekt snitt', nf(snitt / 1000, 2) + ' kW'],
-      [faser === 1 ? 'Strøm maks (230 V)' : 'Strøm maks per fase (jevnt fordelt)', nf(fase(maks), 1) + ' A'],
-      ['Paneler per ' + kurs + ' A kurs', perKurs + '  (' + nf(margin * 100, 0) + ' % last)'],
-      ['Kurser à ' + kurs + ' A', kurser],
-      ['Datamengde', nf(W * H * d.hz * d.bit * 3 / 1e9, 2) + ' Gbit/s'],
-      ['Kapasitet per port', nf(d.kap, 0) + ' px  (' + d.hz + ' Hz, ' + d.bit + ' bit)'],
-      ['Paneler per port', d.perPort + (d.perPort ? '  (' + nf(d.perPort * p.px * p.py / d.kap * 100, 0) + ' % last)' : '')],
-      ['Hovedporter', d.porter],
-      ['Backup-porter', d.backupPorter],
-      ['Prosessorer', d.prosessorer + (d.backup === 'prosessor' ? '  (halvparten backup)' : '')],
-      ['Vekt per kolonne', nf(sum('kg'), 1) + ' kg']
+      [T_('Areal', 'Area'), nf(bmm * hmm / 1e6, 2) + ' m²'],
+      [T_('Piksler totalt', 'Total pixels'), nf(W * H, 0)],
+      [T_('Pikselavstand', 'Pixel pitch'), nf(pitch, 2) + ' mm'],
+      [T_('Korteste fine seeravstand', 'Minimum viewing distance'), T_('ca. ', 'approx. ') + nf(pitch, 1) + ' m'],
+      [T_('Effekt maks', 'Max power'), nf(maks / 1000, 2) + ' kW'],
+      [T_('Effekt snitt', 'Average power'), nf(snitt / 1000, 2) + ' kW'],
+      [faser === 1 ? T_('Strøm maks (230 V)', 'Max current (230 V)') : T_('Strøm maks per fase (jevnt fordelt)', 'Max current per phase (evenly balanced)'), nf(fase(maks), 1) + ' A'],
+      [T_('Paneler per ' + kurs + ' A kurs', 'Panels per ' + kurs + ' A circuit'), perKurs + '  (' + nf(margin * 100, 0) + T_(' % last)', ' % load)')],
+      [T_('Kurser à ' + kurs + ' A', kurs + ' A circuits'), kurser],
+      [T_('Datamengde', 'Data rate'), nf(W * H * d.hz * d.bit * 3 / 1e9, 2) + ' Gbit/s'],
+      [T_('Kapasitet per port', 'Capacity per port'), nf(d.kap, 0) + ' px  (' + d.hz + ' Hz, ' + d.bit + ' bit)'],
+      [T_('Paneler per port', 'Panels per port'), d.perPort + (d.perPort ? '  (' + nf(d.perPort * p.px * p.py / d.kap * 100, 0) + T_(' % last)', ' % load)') : '')],
+      [T_('Hovedporter', 'Main ports'), d.porter],
+      [T_('Backup-porter', 'Backup ports'), d.backupPorter],
+      [T_('Prosessorer', 'Processors'), d.prosessorer + (d.backup === 'prosessor' ? T_('  (halvparten backup)', '  (half of them backup)') : '')],
+      [T_('Vekt per kolonne', 'Weight per column'), nf(sum('kg'), 1) + ' kg']
     ];
     var t = $('tabell'); t.innerHTML = '';
     rader.forEach(function (x) {
@@ -450,30 +484,30 @@ details[open] summary { margin-bottom: 14px; }
     });
 
     var adv = [];
-    if (W > 4096 || H > 4096) adv.push('Oppløsningen er over 4096 piksler på en led. Mange kilder og prosessorer klarer ikke det i ett signal, så veggen må trolig deles på flere utganger.');
-    else if (W > 3840 || H > 2160) adv.push('Oppløsningen er større enn UHD (3840 × 2160). Sjekk at kilden og prosessoren klarer det.');
-    if (W > 1920 && W * H > 1920 * 1200 && W * H <= 3840 * 2160) adv.push('Mer enn Full HD: kilden må sende over 1080p, eller bildet skaleres.');
-    if (!d.perPort) adv.push('Ett panel har flere piksler enn én port klarer ved denne frekvensen og bitdybden.');
-    if (mangler.length) adv.push('Du har ikke nok paneler: mangler ' + mangler.join(' og ') + ' cm.');
-    if (blandet) adv.push('Med små paneler blandet inn regnes porter og kurser som om alle var store, så de er på den sikre siden.');
+    if (W > 4096 || H > 4096) adv.push(T_('Oppløsningen er over 4096 piksler på en led. Mange kilder og prosessorer klarer ikke det i ett signal, så veggen må trolig deles på flere utganger.', 'The resolution is over 4096 pixels in one direction. Many sources and processors cannot handle that in a single signal, so the wall will probably have to be split across several outputs.'));
+    else if (W > 3840 || H > 2160) adv.push(T_('Oppløsningen er større enn UHD (3840 × 2160). Sjekk at kilden og prosessoren klarer det.', 'The resolution is larger than UHD (3840 × 2160). Check that the source and processor can handle it.'));
+    if (W > 1920 && W * H > 1920 * 1200 && W * H <= 3840 * 2160) adv.push(T_('Mer enn Full HD: kilden må sende over 1080p, eller bildet skaleres.', 'More than Full HD: the source must output above 1080p, or the image will be scaled.'));
+    if (!d.perPort) adv.push(T_('Ett panel har flere piksler enn én port klarer ved denne frekvensen og bitdybden.', 'One panel has more pixels than a single port can drive at this frame rate and bit depth.'));
+    if (mangler.length) adv.push(T_('Du har ikke nok paneler: mangler ', 'Not enough panels: short of ') + mangler.join(og) + ' cm.');
+    if (blandet) adv.push(T_('Med små paneler blandet inn regnes porter og kurser som om alle var store, så de er på den sikre siden.', 'With small panels mixed in, ports and circuits are calculated as if all panels were large, so they are on the safe side.'));
     $('advarsler').innerHTML = adv.map(function (s) { return '<p class="warn"></p>'; }).join('');
     Array.prototype.forEach.call($('advarsler').children, function (el, i) { el.textContent = adv[i]; });
 
     tegn(p, c, raderP, kj);
     var ph = blandet ? lite.py : p.py;
-    var q = new URLSearchParams({ w: W, h: H, pw: p.px, ph: ph, navn: p.navn });
+    var q = new URLSearchParams({ w: W, h: H, pw: p.px, ph: ph, navn: pnavn(p) });
     $('tilTestbilde').href = '../testbilde/?' + q.toString();
-    $('tilPixelmap').href = '../pixelmap/?' + new URLSearchParams({ legg: p.navn + ' ' + c + '×' + r, b: W, h: H, pw: p.px, ph: ph }).toString();
+    $('tilPixelmap').href = '../pixelmap/?' + new URLSearchParams({ legg: pnavn(p) + ' ' + c + '×' + r, b: W, h: H, pw: p.px, ph: ph }).toString();
 
-    sisteTekst = 'LED-vegg: ' + p.navn + '\n' +
-      (blandet ? antStore + ' × ' + cm(p) + ' cm + ' + antSma + ' × ' + cm(lite) + ' cm\n' : c + ' × ' + r + ' = ' + n + ' paneler\n') +
-      'Størrelse: ' + nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m (' + format(bmm / hmm) + ')\n' +
-      'Oppløsning: ' + W + ' × ' + H + ' px\n' +
-      'Vekt: ' + nf(kg, 0) + ' kg (bare paneler)\n' +
-      'Effekt: maks ' + nf(maks / 1000, 2) + ' kW, snitt ' + nf(snitt / 1000, 2) + ' kW\n' +
-      'Kurser: ' + kurser + ' × ' + kurs + ' A (' + perKurs + ' paneler per kurs)\n' +
-      'Data: ' + d.hz + ' Hz, ' + d.bit + ' bit, ' + d.perPort + ' paneler per port\n' +
-      'Porter: ' + d.porter + ' hoved' + (d.backupPorter ? ' + ' + d.backupPorter + ' backup' : '') + ', ' + d.prosessorer + ' prosessor' + (d.prosessorer === 1 ? '' : 'er');
+    sisteTekst = T_('LED-vegg: ', 'LED wall: ') + pnavn(p) + '\n' +
+      (blandet ? antStore + ' × ' + cm(p) + ' cm + ' + antSma + ' × ' + cm(lite) + ' cm\n' : c + ' × ' + r + ' = ' + n + T_(' paneler\n', ' panels\n')) +
+      T_('Størrelse: ', 'Size: ') + nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m (' + format(bmm / hmm) + ')\n' +
+      T_('Oppløsning: ', 'Resolution: ') + W + ' × ' + H + ' px\n' +
+      T_('Vekt: ', 'Weight: ') + nf(kg, 0) + T_(' kg (bare paneler)\n', ' kg (panels only)\n') +
+      T_('Effekt: maks ', 'Power: max ') + nf(maks / 1000, 2) + T_(' kW, snitt ', ' kW, average ') + nf(snitt / 1000, 2) + ' kW\n' +
+      T_('Kurser: ', 'Circuits: ') + kurser + ' × ' + kurs + ' A (' + perKurs + T_(' paneler per kurs)\n', ' panels per circuit)\n') +
+      'Data: ' + d.hz + ' Hz, ' + d.bit + ' bit, ' + d.perPort + T_(' paneler per port\n', ' panels per port\n') +
+      T_('Porter: ', 'Ports: ') + d.porter + T_(' hoved', ' main') + (d.backupPorter ? ' + ' + d.backupPorter + ' backup' : '') + ', ' + d.prosessorer + T_(' prosessor', ' processor') + (d.prosessorer === 1 ? '' : T_('er', 's'));
 
     lagreTilstand();
   }
@@ -527,8 +561,9 @@ details[open] summary { margin-bottom: 14px; }
     kj.forEach(function (pn) { kol[pn[0] + 1] = 1; rad[pn[1] + 1] = 1; });
     var kl = Object.keys(kol).map(Number), rl = Object.keys(rad).map(Number);
     var spenn = function (l, en, flere) { var a = Math.min.apply(null, l), b = Math.max.apply(null, l); return a === b ? en + ' ' + a : flere + ' ' + a + '–' + b; };
-    var hva = modus === 'rad' ? spenn(rl, 'rad', 'rader') : spenn(kl, 'kolonne', 'kolonner') + (rl.length < r0 ? ', ' + spenn(rl, 'rad', 'rader') : '');
-    return hva + ', ' + kj.length + ' paneler, inn i ' + navn(kj[0]) + ', ut i ' + navn(kj[kj.length - 1]);
+    var rd = T_('rad', 'row'), rdr = T_('rader', 'rows');
+    var hva = modus === 'rad' ? spenn(rl, rd, rdr) : spenn(kl, T_('kolonne', 'column'), T_('kolonner', 'columns')) + (rl.length < r0 ? ', ' + spenn(rl, rd, rdr) : '');
+    return hva + ', ' + kj.length + T_(' paneler, inn i ', ' panels, in at ') + navn(kj[0]) + T_(', ut i ', ', out at ') + navn(kj[kj.length - 1]);
   }
   var r0 = 0;
 
@@ -540,33 +575,34 @@ details[open] summary { margin-bottom: 14px; }
     var sk = kjeder(c, r, perKurs, modus === 'fri' ? 'kol' : modus, fraBunn);
     var fasenavn = nett === '1' ? ['L1'] : nett === '3it' ? ['L1-L2', 'L2-L3', 'L3-L1'] : ['L1', 'L2', 'L3'];
     var esc = function (t) { return String(t).replace(/[&<>]/g, function (x) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[x]; }); };
-    var h = '<h3>Data (' + (d.perPort ? dk.length : '–') + ' port' + (dk.length === 1 ? '' : 'er') + (d.backupPorter ? ', med backup' : '') + ')</h3><ul>';
+    var h = '<h3>Data (' + (d.perPort ? dk.length : '–') + ' port' + (dk.length === 1 ? '' : T_('er', 's')) + (d.backupPorter ? T_(', med backup', ', with backup') : '') + ')</h3><ul>';
     dk.forEach(function (kj, i) {
-      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>Port ' + (i + 1) + ': ' + esc(beskriv(kj, modus)) + (d.backupPorter ? '. Backup-port ' + (i + 1) + ' inn i ' + (kj[kj.length - 1][0] + 1) + '.' + (kj[kj.length - 1][1] + 1) : '') + '</span></li>';
+      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>Port ' + (i + 1) + ': ' + esc(beskriv(kj, modus)) + (d.backupPorter ? T_('. Backup-port ', '. Backup port ') + (i + 1) + T_(' inn i ', ' in at ') + (kj[kj.length - 1][0] + 1) + '.' + (kj[kj.length - 1][1] + 1) : '') + '</span></li>';
     });
     h += '</ul>';
 
     var fasestrom = fasenavn.map(function () { return 0; });
-    h += '<h3>Strøm (' + sk.length + ' kurs' + (sk.length === 1 ? '' : 'er') + ' à ' + kurs + ' A)</h3><ul>';
+    h += HaptSprak.en() ? '<h3>Power (' + sk.length + ' × ' + kurs + ' A circuit' + (sk.length === 1 ? '' : 's') + ')</h3><ul>' : '<h3>Strøm (' + sk.length + ' kurs' + (sk.length === 1 ? '' : 'er') + ' à ' + kurs + ' A)</h3><ul>';
     sk.forEach(function (kj, i) {
       var f = i % fasenavn.length;
       fasestrom[f] += kj.length * p.maks / 230;
-      var soca = kurs === 16 ? ', Soca ' + (Math.floor(i / 6) + 1) + ' kurs ' + (i % 6 + 1) : '';
-      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>Kurs ' + (i + 1) + ' (' + fasenavn[f] + soca + '): ' + esc(beskriv(kj, modus === 'fri' ? 'kol' : modus)) + ', maks ' + nf(kj.length * p.maks / 230, 1) + ' A</span></li>';
+      var soca = kurs === 16 ? ', Soca ' + (Math.floor(i / 6) + 1) + T_(' kurs ', ' circuit ') + (i % 6 + 1) : '';
+      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>' + T_('Kurs ', 'Circuit ') + (i + 1) + ' (' + fasenavn[f] + soca + '): ' + esc(beskriv(kj, modus === 'fri' ? 'kol' : modus)) + T_(', maks ', ', max ') + nf(kj.length * p.maks / 230, 1) + ' A</span></li>';
     });
     h += '</ul>';
 
-    h += '<h3>Fordeling og inntak</h3>';
+    h += '<h3>' + T_('Fordeling og inntak', 'Distribution and supply') + '</h3>';
     if (kurs === 16) {
       var soca = Math.ceil(sk.length / 6);
-      h += '<p>' + soca + ' Socapex-breakout' + (soca === 1 ? '' : 's') + ' (6 kurser à 16 A per Soca' + (nett === '1' ? '' : ', to kurser per fase') + ').' + (sk.length % 6 ? ' Siste Soca har ' + (sk.length % 6) + ' kurs' + (sk.length % 6 === 1 ? '' : 'er') + ' i bruk.' : '') + '</p>';
+      if (HaptSprak.en()) h += '<p>' + soca + ' Socapex breakout' + (soca === 1 ? '' : 's') + ' (6 × 16 A circuits per Soca' + (nett === '1' ? '' : ', two circuits per phase') + ').' + (sk.length % 6 ? ' The last Soca has ' + (sk.length % 6) + ' circuit' + (sk.length % 6 === 1 ? '' : 's') + ' in use.' : '') + '</p>';
+      else h += '<p>' + soca + ' Socapex-breakout' + (soca === 1 ? '' : 's') + ' (6 kurser à 16 A per Soca' + (nett === '1' ? '' : ', to kurser per fase') + ').' + (sk.length % 6 ? ' Siste Soca har ' + (sk.length % 6) + ' kurs' + (sk.length % 6 === 1 ? '' : 'er') + ' i bruk.' : '') + '</p>';
     } else {
-      h += '<p>Kurser på ' + kurs + ' A går ikke i Socapex (den er for 16 A-kurser). Bruk CEE eller egne fordelinger.</p>';
+      h += '<p>' + T_('Kurser på ' + kurs + ' A går ikke i Socapex (den er for 16 A-kurser). Bruk CEE eller egne fordelinger.', kurs + ' A circuits do not go on Socapex (it is for 16 A circuits). Use CEE or separate distros.') + '</p>';
     }
     var maksFase;
     if (nett === '3tn' || nett === '1') {
       maksFase = Math.max.apply(null, fasestrom);
-      h += '<p>Maks strøm ' + (nett === '1' ? '' : 'per fase: ' + fasestrom.map(function (a, i) { return fasenavn[i] + ' ' + nf(a, 1) + ' A'; }).join(', ') + '. Høyeste ') + nf(maksFase, 1) + ' A.</p>';
+      h += '<p>' + T_('Maks strøm ', 'Max current ') + (nett === '1' ? '' : T_('per fase: ', 'per phase: ') + fasestrom.map(function (a, i) { return fasenavn[i] + ' ' + nf(a, 1) + ' A'; }).join(', ') + T_('. Høyeste ', '. Highest ')) + nf(maksFase, 1) + ' A.</p>';
     } else {
       // IT: hver kurs ligger mellom to faser (trekant). Linjestrømmen er vektorsummen av de to kursgruppene som deler fasen:
       // I = √(a² + b² + ab), som blir √3 · a når lasten er lik.
@@ -575,13 +611,13 @@ details[open] summary { margin-bottom: 14px; }
       var linje = function (a, b) { return Math.sqrt(a * a + b * b + a * b); };
       var lin = [linje(par[0], par[2]), linje(par[0], par[1]), linje(par[1], par[2])];
       maksFase = Math.max.apply(null, lin);
-      h += '<p>IT-nett: kursene fordeles på L1-L2, L2-L3 og L3-L1. Linjestrøm: ' + lin.map(function (a, i) { return 'L' + (i + 1) + ' ' + nf(a, 1) + ' A'; }).join(', ') + '.</p>';
+      h += '<p>' + T_('IT-nett: kursene fordeles på L1-L2, L2-L3 og L3-L1. Linjestrøm: ', 'IT supply: circuits are spread across L1-L2, L2-L3 and L3-L1. Line current: ') + lin.map(function (a, i) { return 'L' + (i + 1) + ' ' + nf(a, 1) + ' A'; }).join(', ') + '.</p>';
     }
     var inntak = [16, 32, 63, 125, 250].filter(function (a) { return a >= maksFase; })[0];
-    h += '<p>Inntak: ' + (inntak ? 'minst ' + inntak + ' A CEE' + (nett === '1' ? ' enfase' : ' 3-fase') : 'mer enn 250 A, del på flere inntak') + ', regnet med maks effekt på alle paneler.</p>';
+    h += '<p>' + T_('Inntak: ', 'Supply: ') + (inntak ? T_('minst ', 'at least ') + inntak + ' A CEE' + (nett === '1' ? T_(' enfase', ' single-phase') : T_(' 3-fase', ' 3-phase')) : T_('mer enn 250 A, del på flere inntak', 'more than 250 A, split across several supplies')) + T_(', regnet med maks effekt på alle paneler.', ', based on max power on all panels.') + '</p>';
 
-    h += '<h3>Kabler</h3><p>Data: ' + dk.length + ' hjemkabler' + (d.backupPorter ? ' + ' + dk.length + ' backup' : '') + ' og ' + (c * r - dk.length) + ' panelkabler. Strøm: ' + sk.length + ' tilførsler og ' + (c * r - sk.length) + ' panelkabler.</p>';
-    h += '<p class="note">Forslaget går i slange ' + (modus === 'rad' ? 'rad for rad' : 'kolonne for kolonne') + ' fra ' + (fraBunn ? 'bunnen' : 'toppen') + ', så kjedene blir korte og like. Sjekk at panelene tåler så lange strømkjeder (maks antall gjennom powerCON står i databladet).</p>';
+    h += '<h3>' + T_('Kabler', 'Cables') + '</h3><p>Data: ' + dk.length + T_(' hjemkabler', ' home runs') + (d.backupPorter ? ' + ' + dk.length + ' backup' : '') + T_(' og ', ' and ') + (c * r - dk.length) + T_(' panelkabler. Strøm: ', ' panel jumpers. Power: ') + sk.length + T_(' tilførsler og ', ' feeds and ') + (c * r - sk.length) + T_(' panelkabler.', ' panel jumpers.') + '</p>';
+    h += '<p class="note">' + (HaptSprak.en() ? 'The plan snakes ' + (modus === 'rad' ? 'row by row' : 'column by column') + ' from the ' + (fraBunn ? 'bottom' : 'top') + ', so the chains stay short and even. Check that the panels can take power chains this long (the max number through powerCON is in the datasheet).' : 'Forslaget går i slange ' + (modus === 'rad' ? 'rad for rad' : 'kolonne for kolonne') + ' fra ' + (fraBunn ? 'bunnen' : 'toppen') + ', så kjedene blir korte og like. Sjekk at panelene tåler så lange strømkjeder (maks antall gjennom powerCON står i databladet).') + '</p>';
     $('kabling-ut').innerHTML = h;
     return { data: dk, strom: sk };
   }
@@ -625,7 +661,7 @@ details[open] summary { margin-bottom: 14px; }
         var rr = Math.min(cw, ch) * 0.2;
         var ma = midt(a), mz = midt(z);
         s += '<circle cx="' + ma[0] + '" cy="' + ma[1] + '" r="' + rr + '" fill="' + f + '"/>';
-        s += '<text x="' + ma[0] + '" y="' + ma[1] + '" fill="#0c0d0f" font-size="' + rr * 1.1 + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + (visTegning === 'data' ? 'P' : 'K') + (i + 1) + '</text>';
+        s += '<text x="' + ma[0] + '" y="' + ma[1] + '" fill="#0c0d0f" font-size="' + rr * 1.1 + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + (visTegning === 'data' ? 'P' : T_('K', 'C')) + (i + 1) + '</text>';
         if (k.length > 1) s += '<circle cx="' + mz[0] + '" cy="' + mz[1] + '" r="' + rr * 0.45 + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '"/>';
       });
     }
@@ -647,7 +683,7 @@ details[open] summary { margin-bottom: 14px; }
       var s = JSON.parse(localStorage.getItem('hapt-led') || 'null');
       if (!s) return;
       ['kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'prosessor', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup', 'start'].forEach(function (k) { if (s[k] != null) $(k).value = s[k]; });
-      if (s.panel && HaptPaneler.finn(s.panel)) $('panel').value = s.panel;
+      if (s.panel && HaptPaneler.finn(s.panel)) fyllPaneler(s.panel);
       if (s.bland != null) $('bland').checked = !!s.bland;
       if (s.smaPlass) $('smaPlass').value = s.smaPlass;
       if (s.modus) settModus(s.modus);
@@ -682,6 +718,9 @@ details[open] summary { margin-bottom: 14px; }
     $(id).addEventListener('input', function () { if (['kol', 'rad', 'mb', 'mh', 'fb', 'ff'].indexOf(id) >= 0) valgtForslag = 0; regn(); });
   });
 
+  // Ny produsent: velg dens første type og regn på nytt
+  $('produsent').addEventListener('change', function () { fyllTyper(); regn(); });
+
   $('prosessor').addEventListener('change', function () {
     var pr = prosessorer[this.value];
     if (pr.kap) { $('kap').value = pr.kap; $('ppp').value = pr.ppp; }
@@ -689,22 +728,27 @@ details[open] summary { margin-bottom: 14px; }
   });
 
   $('ep-lagre').onclick = function () {
-    var navn = $('ep-navn').value.trim() || 'Eget panel';
+    var navn = $('ep-navn').value.trim() || T_('Eget panel', 'Custom panel');
     var p = { id: 'eget-' + Date.now(), navn: navn, b: +$('ep-b').value, h: +$('ep-h').value, px: +$('ep-px').value, py: +$('ep-py').value, kg: +$('ep-kg').value, maks: +$('ep-maks').value, snitt: +$('ep-snitt').value };
-    if (!(p.b > 0 && p.h > 0 && p.px > 0 && p.py > 0 && p.maks > 0)) { alert('Fyll inn mål, piksler og maks effekt.'); return; }
+    if (!(p.b > 0 && p.h > 0 && p.px > 0 && p.py > 0 && p.maks > 0)) { alert(T_('Fyll inn mål, piksler og maks effekt.', 'Fill in size, pixels and max power.')); return; }
     var liste = HaptPaneler.egne(); liste.push(p); HaptPaneler.lagreEgne(liste);
     fyllPaneler(p.id); regn();
   };
 
+  var kopiert = false;
+  function kopierTekst() { $('kopier').textContent = kopiert ? T_('Kopiert', 'Copied') : T_('Kopier oppsummering', 'Copy summary'); }
   $('kopier').onclick = function () {
-    var knapp = this;
     navigator.clipboard.writeText(sisteTekst).then(function () {
-      knapp.textContent = 'Kopiert'; setTimeout(function () { knapp.textContent = 'Kopier oppsummering'; }, 1500);
+      kopiert = true; kopierTekst(); setTimeout(function () { kopiert = false; kopierTekst(); }, 1500);
     });
   };
 
+  // Språkbytte: bygg panellista, knappen og alt som regnes ut på nytt
+  window.addEventListener('hapt-sprak', function () { fyllPaneler(); kopierTekst(); regn(); });
+
   fyllPaneler();
   hentTilstand();
+  kopierTekst();
   regn();
 })();
 </script>

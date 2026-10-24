@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Syncfilm – HAPT verktøy</title>
+<title data-en="Sync video – HAPT tools">Syncfilm – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <script src="../tema.js"></script>
@@ -30,73 +30,73 @@
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="./" aria-current="page">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
-  <h1>Syncfilm</h1>
-  <p class="lead">Lag en syncfilm for egne flater: blink og pip samtidig, framenummer, timecode og en løpende strek på hver flate. Last ned som MP4 og spill den i mediaserveren, så ser du om alle flater og lyden går likt.</p>
+  <h1 data-en="Sync video">Syncfilm</h1>
+  <p class="lead" data-en="Make a sync video for your own surfaces: flash and beep at the same time, frame number, timecode and a moving bar on every surface. Download it as MP4 and play it from the media server to check that all surfaces and the audio run in sync.">Lag en syncfilm for egne flater: blink og pip samtidig, framenummer, timecode og en løpende strek på hver flate. Last ned som MP4 og spill den i mediaserveren, så ser du om alle flater og lyden går likt.</p>
 
   <div class="grid">
     <div>
       <div class="card">
-        <h2>Flater</h2>
-        <label class="btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px">Last inn pixelmap (PNG eller kartfil)</label>
+        <h2 data-en="Surfaces">Flater</h2>
+        <label class="btn ghost" for="kartfil" style="display:block;text-align:center;margin:0 0 10px" data-en="Load pixel map (PNG or map file)">Last inn pixelmap (PNG eller kartfil)</label>
         <input id="kartfil" type="file" accept="image/png,image/jpeg,image/webp,.json,application/json" hidden>
-        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap">Bruk kartet fra Pixelmap-siden</button></div>
+        <div class="btns"><button class="btn ghost" type="button" id="fraPixelmap" data-en="Use the map from the Pixel map page">Bruk kartet fra Pixelmap-siden</button></div>
         <div id="kartInfo" hidden>
           <p class="note" id="kartTekst"></p>
           <div id="kartFlater"></div>
-          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart">Fjern pixelmap</button></div>
+          <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" id="fjernKart" data-en="Remove pixel map">Fjern pixelmap</button></div>
         </div>
         <div id="enkelt">
-          <p class="note">Uten pixelmap blir det én flate:</p>
+          <p class="note" data-en="Without a pixel map you get a single surface:">Uten pixelmap blir det én flate:</p>
           <div class="field">
-            <label for="mal">Oppløsning</label>
+            <label for="mal" data-en="Resolution">Oppløsning</label>
             <select id="mal">
               <option value="1920x1080">1920 × 1080 (Full HD)</option>
               <option value="3840x2160">3840 × 2160 (UHD)</option>
               <option value="1280x720">1280 × 720</option>
               <option value="1920x1200">1920 × 1200</option>
               <option value="4096x2160">4096 × 2160 (DCI 4K)</option>
-              <option value="1080x1920">1080 × 1920 (stående)</option>
-              <option value="egen">Egen</option>
+              <option value="1080x1920" data-en="1080 × 1920 (portrait)">1080 × 1920 (stående)</option>
+              <option value="egen" data-en="Custom">Egen</option>
             </select>
           </div>
           <div class="row">
-            <div class="field"><label for="w">Bredde (px)</label><input id="w" type="number" min="16" max="8192" value="1920"></div>
-            <div class="field"><label for="h">Høyde (px)</label><input id="h" type="number" min="16" max="8192" value="1080"></div>
+            <div class="field"><label for="w" data-en="Width (px)">Bredde (px)</label><input id="w" type="number" min="16" max="8192" value="1920"></div>
+            <div class="field"><label for="h" data-en="Height (px)">Høyde (px)</label><input id="h" type="number" min="16" max="8192" value="1080"></div>
           </div>
-          <div class="field"><label for="tittel">Navn</label><input id="tittel" type="text" placeholder="F.eks. Hovedskjerm"></div>
+          <div class="field"><label for="tittel" data-en="Name">Navn</label><input id="tittel" type="text" placeholder="F.eks. Hovedskjerm" data-en-placeholder="E.g. Main screen"></div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Film</h2>
+        <h2 data-en="Video">Film</h2>
         <div class="row">
-          <div class="field"><label for="fps">Bilder per sekund</label>
+          <div class="field"><label for="fps" data-en="Frame rate (fps)">Bilder per sekund</label>
             <select id="fps">
-              <option value="23.976">23,976</option><option value="24">24</option><option value="25">25</option>
-              <option value="29.97">29,97</option><option value="30">30</option>
-              <option value="50" selected>50</option><option value="59.94">59,94</option><option value="60">60</option>
+              <option value="23.976" data-en="23.976">23,976</option><option value="24">24</option><option value="25">25</option>
+              <option value="29.97" data-en="29.97">29,97</option><option value="30">30</option>
+              <option value="50" selected>50</option><option value="59.94" data-en="59.94">59,94</option><option value="60">60</option>
             </select>
           </div>
-          <div class="field"><label for="lengde">Lengde (sekunder)</label><input id="lengde" type="number" min="1" max="600" value="60"></div>
+          <div class="field"><label for="lengde" data-en="Length (seconds)">Lengde (sekunder)</label><input id="lengde" type="number" min="1" max="600" value="60"></div>
         </div>
         <div class="row">
-          <div class="field"><label for="blink">Blink og pip</label>
-            <select id="blink"><option value="1">1 bilde</option><option value="2">2 bilder</option><option value="3">3 bilder</option></select>
+          <div class="field"><label for="blink" data-en="Flash and beep">Blink og pip</label>
+            <select id="blink"><option value="1" data-en="1 frame">1 bilde</option><option value="2" data-en="2 frames">2 bilder</option><option value="3" data-en="3 frames">3 bilder</option></select>
           </div>
-          <div class="field"><label for="tone">Pip</label>
-            <select id="tone"><option value="1000">1 kHz</option><option value="2000">2 kHz</option><option value="0">Ingen lyd</option></select>
+          <div class="field"><label for="tone" data-en="Beep">Pip</label>
+            <select id="tone"><option value="1000">1 kHz</option><option value="2000">2 kHz</option><option value="0" data-en="No audio">Ingen lyd</option></select>
           </div>
         </div>
-        <label class="check"><input type="checkbox" id="df" checked> Drop-frame timecode på 29,97 og 59,94</label>
-        <label class="check"><input type="checkbox" id="logo" checked> Animert HAPT-logo på hver flate</label>
-        <div class="field" style="margin-top:10px"><label for="prosjekt">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026"></div>
-        <p class="note">Blinket og pipet kommer på første bilde i hvert sekund (timecode :00). Pipet ligger på begge kanaler, −6 dBFS.</p>
+        <label class="check"><input type="checkbox" id="df" checked> <span data-en="Drop-frame timecode at 29.97 and 59.94">Drop-frame timecode på 29,97 og 59,94</span></label>
+        <label class="check"><input type="checkbox" id="logo" checked> <span data-en="Animated HAPT logo on every surface">Animert HAPT-logo på hver flate</span></label>
+        <div class="field" style="margin-top:10px"><label for="prosjekt" data-en="Project">Prosjekt</label><input id="prosjekt" type="text" placeholder="F.eks. Årsmøte 2026" data-en-placeholder="E.g. AGM 2026"></div>
+        <p class="note" data-en="The flash and beep land on the first frame of every second (timecode :00). The beep is on both channels at −6 dBFS.">Blinket og pipet kommer på første bilde i hvert sekund (timecode :00). Pipet ligger på begge kanaler, −6 dBFS.</p>
       </div>
 
       <div class="btns">
-        <button class="btn" type="button" id="lag">Lag MP4</button>
+        <button class="btn" type="button" id="lag" data-en="Make MP4">Lag MP4</button>
         <button class="btn ghost" type="button" id="spill">Spill av</button>
-        <button class="btn ghost" type="button" id="fullskjerm">Fullskjerm</button>
+        <button class="btn ghost" type="button" id="fullskjerm" data-en="Full screen">Fullskjerm</button>
       </div>
       <div id="lagInfo" hidden>
         <div class="fremdrift"><i id="fremdrift"></i></div>
@@ -107,7 +107,7 @@
     <div>
       <div class="preview luft"><canvas id="c" width="1920" height="1080"></canvas></div>
       <p class="note" id="info"></p>
-      <p class="note">«Spill av» og fullskjerm går på nettleserens klokke og er bare for å se hvordan filmen ser ut. Til selve synctesten bruker du MP4-filen.</p>
+      <p class="note" data-en="&quot;Play&quot; and full screen run on the browser clock and are only for seeing what the video looks like. Use the MP4 file for the actual sync test.">«Spill av» og fullskjerm går på nettleserens klokke og er bare for å se hvordan filmen ser ut. Til selve synctesten bruker du MP4-filen.</p>
     </div>
   </div>
 </div>
@@ -122,6 +122,7 @@
   var cv = $('c'), ctx = cv.getContext('2d');
   var kart = null;
   var RATER = { '23.976': [24000, 1001], '24': [24, 1], '25': [25, 1], '29.97': [30000, 1001], '30': [30, 1], '50': [50, 1], '59.94': [60000, 1001], '60': [60, 1] };
+  var T = function (no, en) { return HaptSprak.t(no, en); };
   var font = function (px, vekt) { return (vekt || 400) + ' ' + Math.max(1, Math.round(px)) + 'px Barlow, Helvetica, Arial, sans-serif'; };
 
   function valg() {
@@ -249,18 +250,28 @@
     if (cv.width !== s[0] || cv.height !== s[1]) { cv.width = s[0]; cv.height = s[1]; }
     tegnBilde(ctx, visBilde, o);
     var n = Math.round(o.lengde * o.num / o.den);
-    $('info').textContent = s[0] + ' × ' + s[1] + ' px, ' + flater().length + (flater().length === 1 ? ' flate' : ' flater') + ', ' + $('fps').options[$('fps').selectedIndex].text + ' bilder/s, ' + n + ' bilder.';
+    $('info').textContent = s[0] + ' × ' + s[1] + ' px, ' + flater().length + (flater().length === 1 ? T(' flate', ' surface') : T(' flater', ' surfaces')) + ', ' + $('fps').options[$('fps').selectedIndex].text + T(' bilder/s, ', ' fps, ') + n + T(' bilder.', ' frames.');
   }
 
   // Pixelmap
+  // Standardnavnet «Flate N» (fra pixelmap.js/leskart.js) følger språket, også i filmen. Gjelder bare sidens egen kopi av kartet.
+  function standardNavn() {
+    if (!kart) return;
+    kart.flater.forEach(function (f) {
+      var m = /^(Flate|Surface) (\d+)$/.exec(f.navn);
+      if (m) f.navn = T('Flate ', 'Surface ') + m[2];
+    });
+  }
+  var kartStatus = null;  // siste melding fra leskart.js (norsk original), så den kan oversettes på nytt
   function visKart() {
+    kartStatus = null;
     $('enkelt').hidden = !!kart; $('kartInfo').hidden = !kart;
     if (kart) {
-      $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + ' flater.';
+      $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + T(' flater.', ' surfaces.');
       var boks = $('kartFlater'); boks.innerHTML = '';
       kart.flater.forEach(function (f) {
         var d = document.createElement('div'); d.className = 'kartflate';
-        d.innerHTML = '<div class="navn"><label>Navn</label><input type="text" data-k="navn"></div><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>Bredde</label><input type="number" min="1" data-k="b"></div><div><label>Høyde</label><input type="number" min="1" data-k="h"></div>';
+        d.innerHTML = '<div class="navn"><label>' + T('Navn', 'Name') + '</label><input type="text" data-k="navn"></div><div><label>X</label><input type="number" min="0" data-k="x"></div><div><label>Y</label><input type="number" min="0" data-k="y"></div><div><label>' + T('Bredde', 'Width') + '</label><input type="number" min="1" data-k="b"></div><div><label>' + T('Høyde', 'Height') + '</label><input type="number" min="1" data-k="h"></div>';
         d.querySelectorAll('[data-k]').forEach(function (inp) {
           inp.value = f[inp.dataset.k];
           inp.addEventListener('input', function () { f[inp.dataset.k] = inp.type === 'number' ? Math.max(+inp.min, Math.round(+inp.value || 0)) : inp.value; tegn(); });
@@ -270,20 +281,30 @@
     }
     tegn();
   }
+  // Statusmeldingene fra leskart.js er på norsk; på engelsk oversettes de kjente meldingene her
+  function lesTekst(t) {
+    if (!HaptSprak.en()) return t;
+    return t.replace(/ flater funnet\./, ' surfaces found.')
+      .replace(/Leter etter flater …/, 'Looking for surfaces …')
+      .replace(/Leser navn fra bildet …/, 'Reading names from the image …')
+      .replace(/Navnene er lest fra bildet; sjekk dem\./, 'Names read from the image; check them.')
+      .replace(/Leser navn (\d+) av (\d+) …/, 'Reading name $1 of $2 …')
+      .replace(/Klarte ikke å starte tekstgjenkjenning, så navnene må skrives inn\./, 'Could not start text recognition, so enter the names by hand.');
+  }
   $('kartfil').addEventListener('change', function () {
     var fil = this.files[0]; if (!fil) return;
     this.value = '';
     HaptLesKart.fraFil(fil, {
-      status: function (t) { if (kart) $('kartTekst').textContent = t; else $('info').textContent = t; },
-      kart: function (k) { kart = k; visKart(); },
+      status: function (t) { if (kart) { kartStatus = t; $('kartTekst').textContent = lesTekst(t); } else $('info').textContent = lesTekst(t); },
+      kart: function (k) { kart = k; standardNavn(); visKart(); },
       aktiv: function (k) { return k === kart; },
       ferdig: function () { visKart(); }
     });
   });
   $('fraPixelmap').onclick = function () {
     var k = HaptPixelmap.hent();
-    if (!k || !k.flater.length) { alert('Fant ikke noe kart. Lag et på Pixelmap-siden først.'); return; }
-    kart = k; visKart();
+    if (!k || !k.flater.length) { alert(T('Fant ikke noe kart. Lag et på Pixelmap-siden først.', 'No map found. Make one on the Pixel map page first.')); return; }
+    kart = k; standardNavn(); visKart();
   };
   $('fjernKart').onclick = function () { kart = null; visKart(); };
   $('mal').addEventListener('change', function () {
@@ -297,13 +318,13 @@
 
   // Avspilling i nettleseren (bare for å se på)
   var spiller = null;
-  function stopp() { if (spiller) { cancelAnimationFrame(spiller.raf); if (spiller.lyd) spiller.lyd.close(); spiller = null; $('spill').textContent = 'Spill av'; } }
+  function stopp() { if (spiller) { cancelAnimationFrame(spiller.raf); if (spiller.lyd) spiller.lyd.close(); spiller = null; $('spill').textContent = T('Spill av', 'Play'); } }
   function spill() {
     if (spiller) { stopp(); return; }
     var o = valg(), start = performance.now(), sist = -1, lyd = null;
     try { if (o.tone) lyd = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
     spiller = { lyd: lyd };
-    $('spill').textContent = 'Stopp';
+    $('spill').textContent = T('Stopp', 'Stop');
     var steg = function (na) {
       var i = Math.floor((na - start) / 1000 * o.num / o.den);
       if (i >= Math.round(o.lengde * o.num / o.den)) { stopp(); return; }
@@ -389,18 +410,20 @@
     return 0;
   }
 
-  var lager = false;
+  var lager = false, sistStatus = null;
+  // Statuslinja under knappene lages av en funksjon, så den kan skrives på nytt når språket byttes
+  function status(fn) { sistStatus = fn; $('lagTekst').textContent = fn(); }
   $('lag').onclick = async function () {
     if (lager) return;
-    if (!window.VideoEncoder || !window.VideoFrame) { alert('Denne nettleseren kan ikke lage video. Bruk Chrome, Edge eller Safari (versjon 17 eller nyere).'); return; }
+    if (!window.VideoEncoder || !window.VideoFrame) { alert(T('Denne nettleseren kan ikke lage video. Bruk Chrome, Edge eller Safari (versjon 17 eller nyere).', 'This browser cannot make video. Use Chrome, Edge or Safari (version 17 or later).')); return; }
     stopp();
     var o = valg(), s = storrelse(), W = s[0], H = s[1];
-    if (W % 2 || H % 2) { alert('Bredde og høyde må være partall for video.'); return; }
+    if (W % 2 || H % 2) { alert(T('Bredde og høyde må være partall for video.', 'Width and height must be even numbers for video.')); return; }
     var vid = await velgVideo(W, H, o);
-    if (!vid) { alert('Nettleseren klarer ikke å kode video i ' + W + ' × ' + H + '. Prøv Chrome eller Safari på Mac, eller en mindre oppløsning.'); return; }
+    if (!vid) { alert(T('Nettleseren klarer ikke å kode video i ' + W + ' × ' + H + '. Prøv Chrome eller Safari på Mac, eller en mindre oppløsning.', 'The browser cannot encode video at ' + W + ' × ' + H + '. Try Chrome, or Safari on a Mac, or a lower resolution.')); return; }
     var lyd = o.tone && window.AudioEncoder ? await velgLyd() : null;
     lager = true; $('lag').disabled = true; $('lagInfo').hidden = false;
-    var tekst = $('lagTekst'), bar = $('fremdrift');
+    var bar = $('fremdrift');
     var antall = Math.round(o.lengde * o.num / o.den);
     try {
       var muxer = new Mp4Muxer.Muxer({
@@ -415,7 +438,7 @@
 
       var forsinkelse = 0;
       if (lyd) {
-        tekst.textContent = 'Lager lyd …';
+        status(function () { return T('Lager lyd …', 'Making audio …'); });
         var sr = 48000, totalt = Math.round(antall * o.den / o.num * sr);
         var pip = [];
         for (var i = 0; i < antall; i++) if (timecode(i, o).ff === 0) pip.push([Math.round(i * o.den / o.num * sr), Math.round((i + o.blink) * o.den / o.num * sr)]);
@@ -448,11 +471,11 @@
         if (i % 10 === 0) {
           bar.style.width = (100 * i / antall).toFixed(1) + '%';
           var gatt = (performance.now() - t0) / 1000, igjen = gatt / Math.max(1, i) * (antall - i);
-          tekst.textContent = 'Lager bilde ' + i + ' av ' + antall + (i > 30 ? ', ca. ' + Math.ceil(igjen) + ' s igjen' : '') + ' …';
+          status((function (i, igjen) { return function () { return T('Lager bilde ' + i + ' av ' + antall + (i > 30 ? ', ca. ' + Math.ceil(igjen) + ' s igjen' : '') + ' …', 'Making frame ' + i + ' of ' + antall + (i > 30 ? ', about ' + Math.ceil(igjen) + ' s left' : '') + ' …'); }; })(i, igjen));
           await new Promise(function (r) { setTimeout(r, 0); });
         }
       }
-      tekst.textContent = 'Gjør ferdig filen …';
+      status(function () { return T('Gjør ferdig filen …', 'Finishing the file …'); });
       await venc.flush();
       if (feil) throw feil;
       muxer.finalize();
@@ -463,14 +486,25 @@
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
       bar.style.width = '100%';
-      tekst.textContent = 'Ferdig: ' + (blob.size / 1e6).toFixed(1) + ' MB, ' + (vid.type === 'avc' ? 'H.264' : 'VP9') + (lyd ? ' + ' + (lyd.type === 'aac' ? 'AAC' : 'Opus') + ' (koderforsinkelse ' + (forsinkelse / 48).toFixed(1) + ' ms rettet)' : ' uten lyd') + '.' +
-        (vid.type !== 'avc' ? ' Nettleseren kunne ikke lage H.264; bruk Chrome eller Safari på Mac om mediaserveren ikke tar VP9.' : '');
+      var mb = blob.size / 1e6, vt = vid.type === 'avc' ? 'H.264' : 'VP9', lt = lyd ? (lyd.type === 'aac' ? 'AAC' : 'Opus') : null, avc = vid.type === 'avc';
+      status(function () {
+        return T('Ferdig: ', 'Done: ') + mb.toFixed(1) + ' MB, ' + vt + (lt ? ' + ' + lt + T(' (koderforsinkelse ', ' (encoder delay of ') + (forsinkelse / 48).toFixed(1) + T(' ms rettet)', ' ms corrected)') : T(' uten lyd', ' without audio')) + '.' +
+          (!avc ? T(' Nettleseren kunne ikke lage H.264; bruk Chrome eller Safari på Mac om mediaserveren ikke tar VP9.', ' The browser could not make H.264; use Chrome, or Safari on a Mac, if the media server does not take VP9.') : '');
+      });
     } catch (e) {
-      tekst.textContent = 'Noe gikk galt: ' + (e && e.message ? e.message : e);
+      var melding = e && e.message ? e.message : e;
+      status(function () { return T('Noe gikk galt: ', 'Something went wrong: ') + melding; });
     }
     lager = false; $('lag').disabled = false;
   };
 
+  // Språkbytte: knappetekst, kartfeltene, statuslinja og forhåndsvisningen lages på nytt
+  window.addEventListener('hapt-sprak', function () {
+    $('spill').textContent = spiller ? T('Stopp', 'Stop') : T('Spill av', 'Play');
+    if (sistStatus) $('lagTekst').textContent = sistStatus();
+    if (kart) { var ks = kartStatus; standardNavn(); visKart(); if (ks) { kartStatus = ks; $('kartTekst').textContent = lesTekst(ks); } } else tegn();
+  });
+  if (HaptSprak.en()) $('spill').textContent = T('Spill av', 'Play');
   if (document.fonts && document.fonts.load) Promise.all([document.fonts.load(font(20, 300)), document.fonts.load(font(20, 400)), document.fonts.load(font(20, 500))]).then(tegn, tegn);
   tegn();
 })();

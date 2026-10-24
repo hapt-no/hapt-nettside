@@ -10,7 +10,7 @@
   var FANER = { 'led': 'LED wall', 'projektor': 'Projector', 'testbilde': 'Test pattern', 'pixelmap': 'Pixel map', 'syncfilm': 'Sync video', 'opptak': 'Recording', 'edid': 'EDID', 'vario': 'Vario', 'klokke': 'Clock' };
   function topplinje() {
     document.querySelectorAll('header.site nav a').forEach(function (a) {
-      var del = (a.getAttribute('href') || '').replace(/\/$/, '').split('/').pop() || '';
+      var del = ''; try { del = new URL(a.getAttribute('href') || '', location.href).pathname.replace(/\/(index\.html)?$/, '').split('/').pop() || ''; } catch (e) {}
       if (a.dataset.en == null && FANER[del]) a.dataset.en = FANER[del];
     });
     document.querySelectorAll('header.site .brand span').forEach(function (s) {

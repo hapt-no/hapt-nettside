@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Pixelmap – HAPT verktøy</title>
+<title data-en="Pixel map – HAPT tools">Pixelmap – HAPT verktøy</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../verktoy.css">
 <script src="../tema.js"></script>
@@ -32,39 +32,39 @@
     <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="./" aria-current="page">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a></nav>
   </header>
 
-  <h1>Pixelmap</h1>
-  <p class="lead">Legg flere skjermer på samme utgang og få et kart over hvor hver flate ligger. Last ned som PNG, eller som fil du kan åpne i testbildet for å få testbilde per flate.</p>
+  <h1 data-en="Pixel map">Pixelmap</h1>
+  <p class="lead" data-en="Put several screens on the same output and get a map of where each surface sits. Download as PNG, or as a file you can open in the test pattern tool to get a test pattern per surface.">Legg flere skjermer på samme utgang og få et kart over hvor hver flate ligger. Last ned som PNG, eller som fil du kan åpne i testbildet for å få testbilde per flate.</p>
 
   <div class="grid">
     <div>
       <div class="card">
-        <div class="field"><label for="mal">Utgang (lerret)</label>
-          <select id="mal"><option value="1920x1080">1920 × 1080</option><option value="3840x2160" selected>3840 × 2160</option><option value="4096x2160">4096 × 2160</option><option value="7680x2160">7680 × 2160</option><option value="egen">Egen</option></select>
+        <div class="field"><label for="mal" data-en="Output (canvas)">Utgang (lerret)</label>
+          <select id="mal"><option value="1920x1080">1920 × 1080</option><option value="3840x2160" selected>3840 × 2160</option><option value="4096x2160">4096 × 2160</option><option value="7680x2160">7680 × 2160</option><option value="egen" data-en="Custom">Egen</option></select>
         </div>
         <div class="row">
-          <div class="field"><label for="W">Bredde (px)</label><input id="W" type="number" min="16" max="16384" value="3840"></div>
-          <div class="field"><label for="H">Høyde (px)</label><input id="H" type="number" min="16" max="16384" value="2160"></div>
+          <div class="field"><label for="W" data-en="Width (px)">Bredde (px)</label><input id="W" type="number" min="16" max="16384" value="3840"></div>
+          <div class="field"><label for="H" data-en="Height (px)">Høyde (px)</label><input id="H" type="number" min="16" max="16384" value="2160"></div>
         </div>
-        <div class="field"><label for="navnKart">Navn på kartet</label><input id="navnKart" type="text" placeholder="F.eks. Konferanse sal A"></div>
+        <div class="field"><label for="navnKart" data-en="Map name">Navn på kartet</label><input id="navnKart" type="text" placeholder="F.eks. Konferanse sal A" data-en-placeholder="E.g. Conference hall A"></div>
       </div>
 
       <div class="card">
-        <h2>Flater</h2>
+        <h2 data-en="Surfaces">Flater</h2>
         <div id="flater"></div>
         <div class="btns">
-          <button class="btn ghost" type="button" id="ny">Legg til flate</button>
-          <button class="btn ghost" type="button" id="pakk">Plasser automatisk</button>
+          <button class="btn ghost" type="button" id="ny" data-en="Add surface">Legg til flate</button>
+          <button class="btn ghost" type="button" id="pakk" data-en="Auto arrange">Plasser automatisk</button>
         </div>
-        <p class="note">Dra flatene i forhåndsvisningen for å flytte dem. Panelstørrelse 0 = uten panelrutenett.</p>
+        <p class="note" data-en="Drag the surfaces in the preview to move them. Panel size 0 = no panel grid.">Dra flatene i forhåndsvisningen for å flytte dem. Panelstørrelse 0 = uten panelrutenett.</p>
       </div>
 
       <div class="btns">
-        <button class="btn" type="button" id="png">Last ned PNG</button>
-        <button class="btn ghost" type="button" id="json">Last ned kartfil</button>
-        <label class="btn ghost" for="aapne" style="margin:0">Åpne kartfil</label>
+        <button class="btn" type="button" id="png" data-en="Download PNG">Last ned PNG</button>
+        <button class="btn ghost" type="button" id="json" data-en="Download map file">Last ned kartfil</button>
+        <label class="btn ghost" for="aapne" style="margin:0" data-en="Open map file">Åpne kartfil</label>
         <input id="aapne" type="file" accept=".json,application/json" hidden>
       </div>
-      <p class="note">Kartfilen (.json) kan åpnes i testbildet.</p>
+      <p class="note" data-en="The map file (.json) can be opened in the test pattern tool.">Kartfilen (.json) kan åpnes i testbildet.</p>
     </div>
 
     <div>
@@ -81,15 +81,15 @@
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('c');
   var kart = HaptPixelmap.hent() || { bredde: 3840, hoyde: 2160, navn: '', flater: [
-    { navn: 'Hovedskjerm', x: 0, y: 0, b: 2304, h: 1152, pw: 192, ph: 192 },
-    { navn: 'Side venstre', x: 2304, y: 0, b: 768, h: 1344, pw: 192, ph: 192 },
-    { navn: 'Side høyre', x: 3072, y: 0, b: 768, h: 1344, pw: 192, ph: 192 }
+    { navn: HaptSprak.t('Hovedskjerm', 'Main screen'), x: 0, y: 0, b: 2304, h: 1152, pw: 192, ph: 192 },
+    { navn: HaptSprak.t('Side venstre', 'Side left'), x: 2304, y: 0, b: 768, h: 1344, pw: 192, ph: 192 },
+    { navn: HaptSprak.t('Side høyre', 'Side right'), x: 3072, y: 0, b: 768, h: 1344, pw: 192, ph: 192 }
   ] };
 
   // Legg til flate fra LED-kalkulatoren: ?legg=navn&b=&h=&pw=&ph=
   var q = new URLSearchParams(location.search);
   if (q.get('b')) {
-    kart.flater.push({ navn: q.get('legg') || 'LED-vegg', x: 0, y: 0, b: +q.get('b'), h: +q.get('h'), pw: +q.get('pw') || 0, ph: +q.get('ph') || 0 });
+    kart.flater.push({ navn: q.get('legg') || HaptSprak.t('LED-vegg', 'LED wall'), x: 0, y: 0, b: +q.get('b'), h: +q.get('h'), pw: +q.get('pw') || 0, ph: +q.get('ph') || 0 });
     HaptPixelmap.pakk(kart, true);
     history.replaceState(null, '', location.pathname);
   }
@@ -102,8 +102,8 @@
     var boks = $('flater'); boks.innerHTML = '';
     kart.flater.forEach(function (f, i) {
       var d = document.createElement('div'); d.className = 'flate';
-      d.innerHTML = '<div class="topp"><i></i><input type="text" data-k="navn"><button type="button" title="Fjern">Fjern</button></div>' +
-        '<div class="row4">' + [['x', 'X'], ['y', 'Y'], ['b', 'Bredde'], ['h', 'Høyde'], ['pw', 'Panel b'], ['ph', 'Panel h']].map(function (k) {
+      d.innerHTML = '<div class="topp"><i></i><input type="text" data-k="navn"><button type="button" title="' + HaptSprak.t('Fjern', 'Remove') + '">' + HaptSprak.t('Fjern', 'Remove') + '</button></div>' +
+        '<div class="row4">' + [['x', 'X'], ['y', 'Y'], ['b', HaptSprak.t('Bredde', 'Width')], ['h', HaptSprak.t('Høyde', 'Height')], ['pw', HaptSprak.t('Panel b', 'Panel w')], ['ph', 'Panel h']].map(function (k) {
           return '<div><label>' + k[1] + '</label><input type="number" data-k="' + k[0] + '" min="0"></div>';
         }).join('') + '</div>';
       d.querySelector('i').style.background = HaptPixelmap.farge(i);
@@ -120,11 +120,11 @@
     HaptPixelmap.tegn(cv, kart);
     HaptPixelmap.lagre(kart);
     var o = HaptPixelmap.overlapp(kart);
-    $('overlapp').textContent = o.length ? 'Overlapper: ' + o.join(', ') + '.' : '';
+    $('overlapp').textContent = o.length ? HaptSprak.t('Overlapper: ', 'Overlapping: ') + o.join(', ') + '.' : '';
     var utenfor = kart.flater.filter(function (f) { return f.x + f.b > kart.bredde || f.y + f.h > kart.hoyde; }).map(function (f) { return f.navn; });
-    if (utenfor.length) $('overlapp').textContent += ' Går utenfor utgangen: ' + utenfor.join(', ') + '.';
+    if (utenfor.length) $('overlapp').textContent += HaptSprak.t(' Går utenfor utgangen: ', ' Outside the output: ') + utenfor.join(', ') + '.';
     var brukt = kart.flater.reduce(function (a, f) { return a + f.b * f.h; }, 0);
-    $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + ' flater, ' + Math.round(brukt / (kart.bredde * kart.hoyde) * 100) + ' % av utgangen i bruk.';
+    $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + HaptSprak.t(' flater, ', ' surfaces, ') + Math.round(brukt / (kart.bredde * kart.hoyde) * 100) + HaptSprak.t(' % av utgangen i bruk.', ' % of the output in use.');
   }
 
   $('mal').addEventListener('change', function () {
@@ -135,7 +135,7 @@
   $('H').addEventListener('input', function () { kart.hoyde = Math.max(16, Math.min(16384, +this.value || 16)); tegn(); });
   $('navnKart').addEventListener('input', function () { kart.navn = this.value; tegn(); });
   $('ny').onclick = function () {
-    kart.flater.push({ navn: 'Flate ' + (kart.flater.length + 1), x: 0, y: 0, b: 1920, h: 1080, pw: 0, ph: 0 });
+    kart.flater.push({ navn: HaptSprak.t('Flate ', 'Surface ') + (kart.flater.length + 1), x: 0, y: 0, b: 1920, h: 1080, pw: 0, ph: 0 });
     HaptPixelmap.pakk(kart, true); synkSkjema(); tegn();
   };
   $('pakk').onclick = function () { HaptPixelmap.pakk(kart, false); synkSkjema(); tegn(); };
@@ -150,7 +150,7 @@
   $('aapne').addEventListener('change', function () {
     var f = this.files[0]; if (!f) return;
     f.text().then(function (t) {
-      try { var k = HaptPixelmap.les(JSON.parse(t)); kart = k; synkSkjema(); tegn(); } catch (e) { alert('Klarte ikke å lese filen.'); }
+      try { var k = HaptPixelmap.les(JSON.parse(t)); kart = k; synkSkjema(); tegn(); } catch (e) { alert(HaptSprak.t('Klarte ikke å lese filen.', 'Could not read the file.')); }
     });
   });
 
@@ -176,6 +176,9 @@
     f.x = Math.max(0, fest[0]); f.y = Math.max(0, fest[1]);
     tegn();
   });
+  // Språkbytte: bygg flatelista og tegn kartet på nytt
+  window.addEventListener('hapt-sprak', function () { synkSkjema(); tegn(); });
+
   ['pointerup', 'pointercancel'].forEach(function (t) { cv.addEventListener(t, function () { if (drar) { drar = null; synkSkjema(); } }); });
 
   if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('400 20px Barlow'), document.fonts.load('500 20px Barlow')]).then(tegn, tegn);

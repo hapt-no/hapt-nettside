@@ -3,6 +3,18 @@
 // Brukes av testbilde og syncfilm. Krever pixelmap.js.
 (function (root) {
   'use strict';
+  // Språk: HaptSprak (tema.js) når det finnes, ellers norsk
+  var T = function (no, en) { return root.HaptSprak ? root.HaptSprak.t(no, en) : no; };
+  // Siste statusmelding lages som en funksjon, så den kan skrives på nytt på riktig språk når språket byttes
+  var sist = null, lytter = false;
+  function vis(cb, k, lag) {
+    sist = { cb: cb, k: k, lag: lag };
+    if (!lytter && root.addEventListener) {
+      lytter = true;
+      root.addEventListener('hapt-sprak', function () { if (sist && sist.cb.aktiv(sist.k)) sist.cb.status(sist.lag()); });
+    }
+    cb.status(lag());
+  }
   // Tekstgjenkjenning (Tesseract, lagt i ../ocr/ så det virker uten eksterne tjenester). Lastes først når den trengs.
   var ocrLaster = null;
   function hentOcr() {
@@ -23,15 +35,16 @@
 
   // Les navnet på hver flate: største tekstlinje med bokstaver i den flata
   function lesNavn(kilde, k, etiketter, cb) {
-    var grunn = cb.grunn || '', status = { set textContent(t) { cb.status(t); } };
-    status.textContent = grunn + ' Leser navn fra bildet …';
+    var grunn = function () { return cb.grunn ? cb.grunn() : ''; };
+    vis(cb, k, function () { return grunn() + T(' Leser navn fra bildet …', ' Reading names from the image …'); });
     hentOcr().then(function (w) {
       var i = 0;
       var neste = function () {
         if (!cb.aktiv(k)) return; // brukeren har lastet noe annet
-        if (i >= k.flater.length) { cb.ferdig(k); status.textContent = grunn + ' Navnene er lest fra bildet; sjekk dem.'; return; }
+        if (i >= k.flater.length) { cb.ferdig(k); vis(cb, k, function () { return grunn() + T(' Navnene er lest fra bildet; sjekk dem.', ' Names read from the image; check them.'); }); return; }
         var f = k.flater[i];
-        status.textContent = grunn + ' Leser navn ' + (i + 1) + ' av ' + k.flater.length + ' …';
+        var nr = i + 1;
+        vis(cb, k, function () { return grunn() + T(' Leser navn ' + nr + ' av ', ' Reading name ' + nr + ' of ') + k.flater.length + ' …'; });
         // Mange kart skriver «x, y // b x h» på flaten; da brukes de målene hvis de stemmer med det som ble funnet
         var brukMal = function (tekst) {
           var m = tekst.replace(/[oO]/g, '0').match(/(\d{1,5})\s*[,.]\s*(\d{1,5})\s*\S{1,3}\s*(\d{1,5})\s*[xX×]\s*(\d{1,5})/);
@@ -88,15 +101,16 @@
         }, function () { i++; neste(); });
       };
       neste();
-    }, function () { status.textContent = grunn + ' Klarte ikke å starte tekstgjenkjenning, så navnene må skrives inn.'; });
+    }, function () { vis(cb, k, function () { return grunn() + T(' Klarte ikke å starte tekstgjenkjenning, så navnene må skrives inn.', ' Could not start text recognition, so enter the names by hand.'); }); });
   }
 
 
   // cb: { status(tekst), kart(kart) når flatene er funnet, aktiv(kart) om kartet fortsatt er i bruk, ferdig(kart) når navnene er lest }
   function fraFil(fil, cb) {
+    sist = null;
     if (/json$/i.test(fil.name) || fil.type === 'application/json') {
       fil.text().then(function (t) {
-        try { var k = HaptPixelmap.les(JSON.parse(t)); cb.kart(k); cb.ferdig(k); } catch (e) { alert('Klarte ikke å lese kartfilen.'); }
+        try { var k = HaptPixelmap.les(JSON.parse(t)); cb.kart(k); cb.ferdig(k); } catch (e) { alert(T('Klarte ikke å lese kartfilen.', 'Could not read the map file.')); }
       });
       return;
     }
@@ -104,19 +118,19 @@
     img.onload = function () {
       var c2 = document.createElement('canvas'); c2.width = img.naturalWidth; c2.height = img.naturalHeight;
       var x2 = c2.getContext('2d'); x2.drawImage(img, 0, 0);
-      cb.status('Leter etter flater …');
+      vis(cb, null, function () { return T('Leter etter flater …', 'Looking for surfaces …'); });
       setTimeout(function () {
         var flater = HaptPixelmap.finnFlater(x2.getImageData(0, 0, c2.width, c2.height));
         URL.revokeObjectURL(img.src);
-        if (!flater.length) { alert('Fant ingen flater i bildet. Bakgrunnen må være svart.'); return; }
+        if (!flater.length) { sist = null; alert(T('Fant ingen flater i bildet. Bakgrunnen må være svart.', 'No surfaces found in the image. The background must be black.')); return; }
         var navn = fil.name.replace(/\.[^.]+$/, '');
-        var k = { bredde: c2.width, hoyde: c2.height, navn: navn, flater: flater.map(function (f, i) { return { navn: 'Flate ' + (i + 1), x: f.x, y: f.y, b: f.b, h: f.h, pw: 0, ph: 0 }; }) };
+        var k = { bredde: c2.width, hoyde: c2.height, navn: navn, flater: flater.map(function (f, i) { return { navn: T('Flate ', 'Surface ') + (i + 1), x: f.x, y: f.y, b: f.b, h: f.h, pw: 0, ph: 0 }; }) };
         cb.kart(k);
-        cb.grunn = navn + ': ' + k.bredde + ' × ' + k.hoyde + ' px, ' + k.flater.length + ' flater funnet.';
+        cb.grunn = function () { return navn + ': ' + k.bredde + ' × ' + k.hoyde + ' px, ' + k.flater.length + T(' flater funnet.', ' surfaces found.'); };
         lesNavn(c2, k, flater.etiketter || [], cb);
       }, 30);
     };
-    img.onerror = function () { alert('Klarte ikke å åpne bildet.'); };
+    img.onerror = function () { sist = null; alert(T('Klarte ikke å åpne bildet.', 'Could not open the image.')); };
     img.src = URL.createObjectURL(fil);
   }
 
