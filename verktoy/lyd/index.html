@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title data-en="Audio from video – HAPT tools">Lyd fra video – HAPT verktøy</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../verktoy.css">
+<script src="../tema.js"></script>
+<script src="../las.js"></script>
+<style>
+.slipp { display: block; border: 1px dashed var(--line2); border-radius: 10px; padding: 26px 16px; text-align: center; color: var(--muted); font-size: 15px; cursor: pointer; margin: 0; }
+.slipp b { display: block; color: var(--fg); font-family: var(--font); font-weight: 500; font-size: 17px; margin-bottom: 4px; }
+.slipp:hover, .slipp.over { border-color: var(--accent); color: var(--fg); }
+.tips { margin: 0; padding-left: 18px; }
+.tips li { margin: 0 0 10px; color: var(--muted); font-size: 14.5px; }
+.tips li b { color: var(--fg); font-weight: 600; }
+.tips li:last-child { margin-bottom: 0; }
+.resultat { margin-top: 20px; }
+.topp-rad { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 14px; }
+.topp-rad h2 { margin: 0; }
+.topp-rad .oppsum { color: var(--muted); font-size: 14px; }
+.topp-rad .btns { margin-left: auto; }
+table.filer { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.filer th { text-align: left; font-weight: 500; font-size: 13px; color: var(--muted); padding: 0 10px 8px 0; border-bottom: 1px solid var(--line2); white-space: nowrap; }
+table.filer td { padding: 12px 10px 12px 0; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 14px; }
+table.filer td:last-child, table.filer th:last-child { padding-right: 0; }
+table.filer tr:last-child td { border-bottom: 0; }
+table.filer .tom td { color: var(--muted); padding: 18px 0; }
+.fnavn { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.liten { font-size: 13px; color: var(--muted); display: block; margin-top: 2px; }
+.gul { color: var(--warn); }
+.rod { color: var(--danger); }
+.gronn { color: var(--live); }
+.k-fil { width: 24%; }
+.k-wav { width: 22%; }
+.k-status { min-width: 110px; }
+table.filer td.k-lengde, table.filer td.k-topp, table.filer td.k-lufs { white-space: nowrap; }
+table.filer td .liten.gul { white-space: normal; }
+table.filer td.k-kilde select { width: 100%; min-width: 10em; margin-bottom: 6px; font-size: 13px; }
+.spor-navn { display: block; white-space: nowrap; }
+.fjern { float: right; background: none; border: 0; color: var(--muted); font-size: 18px; line-height: 1; padding: 0 0 4px 8px; cursor: pointer; }
+.fjern:hover { color: var(--danger); }
+.fjern:disabled { visibility: hidden; }
+.linje { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin: 6px 0 4px; }
+.linje i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .15s; }
+.btn.lite { font: 500 13px var(--ui); padding: 6px 12px; margin-top: 8px; }
+table.filer select, table.filer input[type=text] { font-size: 14px; padding: 6px 8px; }
+table.filer input[type=text] { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+.status { font-weight: 600; }
+.ffmpeg code { display: block; overflow-x: auto; white-space: nowrap; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 6px; color: var(--fg); }
+/* Smal skjerm: hver fil blir en blokk med etiketter */
+@media (max-width: 900px) {
+  table.filer thead { display: none; }
+  table.filer, table.filer tbody, table.filer tr, table.filer td { display: block; width: auto; }
+  table.filer tr { border-bottom: 1px solid var(--line2); padding: 12px 0; }
+  table.filer tr:last-child { border-bottom: 0; }
+  table.filer td { border: 0; padding: 3px 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 2px 10px; }
+  table.filer td::before { content: attr(data-etikett); color: var(--muted); font-size: 13px; padding-top: 1px; }
+  table.filer td > * { grid-column: 2; }
+  table.filer td.k-lengde, table.filer td.k-topp, table.filer td.k-lufs { white-space: normal; }
+  table.filer td.k-kilde select { min-width: 0; }
+  .spor-navn { white-space: normal; }
+  table.filer td.k-fil { display: block; padding-bottom: 6px; }
+  table.filer td.k-fil::before { content: none; }
+  table.filer .tom td { display: block; }
+  table.filer .tom td::before { content: none; }
+  .topp-rad .btns { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="../"><img class="logo-mork" src="../hapt-ordmerke-hvit.svg" alt="HAPT"><img class="logo-lys" src="../hapt-ordmerke-svart.svg" alt=""><span>verktøy</span></a>
+    <nav><a href="../led/">LED-vegg</a><a href="../projektor/">Projektor</a><a href="../testbilde/">Testbilde</a><a href="../pixelmap/">Pixelmap</a><a href="../syncfilm/">Syncfilm</a><a href="../opptak/">Opptak</a><a href="../edid/">EDID</a><a href="../vario/">Vario</a><a href="./" aria-current="page">Lyd</a></nav>
+  </header>
+
+  <h1 data-en="Audio from video">Lyd fra video</h1>
+  <p class="lead" data-en="Extract the audio from video files (.mov and .mp4) to WAV for disguise/d3. Only the audio part of the file is read, so even files over 100 GB are quick.">Trekk lyden ut av videofiler (.mov og .mp4) til WAV for disguise/d3. Bare lyddelen av fila leses, så også filer på over 100 GB går fort.</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2 data-en="Video files">Videofiler</h2>
+        <label class="slipp" id="slipp" for="fil"><b data-en="Drop video files here">Slipp videofiler her</b><span data-en="or click to choose. Several at once is fine.">eller trykk for å velge. Gjerne flere på en gang.</span></label>
+        <input id="fil" type="file" multiple accept=".mov,.mp4,.m4v,.m4a,.qt,.3gp,video/quicktime,video/mp4,audio/mp4" hidden>
+        <p class="note" data-en="Nothing is uploaded. The files are read here in the browser, and only the audio is taken out.">Ingenting lastes opp. Filene leses bare her i nettleseren, og bare lyden hentes ut.</p>
+      </div>
+      <div class="card">
+        <h2 data-en="WAV file">WAV-fila</h2>
+        <label id="l-rate" data-en="Sample rate">Samplerate</label>
+        <div class="seg" role="group" aria-labelledby="l-rate">
+          <button type="button" data-rate="48000" aria-pressed="true">48 kHz</button>
+          <button type="button" data-rate="kilde" aria-pressed="false" data-en="Same as source">Som kilden</button>
+        </div>
+        <label id="l-bits" data-en="Bit depth">Bitdybde</label>
+        <div class="seg" role="group" aria-labelledby="l-bits">
+          <button type="button" data-bits="24" aria-pressed="true">24 bit</button>
+          <button type="button" data-bits="16" aria-pressed="false">16 bit</button>
+        </div>
+        <p class="note" style="margin-top:0" data-en="48 kHz / 24-bit is the default and plays on disguise VX4. Audio that is already 48 kHz is copied bit for bit. Other sample rates are resampled with a long sinc filter. All channels are kept, and the level is never changed.">48 kHz / 24 bit er standard, og spiller på disguise VX4. Lyd som allerede er 48 kHz kopieres bit for bit. Annen samplerate omsamples med et langt sinc-filter. Alle kanalene beholdes, og nivået endres aldri.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2 data-en="Tips for disguise/d3">Tips for disguise/d3</h2>
+        <ul class="tips">
+          <li data-en="&lt;b&gt;Use Locked on audio layers.&lt;/b&gt; An audio layer in Normal keeps playing after Stop. Note that the mode is inverted on audio layers: 1 = Locked and 0 = Normal, the opposite of video layers. Never copy the mode from the video layer."><b>Bruk Locked på lydlag.</b> Et lydlag i Normal spiller videre etter Stop. Merk at modus er snudd på lydlag: 1 = Locked og 0 = Normal, det motsatte av videolag. Kopier aldri modus fra videolaget.</li>
+          <li data-en="&lt;b&gt;Audio never loops.&lt;/b&gt; Let the audio layer stop at the end, even if the video loops, and make it as long as the shorter of the video and the WAV."><b>Lyd looper aldri.</b> La lydlaget stoppe på slutten, også når videoen looper, og gjør det like langt som den korteste av video og WAV.</li>
+          <li data-en="&lt;b&gt;ASCII names only.&lt;/b&gt; Media provisioning in disguise writes empty files (0 bytes) when the name has characters like – or ü, but still reports success. Check the file size on every machine."><b>Bare ASCII i navn.</b> Mediedistribusjonen i disguise lager tomme filer (0 byte) når navnet har tegn som – eller ü, men melder likevel at alt gikk bra. Sjekk filstørrelsen på hver maskin.</li>
+          <li data-en="&lt;b&gt;Check the audio outputs after changing the sample rate.&lt;/b&gt; The sound card can get new device IDs in Windows, so the outputs in d3 point at devices that no longer exist."><b>Sjekk lydutgangene etter bytte av samplerate.</b> Lydkortet kan få nye enhets-ID-er i Windows, så utgangene i d3 peker på enheter som ikke finnes lenger.</li>
+          <li data-en="&lt;b&gt;Many video files have a silent audio track.&lt;/b&gt; That is why the level is measured here, not just whether a track exists."><b>Mange videofiler har et stille lydspor.</b> Derfor måles nivået her, ikke bare om sporet finnes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card resultat">
+    <div class="topp-rad">
+      <h2 data-en="Files">Filer</h2>
+      <span class="oppsum" id="oppsum"></span>
+      <div class="btns">
+        <button class="btn" type="button" id="start" data-en="Extract audio">Trekk ut lyd</button>
+        <button class="btn ghost" type="button" id="avbryt" data-en="Cancel">Avbryt</button>
+        <button class="btn ghost" type="button" id="alle"></button>
+        <button class="btn ghost" type="button" id="tom" data-en="Clear list">Tøm lista</button>
+      </div>
+    </div>
+    <table class="filer">
+      <thead><tr>
+        <th class="k-fil" data-en="File">Fil</th>
+        <th data-en="Track">Lydspor</th>
+        <th data-en="Duration">Lengde</th>
+        <th data-en="Peak">Topp</th>
+        <th>LUFS</th>
+        <th class="k-status">Status</th>
+        <th class="k-wav" data-en="WAV name">WAV-navn</th>
+      </tr></thead>
+      <tbody id="rader"><tr class="tom"><td colspan="7">Ingen filer ennå.</td></tr></tbody>
+    </table>
+    <p class="note" data-en="Silent means the highest peak is below −60 dBFS. Silent files are left out of &quot;Download all&quot;. Peak is the highest sample; TP is true peak (4 × oversampling). LUFS is integrated loudness (EBU R128), measured on the WAV. The WAV and the video should be equally long, within one frame.">Stille betyr at høyeste topp er under −60 dBFS. Stille filer tas ikke med i «Last ned alle». Topp er høyeste sample, TP er true peak (4 × oversampling). LUFS er integrert loudness (EBU R128), målt på WAV-fila. WAV og video skal være like lange, innenfor ett bilde.</p>
+    <p class="note" data-en="The WAV name is plain ASCII: lower case, &quot;_v2&quot; and the like before the extension is removed, letters like æ, ø, å and ü become ae, o, a and u, and anything else outside a–z and 0–9 becomes &quot;-&quot;. You can change the name; it is cleaned the same way. Finished WAV files stay in the browser until you download them or clear the list.">WAV-navnet er rent ASCII: små bokstaver, «_v2» og lignende før endelsen fjernes, æ, ø, å og ü blir ae, o, a og u, og alt annet enn a–z og 0–9 blir «-». Du kan endre navnet; det renses på samme måte. Ferdige WAV-filer ligger i nettleseren til du laster dem ned eller tømmer lista.</p>
+    <div class="note ffmpeg" id="ffmpeg" hidden><span data-en="For files this tool cannot read, ffmpeg does the same job:">For filer verktøyet ikke kan lese, gjør ffmpeg den samme jobben:</span><code>ffmpeg -i fil.mov -map 0:a:0 -vn -c:a pcm_s24le -ar 48000 fil.wav</code></div>
+  </div>
+</div>
+
+<script src="lydkjerne.js"></script>
+<script src="mp4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var T = function (no, en) { return HaptSprak.t(no, en); };
+  var lok = function () { return HaptSprak.en() ? 'en-GB' : 'nb-NO'; };
+  var tall = function (v, min, maks) { return v.toLocaleString(lok(), { minimumFractionDigits: min, maximumFractionDigits: maks == null ? min : maks }); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var minus = function (s) { return HaptSprak.en() ? s : s.replace(/-/g, '−'); };
+  function dB(v) { return v == null || isNaN(v) ? '–' : v === -Infinity ? '−∞' : minus(tall(v, 1)); }
+  function storrelse(b) { return b >= 1e9 ? tall(b / 1e9, 1) + ' GB' : b >= 1e6 ? tall(b / 1e6, 1) + ' MB' : tall(Math.max(1, Math.round(b / 1e3)), 0) + ' kB'; }
+  function tid(s) {
+    if (s == null || !isFinite(s)) return '–';
+    var ms = Math.round(s * 1000), m = Math.floor(ms / 60000), r = (ms - m * 60000) / 1000;
+    return m ? m + ':' + (r < 10 ? '0' : '') + tall(r, 3) : tall(r, 3) + ' s';
+  }
+  function khz(r) { return tall(r / 1000, 0, 3) + ' kHz'; }
+  function kanalTekst(n) { return n === 1 ? 'mono' : n === 2 ? 'stereo' : n + T(' kanaler', ' channels'); }
+
+  var rader = [], nesteId = 1, kjorer = false, stopp = false, arbeider = null, aktiv = null;
+  var oppsett = { rate: '48000', bits: 24 };
+  try { var lagret = JSON.parse(localStorage.getItem('hapt-lyd') || 'null'); if (lagret) { if (lagret.rate === 'kilde' || lagret.rate === '48000') oppsett.rate = lagret.rate; if (lagret.bits === 16 || lagret.bits === 24) oppsett.bits = lagret.bits; } } catch (e) {}
+  function lagre() { try { localStorage.setItem('hapt-lyd', JSON.stringify(oppsett)); } catch (e) {} }
+
+  // ---------- Feilmeldinger ----------
+  function feilTekst(f) {
+    var d = f.data || {};
+    switch (f.kode) {
+      case 'ikke-mov':
+        if (d.format === 'WAV') return T('Fila er allerede WAV.', 'The file is already a WAV.');
+        if (d.format) return T('Fila er ' + d.format + ', ikke QuickTime eller MP4. ', 'The file is ' + d.format + ', not QuickTime or MP4. ') + T('Bruk ffmpeg.', 'Use ffmpeg.');
+        return T('Fila er ikke QuickTime eller MP4 (.mov, .mp4).', 'The file is not QuickTime or MP4 (.mov, .mp4).');
+      case 'ingen-moov': return T('Fant ikke indeksen (moov) i fila. Er den ferdig skrevet eller kopiert?', 'Could not find the index (moov) in the file. Has it finished writing or copying?');
+      case 'avkortet': return T('Fila er kortere enn indeksen sier. Er den ferdig kopiert?', 'The file is shorter than its index says. Has it finished copying?');
+      case 'odelagt': return T('Fila ser ødelagt ut.', 'The file looks damaged.');
+      case 'stor-moov': return T('Indeksen i fila er for stor til å leses.', 'The file index is too large to read.');
+      case 'kodek': return T('Lydformatet «' + (d.fourcc || '?') + '» støttes ikke her. Bruk ffmpeg.', 'The audio format "' + (d.fourcc || '?') + '" is not supported here. Use ffmpeg.');
+      case 'webcodecs': return T('Denne nettleseren kan ikke dekode ' + (d.navn || 'lyden') + '. Prøv Chrome, Edge eller Safari, eller bruk ffmpeg.', 'This browser cannot decode ' + (d.navn || 'the audio') + '. Try Chrome, Edge or Safari, or use ffmpeg.');
+      case 'ikke-flettet': return T('Lyd der kanalene ligger hver for seg (ikke flettet) støttes ikke. Bruk ffmpeg.', 'Non-interleaved audio is not supported. Use ffmpeg.');
+      case 'flere-formater': return T('Lydsporet bytter format underveis. Bruk ffmpeg.', 'The audio track changes format part-way. Use ffmpeg.');
+      case 'fragmentert': return T('Fragmentert MP4 støttes ikke. Bruk ffmpeg.', 'Fragmented MP4 is not supported. Use ffmpeg.');
+      case 'tomt-spor': return T('Lydsporet er tomt.', 'The audio track is empty.');
+      case 'for-stor': return T('WAV-fila blir over 4 GB, som er grensen for WAV. Velg 16 bit, eller del opp fila.', 'The WAV would be over 4 GB, the limit for WAV. Choose 16-bit, or split the file.');
+      case 'lesefeil': return T('Kunne ikke lese fila. Er disken koblet fra, eller er fila flyttet?', 'Could not read the file. Was the disk disconnected, or the file moved?');
+      case 'dekoder': return T('Dekoderen feilet: ', 'The decoder failed: ') + (d.melding || '');
+      case 'ingen-lyd': return T('Fant ikke lydsporet.', 'Could not find the audio track.');
+      default: return T('Noe gikk galt: ', 'Something went wrong: ') + (f.melding || f.kode);
+    }
+  }
+  var FFMPEG_KODER = ['ikke-mov', 'kodek', 'webcodecs', 'ikke-flettet', 'flere-formater', 'fragmentert'];
+
+  // ---------- Analyse ----------
+  function oppsummer(info) {
+    return {
+      video: info.video,
+      lyd: info.lyd.map(function (s) {
+        return {
+          navn: s.navn, fourcc: s.fourcc, rate: s.rate, kanaler: s.kanaler, bits: s.bits, flyt: s.flyt, maske: s.maske,
+          varighet: s.varighet, stotte: s.stotte || null, type: s.kodek ? s.kodek.type : null, konfig: s.kodek && s.kodek.konfig, aktiv: s.aktiv
+        };
+      })
+    };
+  }
+  function sjekkWc(s) {
+    if (s.type !== 'wc' || s.stotte) return Promise.resolve();
+    if (typeof AudioDecoder === 'undefined') { s.stotte = { kode: 'webcodecs', navn: s.navn }; return Promise.resolve(); }
+    return AudioDecoder.isConfigSupported(s.konfig).then(function (r) { if (!r.supported) s.stotte = { kode: 'webcodecs', navn: s.navn }; }, function () { s.stotte = { kode: 'webcodecs', navn: s.navn }; });
+  }
+  function analyser(rad) {
+    HaptMp4.analyser(rad.fil).then(function (info) {
+      rad.info = oppsummer(info);
+      return Promise.all(rad.info.lyd.map(sjekkWc));
+    }).then(function () {
+      rad.status = rad.info.lyd.length ? 'klar' : 'utenLyd';
+    }, function (e) {
+      rad.status = 'feil'; rad.feilFra = 'analyse';
+      rad.feil = { kode: e && e.kode || (e && e.name === 'NotReadableError' ? 'lesefeil' : 'ukjent'), data: e && e.data, melding: String(e && e.message || e) };
+    }).then(function () { tegnRad(rad); oppdater(); });
+  }
+
+  // ---------- Navn ----------
+  function navn(rad) { return rad.navnBruker || rad.navnAuto; }
+  function unikt(n) {
+    var finnes = function (x) { return rader.some(function (r) { return navn(r) === x; }); };
+    if (!finnes(n)) return n;
+    for (var i = 2; ; i++) { var y = n.replace(/\.wav$/, '-' + i + '.wav'); if (!finnes(y)) return y; }
+  }
+  function dobbelt(rad) { return rader.some(function (r) { return r !== rad && navn(r) === navn(rad); }); }
+
+  // ---------- Tilstand ----------
+  function nokkel(rad) { return rad.spor + '|' + oppsett.rate + '|' + oppsett.bits; }
+  function valgtSpor(rad) { return rad.info && rad.info.lyd[rad.spor]; }
+  function kanTrekkes(rad) { var s = valgtSpor(rad); return !!(s && !s.stotte && !(rad.status === 'feil' && rad.feilFra === 'analyse')); }
+  function trengerJobb(rad) { return kanTrekkes(rad) && rad.status !== 'leser' && (!rad.resultat || rad.resultat.nokkel !== nokkel(rad)); }
+  function nedlastbar(rad) { return rad.resultat && rad.resultat.nokkel === nokkel(rad) && !rad.resultat.stille; }
+
+  // ---------- Tegning ----------
+  var KOL = ['k-fil', 'k-kilde', 'k-lengde', 'k-topp', 'k-lufs', 'k-status', 'k-wav'];
+  function etiketter() { return [T('Fil', 'File'), T('Lydspor', 'Track'), T('Lengde', 'Duration'), T('Topp', 'Peak'), 'LUFS', 'Status', T('WAV-navn', 'WAV name')]; }
+
+  function lagRad(rad) {
+    var tr = document.createElement('tr'), et = etiketter();
+    KOL.forEach(function (k, i) { var td = document.createElement('td'); td.className = k; td.dataset.etikett = et[i]; tr.appendChild(td); });
+    rad.tr = tr;
+    var inp = document.createElement('input');
+    inp.type = 'text'; inp.spellcheck = false; inp.autocomplete = 'off';
+    inp.addEventListener('change', function () {
+      var ny = HaptLyd.wavNavn(inp.value, true);
+      rad.navnBruker = ny === rad.navnAuto ? null : ny;
+      rader.forEach(tegnRad);
+      oppdater();
+    });
+    rad.inp = inp;
+    var tom = $('rader').querySelector('.tom');
+    if (tom) tom.remove();
+    $('rader').appendChild(tr);
+  }
+
+  function tegnRad(rad) {
+    var td = rad.tr.children, et = etiketter(), i;
+    for (i = 0; i < td.length; i++) td[i].dataset.etikett = et[i];
+    var info = rad.info, s = valgtSpor(rad), r = rad.resultat && rad.resultat.nokkel === nokkel(rad) ? rad.resultat : null;
+    var v = info && info.video;
+
+    // Fil
+    var under = storrelse(rad.fil.size);
+    if (v) under += ' · ' + esc(v.navn) + (v.bredde ? ' · ' + v.bredde + ' × ' + v.hoyde : '') + (v.fps ? ' · ' + tall(v.fps, 0, 3) + ' fps' : '');
+    else if (info) under += ' · ' + T('ingen video', 'no video');
+    td[0].innerHTML = '<button type="button" class="fjern" aria-label="' + T('Fjern fra lista', 'Remove from list') + '" title="' + T('Fjern fra lista', 'Remove from list') + '">×</button><span class="fnavn">' + esc(rad.fil.name) + '</span><span class="liten">' + under + '</span>';
+    var fj = td[0].querySelector('.fjern');
+    fj.disabled = rad.status === 'jobber';
+    fj.onclick = function () { fjern(rad); };
+
+    // Lydspor: velger når fila har flere spor, og så formatet til sporet
+    td[1].innerHTML = '';
+    if (info && info.lyd.length > 1) {
+      var sel = document.createElement('select');
+      sel.setAttribute('aria-label', T('Lydspor', 'Audio track'));
+      info.lyd.forEach(function (x, j) {
+        var o = document.createElement('option');
+        o.value = j;
+        o.textContent = (j + 1) + ': ' + x.navn + ', ' + kanalTekst(x.kanaler) + (x.stotte ? ' (' + T('støttes ikke', 'not supported') + ')' : '');
+        sel.appendChild(o);
+      });
+      sel.value = rad.spor;
+      sel.disabled = kjorer;
+      sel.onchange = function () { rad.spor = +sel.value; if (rad.status === 'feil' && rad.feilFra !== 'analyse') rad.status = 'klar'; tegnRad(rad); oppdater(); };
+      td[1].appendChild(sel);
+    }
+
+    if (s) {
+      var bits = s.bits ? ' ' + s.bits + ' bit' + (s.flyt ? ' float' : '') : '';
+      var kode = s.type === 'pcm' && s.fourcc ? ' (' + esc(s.fourcc.trim()) + ')' : '';
+      td[1].insertAdjacentHTML('beforeend', '<span class="spor-navn">' + esc(s.navn.replace(/ float$/, '')) + bits + kode + '</span><span class="liten">' + (s.rate ? khz(s.rate) + ' · ' : '') + kanalTekst(s.kanaler) + '</span>');
+    } else td[1].textContent = '–';
+
+    // Lengde
+    var lengde = '';
+    if (r) {
+      var wavS = r.rammer / r.rate;
+      lengde = 'WAV ' + tid(wavS);
+      if (v && v.varighet) {
+        var avvik = wavS - v.varighet, grense = (v.bildeVarighet || 0.04) + 1e-6;
+        lengde += '<span class="liten">video ' + tid(v.varighet) + '</span>';
+        if (Math.abs(avvik) > grense) lengde += '<span class="liten gul">' + T('Avviker ', 'Differs by ') + minus(tall(avvik, 3)) + ' s, ' + T('mer enn ett bilde', 'more than one frame') + '</span>';
+      }
+    } else if (s) {
+      lengde = s.varighet ? T('lyd ', 'audio ') + tid(s.varighet) : '–';
+      if (v && v.varighet) lengde += '<span class="liten">video ' + tid(v.varighet) + '</span>';
+    } else if (v && v.varighet) lengde = 'video ' + tid(v.varighet);
+    td[2].innerHTML = lengde || '–';
+
+    // Topp og LUFS
+    if (r) {
+      td[3].innerHTML = dB(r.topp) + ' dBFS<span class="liten">TP ' + dB(r.truePeak) + ' dBTP</span>' + (r.klippet ? '<span class="liten gul">' + tall(r.klippet, 0) + T(' sampler klippet', ' samples clipped') + '</span>' : '');
+      td[4].textContent = r.lufs === -Infinity ? '–' : dB(r.lufs);
+    } else { td[3].textContent = '–'; td[4].textContent = '–'; }
+
+    // Status
+    var st = '';
+    if (rad.status === 'leser') st = '<span class="muted">' + T('Leser fila …', 'Reading file …') + '</span>';
+    else if (rad.status === 'utenLyd') st = '<span class="status muted">' + T('Ingen lyd', 'No audio') + '</span><span class="liten">' + T('Fila har ikke noe lydspor.', 'The file has no audio track.') + '</span>';
+    else if (rad.status === 'feil') st = '<span class="status rod">' + T('Feil', 'Error') + '</span><span class="liten rod">' + esc(feilTekst(rad.feil)) + '</span>';
+    else if (s && s.stotte) st = '<span class="status rod">' + T('Støttes ikke', 'Not supported') + '</span><span class="liten rod">' + esc(feilTekst(s.stotte.kode ? { kode: s.stotte.kode, data: s.stotte } : s.stotte)) + '</span>';
+    else if (rad.status === 'jobber') st = '<span class="status">' + T('Trekker ut', 'Extracting') + '</span><div class="linje" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div><span class="liten prosent"></span>';
+    else if (rad.status === 'ko') st = '<span class="muted">' + T('I kø', 'Queued') + '</span>';
+    else if (rad.status === 'avbrutt') st = '<span class="status gul">' + T('Avbrutt', 'Cancelled') + '</span>';
+    else if (r && r.stille) st = '<span class="status gul">' + T('Stille', 'Silent') + '</span><span class="liten">' + T('Under −60 dBFS. Lastes ikke ned med «Last ned alle».', 'Below −60 dBFS. Not included in "Download all".') + '</span>';
+    else if (r) st = '<span class="status gronn">' + T('Ferdig', 'Done') + '</span><span class="liten">' + khz(r.rate) + ' · ' + r.bits + ' bit · ' + kanalTekst(r.kanaler) + (r.omsamplet ? ' · ' + T('omsamplet', 'resampled') : ' · ' + T('kopiert', 'copied')) + '</span>';
+    else if (rad.resultat) st = '<span class="muted">' + T('Nytt valg: trekk ut på nytt', 'New settings: extract again') + '</span>';
+    else st = '<span class="muted">' + T('Klar', 'Ready') + '</span>';
+    td[5].innerHTML = st;
+    if (rad.status === 'jobber') visFremdrift(rad);
+
+    // WAV-navn og nedlasting
+    td[6].innerHTML = '';
+    if (info && info.lyd.length && rad.status !== 'feil') {
+      rad.inp.value = navn(rad);
+      rad.inp.setAttribute('aria-label', T('WAV-navn', 'WAV name'));
+      td[6].appendChild(rad.inp);
+      if (dobbelt(rad)) { var w = document.createElement('span'); w.className = 'liten gul'; w.textContent = T('Samme navn som en annen fil i lista.', 'Same name as another file in the list.'); td[6].appendChild(w); }
+      if (r) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'btn lite' + (r.stille ? ' ghost' : '');
+        b.textContent = (r.stille ? T('Last ned likevel', 'Download anyway') : T('Last ned', 'Download')) + ' (' + storrelse(r.storrelse) + ')';
+        b.onclick = function () { lastNed(rad); };
+        td[6].appendChild(b);
+      }
+    } else td[6].innerHTML = '<span class="muted">–</span>';
+  }
+
+  function visFremdrift(rad) {
+    var c = rad.tr.children[5], i = c.querySelector('.linje i'), p = c.querySelector('.prosent'), l = c.querySelector('.linje');
+    var pr = Math.round((rad.fremdrift || 0) * 100);
+    if (i) i.style.width = pr + '%';
+    if (l) l.setAttribute('aria-valuenow', pr);
+    if (p) p.textContent = pr + ' %';
+  }
+
+  function oppdater() {
+    var n = rader.length, ferdig = 0, stille = 0, uten = 0, feil = 0, jobb = 0, ned = 0, ff = false;
+    rader.forEach(function (r) {
+      var s = valgtSpor(r);
+      if (r.resultat && r.resultat.nokkel === nokkel(r)) { if (r.resultat.stille) stille++; else ferdig++; }
+      if (r.status === 'utenLyd') uten++;
+      if (r.status === 'feil' || (s && s.stotte)) feil++;
+      if (trengerJobb(r)) jobb++;
+      if (nedlastbar(r)) ned++;
+      var kode = r.status === 'feil' && r.feil ? r.feil.kode : s && s.stotte ? s.stotte.kode : null;
+      if (kode && FFMPEG_KODER.indexOf(kode) >= 0) ff = true;
+    });
+    var deler = [];
+    if (n) deler.push(n + (n === 1 ? T(' fil', ' file') : T(' filer', ' files')));
+    if (ferdig) deler.push(ferdig + T(' ferdig', ' done'));
+    if (stille) deler.push(stille + T(' stille', ' silent'));
+    if (uten) deler.push(uten + T(' uten lyd', ' without audio'));
+    if (feil) deler.push(feil + T(' med feil', ' with errors'));
+    $('oppsum').textContent = deler.join(' · ');
+    $('start').disabled = kjorer || !jobb;
+    $('avbryt').disabled = !kjorer;
+    $('alle').disabled = !ned;
+    $('alle').textContent = T('Last ned alle', 'Download all') + (ned ? ' (' + ned + ')' : '');
+    $('tom').disabled = kjorer || !n;
+    $('ffmpeg').hidden = !ff;
+    if (!n && !$('rader').querySelector('.tom')) {
+      var tr = document.createElement('tr'); tr.className = 'tom';
+      tr.innerHTML = '<td colspan="7">' + T('Ingen filer ennå.', 'No files yet.') + '</td>';
+      $('rader').appendChild(tr);
+    } else if (!n) $('rader').querySelector('.tom td').textContent = T('Ingen filer ennå.', 'No files yet.');
+  }
+
+  // ---------- Filer inn ----------
+  function leggTil(filer) {
+    Array.prototype.forEach.call(filer, function (f) {
+      var rad = { id: nesteId++, fil: f, status: 'leser', spor: 0, navnBruker: null };
+      rad.navnAuto = unikt(HaptLyd.wavNavn(f.name));
+      rader.push(rad);
+      lagRad(rad); tegnRad(rad);
+      analyser(rad);
+    });
+    oppdater();
+  }
+  function fjern(rad) {
+    if (rad.status === 'jobber') return;
+    if (rad.resultat && rad.resultat.url) URL.revokeObjectURL(rad.resultat.url);
+    rader.splice(rader.indexOf(rad), 1);
+    rad.tr.remove();
+    rader.forEach(tegnRad);
+    oppdater();
+  }
+  $('fil').addEventListener('change', function () { if (this.files.length) leggTil(this.files); this.value = ''; });
+  var slipp = $('slipp');
+  ['dragenter', 'dragover'].forEach(function (t) { slipp.addEventListener(t, function () { slipp.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (t) { slipp.addEventListener(t, function () { slipp.classList.remove('over'); }); });
+  // Slipp hvor som helst på siden; ellers åpner nettleseren fila og arbeidet forsvinner
+  window.addEventListener('dragover', function (e) { e.preventDefault(); });
+  window.addEventListener('drop', function (e) {
+    e.preventDefault();
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) leggTil(e.dataTransfer.files);
+  });
+
+  // ---------- Oppsett ----------
+  function tegnOppsett() {
+    document.querySelectorAll('[data-rate]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.rate === oppsett.rate ? 'true' : 'false'); b.disabled = kjorer; });
+    document.querySelectorAll('[data-bits]').forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.bits === oppsett.bits ? 'true' : 'false'); b.disabled = kjorer; });
+  }
+  document.querySelectorAll('[data-rate]').forEach(function (b) { b.onclick = function () { oppsett.rate = b.dataset.rate; lagre(); tegnOppsett(); rader.forEach(tegnRad); oppdater(); }; });
+  document.querySelectorAll('[data-bits]').forEach(function (b) { b.onclick = function () { oppsett.bits = +b.dataset.bits; lagre(); tegnOppsett(); rader.forEach(tegnRad); oppdater(); }; });
+
+  // ---------- Uttrekk (én fil om gangen i en Web Worker) ----------
+  function hentArbeider() { if (!arbeider) arbeider = new Worker('arbeider.js'); return arbeider; }
+  function trekkUt(rad) {
+    return new Promise(function (ferdig) {
+      var w = hentArbeider(), deler = [], samlet = null, n = 0;
+      if (rad.resultat && rad.resultat.url) URL.revokeObjectURL(rad.resultat.url);
+      rad.resultat = null; rad.feil = null; rad.status = 'jobber'; rad.fremdrift = 0;
+      var nk = nokkel(rad), filnavn = navn(rad);
+      tegnRad(rad); oppdater();
+      function slutt() { aktiv = null; w.onmessage = null; w.onerror = null; tegnRad(rad); oppdater(); ferdig(); }
+      aktiv = { rad: rad, slutt: slutt };
+      w.onmessage = function (e) {
+        var m = e.data;
+        if (m.id !== rad.id) return;
+        if (m.type === 'del') {
+          deler.push(m.data); n++;
+          // Samle delene i en Blob etter hvert, så nettleseren kan legge dataene utenfor JS-minnet
+          if (deler.length >= 16) { samlet = new Blob(samlet ? [samlet].concat(deler) : deler); deler = []; }
+        } else if (m.type === 'fremdrift') {
+          rad.fremdrift = m.totalt ? m.lest / m.totalt : 1; visFremdrift(rad);
+        } else if (m.type === 'ferdig') {
+          var biter = [m.hode];
+          if (samlet) biter.push(samlet);
+          biter = biter.concat(deler);
+          if (m.pad) biter.push(new Uint8Array(1));
+          var blob = new Blob(biter, { type: 'audio/wav' }), res = m.resultat;
+          res.blob = blob; res.url = URL.createObjectURL(blob); res.nokkel = nk; res.storrelse = blob.size; res.deler = n;
+          res.stille = !(res.topp >= -60);
+          rad.resultat = res; rad.status = 'ferdig';
+          slutt();
+        } else if (m.type === 'feil') {
+          rad.status = 'feil'; rad.feilFra = 'uttrekk'; rad.feil = { kode: m.kode, data: m.data, melding: m.melding };
+          slutt();
+        }
+      };
+      w.onerror = function (ev) {
+        if (ev.preventDefault) ev.preventDefault();
+        rad.status = 'feil'; rad.feilFra = 'uttrekk'; rad.feil = { kode: 'ukjent', melding: ev.message || 'worker' };
+        arbeider = null; try { w.terminate(); } catch (e) {}
+        slutt();
+      };
+      w.postMessage({ type: 'trekk', id: rad.id, fil: rad.fil, spor: rad.spor, rate: oppsett.rate === 'kilde' ? 'kilde' : 48000, bits: oppsett.bits, navn: filnavn });
+    });
+  }
+  function kjor() {
+    if (kjorer) return;
+    var ko = rader.filter(trengerJobb);
+    if (!ko.length) return;
+    kjorer = true; stopp = false;
+    ko.forEach(function (r) { r.status = 'ko'; });
+    rader.forEach(tegnRad); tegnOppsett(); oppdater();
+    var i = 0;
+    (function neste() {
+      if (stopp || i >= ko.length) {
+        kjorer = false;
+        ko.forEach(function (r) { if (r.status === 'ko') r.status = 'klar'; });
+        rader.forEach(tegnRad); tegnOppsett(); oppdater();
+        return;
+      }
+      var rad = ko[i++];
+      if (rader.indexOf(rad) < 0 || !trengerJobb(rad)) return neste();
+      trekkUt(rad).then(neste);
+    })();
+  }
+  $('start').onclick = kjor;
+  $('avbryt').onclick = function () {
+    stopp = true;
+    if (aktiv) {
+      if (arbeider) { arbeider.terminate(); arbeider = null; }
+      aktiv.rad.status = 'avbrutt';
+      aktiv.slutt();
+    }
+  };
+
+  // ---------- Nedlasting ----------
+  function lastNed(rad) {
+    if (!rad.resultat) return;
+    var a = document.createElement('a');
+    a.href = rad.resultat.url; a.download = navn(rad);
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  $('alle').onclick = function () {
+    var liste = rader.filter(nedlastbar), i = 0;
+    (function neste() { if (i < liste.length) { lastNed(liste[i++]); setTimeout(neste, 700); } })();
+  };
+  $('tom').onclick = function () {
+    if (kjorer) return;
+    rader.forEach(function (r) { if (r.resultat && r.resultat.url) URL.revokeObjectURL(r.resultat.url); r.tr.remove(); });
+    rader = [];
+    oppdater();
+  };
+
+  window.addEventListener('hapt-sprak', function () { rader.forEach(tegnRad); oppdater(); });
+  tegnOppsett(); oppdater();
+  // Til testing: tilstanden kan leses av utenfra
+  window.HaptLydSide = { rader: function () { return rader; } };
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "52d8f32f79c6475f979f4aadb143f1bb"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
