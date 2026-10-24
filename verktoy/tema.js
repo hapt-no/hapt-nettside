@@ -7,7 +7,7 @@
   try { if (localStorage.getItem('hapt-lang') === 'en') sprak = 'en'; } catch (e) {}
   var ATTR = ['placeholder', 'title', 'aria-label'];
   // Fanene og «verktøy» i topplinja er like på alle sidene, så de oversettes her
-  var FANER = { 'led': 'LED wall', 'projektor': 'Projector', 'testbilde': 'Test pattern', 'pixelmap': 'Pixel map', 'syncfilm': 'Sync video', 'opptak': 'Recording', 'edid': 'EDID', 'vario': 'Vario', 'klokke': 'Clock' };
+  var FANER = { 'led': 'LED wall', 'projektor': 'Projector', 'testbilde': 'Test pattern', 'pixelmap': 'Pixel map', 'syncfilm': 'Sync video', 'opptak': 'Recording', 'edid': 'EDID', 'vario': 'Vario', 'lyd': 'Audio', 'klokke': 'Clock' };
   function topplinje() {
     document.querySelectorAll('header.site nav a').forEach(function (a) {
       var del = ''; try { del = new URL(a.getAttribute('href') || '', location.href).pathname.replace(/\/(index\.html)?$/, '').split('/').pop() || ''; } catch (e) {}
