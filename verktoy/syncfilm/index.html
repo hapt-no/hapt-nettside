@@ -254,20 +254,10 @@
   }
 
   // Pixelmap
-  // Standardnavnet «Flate N» (fra pixelmap.js/leskart.js) følger språket, også i filmen. Gjelder bare sidens egen kopi av kartet.
-  function standardNavn() {
-    if (!kart) return;
-    kart.flater.forEach(function (f) {
-      var m = /^(Flate|Surface) (\d+)$/.exec(f.navn);
-      if (m) f.navn = T('Flate ', 'Surface ') + m[2];
-    });
-  }
-  var kartStatus = null;  // siste melding fra leskart.js (norsk original), så den kan oversettes på nytt
   function visKart() {
-    kartStatus = null;
     $('enkelt').hidden = !!kart; $('kartInfo').hidden = !kart;
     if (kart) {
-      $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + T(' flater.', ' surfaces.');
+      $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + (kart.flater.length === 1 ? T(' flate.', ' surface.') : T(' flater.', ' surfaces.'));
       var boks = $('kartFlater'); boks.innerHTML = '';
       kart.flater.forEach(function (f) {
         var d = document.createElement('div'); d.className = 'kartflate';
@@ -281,22 +271,12 @@
     }
     tegn();
   }
-  // Statusmeldingene fra leskart.js er på norsk; på engelsk oversettes de kjente meldingene her
-  function lesTekst(t) {
-    if (!HaptSprak.en()) return t;
-    return t.replace(/ flater funnet\./, ' surfaces found.')
-      .replace(/Leter etter flater …/, 'Looking for surfaces …')
-      .replace(/Leser navn fra bildet …/, 'Reading names from the image …')
-      .replace(/Navnene er lest fra bildet; sjekk dem\./, 'Names read from the image; check them.')
-      .replace(/Leser navn (\d+) av (\d+) …/, 'Reading name $1 of $2 …')
-      .replace(/Klarte ikke å starte tekstgjenkjenning, så navnene må skrives inn\./, 'Could not start text recognition, so enter the names by hand.');
-  }
   $('kartfil').addEventListener('change', function () {
     var fil = this.files[0]; if (!fil) return;
     this.value = '';
     HaptLesKart.fraFil(fil, {
-      status: function (t) { if (kart) { kartStatus = t; $('kartTekst').textContent = lesTekst(t); } else $('info').textContent = lesTekst(t); },
-      kart: function (k) { kart = k; standardNavn(); visKart(); },
+      status: function (t) { if (kart) $('kartTekst').textContent = t; else $('info').textContent = t; },
+      kart: function (k) { kart = k; visKart(); },
       aktiv: function (k) { return k === kart; },
       ferdig: function () { visKart(); }
     });
@@ -304,7 +284,7 @@
   $('fraPixelmap').onclick = function () {
     var k = HaptPixelmap.hent();
     if (!k || !k.flater.length) { alert(T('Fant ikke noe kart. Lag et på Pixelmap-siden først.', 'No map found. Make one on the Pixel map page first.')); return; }
-    kart = k; standardNavn(); visKart();
+    kart = k; visKart();
   };
   $('fjernKart').onclick = function () { kart = null; visKart(); };
   $('mal').addEventListener('change', function () {
@@ -502,7 +482,7 @@
   window.addEventListener('hapt-sprak', function () {
     $('spill').textContent = spiller ? T('Stopp', 'Stop') : T('Spill av', 'Play');
     if (sistStatus) $('lagTekst').textContent = sistStatus();
-    if (kart) { var ks = kartStatus; standardNavn(); visKart(); if (ks) { kartStatus = ks; $('kartTekst').textContent = lesTekst(ks); } } else tegn();
+    if (kart) visKart(); else tegn();  // statusen fra leskart.js skrives på nytt der
   });
   if (HaptSprak.en()) $('spill').textContent = T('Spill av', 'Play');
   if (document.fonts && document.fonts.load) Promise.all([document.fonts.load(font(20, 300)), document.fonts.load(font(20, 400)), document.fonts.load(font(20, 500))]).then(tegn, tegn);

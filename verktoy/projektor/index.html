@@ -63,7 +63,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
         <div class="field"><label for="proj" data-en="Projector">Projektor</label><select id="proj"></select></div>
         <div class="field"><label for="linse" data-en="Lens">Linse</label><select id="linse"></select></div>
         <div class="field"><label for="ref" data-en="Measure distance from">Mål avstanden fra</label>
-          <select id="ref"><option value="linse" data-en="Lens front (as the manufacturer)">Linsefront (som produsenten)</option><option value="kabinett" data-en="Chassis front">Kabinettfront</option></select>
+          <select id="ref"><option value="linse" data-en="Lens front (manufacturer&#39;s reference)">Linsefront (som produsenten)</option><option value="kabinett" data-en="Chassis front">Kabinettfront</option></select>
         </div>
         <p class="note" id="refTekst" style="margin-top:-6px"></p>
       </div>
@@ -272,7 +272,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
       var spenn = Math.abs(Lmax - Lmin) >= 0.005 ? T('vid–tele ', 'wide–tele ') + tall(Math.min(Lmin, Lmax), 2) + '–' + tall(Math.max(Lmin, Lmax), 2) + ' m' : '';
       $('k1').textContent = erFast ? (Math.abs(Lmax - Lmin) < 0.005 ? m2(Lmin) : tall(Lmin, 2) + '–' + tall(Lmax, 2) + ' m') : m2(Lz);
       if (p.m === 'Barco') $('k1t').textContent = spenn && !erFast ? T('avstand, ', 'distance, ') + spenn + T(' (Barco oppgir ikke målepunkt)', ' (Barco does not state the measuring point)') : T('avstand (Barco oppgir ikke målepunkt)', 'distance (Barco does not state the measuring point)');
-      else $('k1t').textContent = T('avstand fra ', 'distance from ') + (kab ? T('kabinettfront', 'chassis front') : T('linsefront', 'lens front')) + (spenn && !erFast ? ' (' + spenn + ')' : '');
+      else $('k1t').textContent = T('avstand fra ', 'distance from ') + (kab && fr != null ? T('kabinettfront', 'chassis front') : T('linsefront', 'lens front')) + (spenn && !erFast ? ' (' + spenn + ')' : '');
     } else { $('k1').textContent = m2(Lmin); $('k1t').textContent = T('avstand (oppgitt)', 'distance (entered)'); }
     $('k2').textContent = tall(ib, 2) + ' × ' + tall(ih, 2) + ' m';
     $('k2t').textContent = T('bilde, ', 'image, ') + tall(diag / 0.0254, 0) + '" diagonal';
@@ -329,9 +329,9 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
     $('linseNote').textContent = [l.type ? T('Type: ', 'Type: ') + dt(l.type) + '.' : '', l.ref ? T('Avstand måles fra: ', 'Distance measured from: ') + dt(l.ref) : '', dt(l.f[p.g].note) || ''].filter(Boolean).join(' ');
     $('refTekst').textContent = kab ? (fr != null ? T('Linsen stikker ', 'The lens protrudes ') + tall(fr * 1000, 0) + T(' mm ut fra kabinettet (datablad; mål gjerne selv).', ' mm from the chassis (data sheet; worth measuring yourself).') : T('Fremspring er ikke oppgitt for denne linsen, så avstanden gjelder linsefronten.', 'Protrusion is not stated for this lens, so the distance is from the lens front.')) : '';
 
-    tegnSide(dL, lh, uk, fe.h, kab);
+    tegnSide(dL, lh, uk, fe.h, kab && fr != null);
     alleLinser(p, li, fe, ia, tillegg);
-    bredder(p, F, ia, tillegg, dL, z, kab);
+    bredder(p, F, ia, tillegg, dL, z, kab && fr != null);
     regn.tekst = p.m + ' ' + p.n + T(' med ', ' with ') + dt(l.n) + '\n' + res.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n');
     lagre();
   }
@@ -464,7 +464,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
   // Språkbytte: lag listene og alt utregnet innhold på nytt (valgene beholdes)
   window.addEventListener('hapt-sprak', function () {
     fyllProj(); fyllLinser(true);
-    if (!kopiert) $('kopier').textContent = kopiTekst();
+    $('kopier').textContent = kopiert ? T('Kopiert', 'Copied') : kopiTekst();
     regn();
   });
 })();

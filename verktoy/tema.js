@@ -50,6 +50,7 @@
       try { localStorage.setItem('hapt-lang', sprak); } catch (e) {}
       document.documentElement.lang = sprak === 'en' ? 'en' : 'no';
       bruk(document); settKnapper();
+      if (window.haptMidtstillFane) window.haptMidtstillFane();
       window.dispatchEvent(new CustomEvent('hapt-sprak', { detail: sprak }));
     }
   };

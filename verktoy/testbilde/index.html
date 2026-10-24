@@ -292,7 +292,7 @@
       cv.width = kart.bredde; cv.height = kart.hoyde;
       ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
       kart.flater.forEach(function (f, i) { tegnTest(f.x, f.y, f.b, f.h, f.pw, f.ph, f.navn, linjeFarge(i)); });
-      $('info').textContent = kart.bredde + ' × ' + kart.hoyde + HaptSprak.t(' px med ', ' px with ') + kart.flater.length + HaptSprak.t(' flater. Lagres som PNG i full oppløsning.', ' surfaces. Saved as PNG at full resolution.');
+      $('info').textContent = kart.bredde + ' × ' + kart.hoyde + HaptSprak.t(' px med ', ' px with ') + kart.flater.length + (kart.flater.length === 1 ? HaptSprak.t(' flate', ' surface') : HaptSprak.t(' flater', ' surfaces')) + HaptSprak.t('. Lagres som PNG i full oppløsning.', '. Saved as PNG at full resolution.');
       return;
     }
     var W = Math.max(16, Math.min(16384, Math.round(+$('w').value || 1920)));
@@ -308,7 +308,7 @@
     $('enkelt').hidden = !!kart;
     $('kartInfo').hidden = !kart;
     if (!kart) { tegn(); return; }
-    $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + HaptSprak.t(' flater funnet.', ' surfaces found.');
+    $('kartTekst').textContent = (kart.navn ? kart.navn + ': ' : '') + kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + (kart.flater.length === 1 ? HaptSprak.t(' flate funnet.', ' surface found.') : HaptSprak.t(' flater funnet.', ' surfaces found.'));
     var boks = $('kartFlater'); boks.innerHTML = '';
     kart.flater.forEach(function (f) {
       var d = document.createElement('div'); d.className = 'kartflate';

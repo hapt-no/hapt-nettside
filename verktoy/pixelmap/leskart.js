@@ -126,7 +126,7 @@
         var navn = fil.name.replace(/\.[^.]+$/, '');
         var k = { bredde: c2.width, hoyde: c2.height, navn: navn, flater: flater.map(function (f, i) { return { navn: T('Flate ', 'Surface ') + (i + 1), x: f.x, y: f.y, b: f.b, h: f.h, pw: 0, ph: 0 }; }) };
         cb.kart(k);
-        cb.grunn = function () { return navn + ': ' + k.bredde + ' × ' + k.hoyde + ' px, ' + k.flater.length + T(' flater funnet.', ' surfaces found.'); };
+        cb.grunn = function () { return navn + ': ' + k.bredde + ' × ' + k.hoyde + ' px, ' + k.flater.length + (k.flater.length === 1 ? T(' flate funnet.', ' surface found.') : T(' flater funnet.', ' surfaces found.')); };
         lesNavn(c2, k, flater.etiketter || [], cb);
       }, 30);
     };

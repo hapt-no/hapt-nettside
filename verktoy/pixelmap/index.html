@@ -124,7 +124,7 @@
     var utenfor = kart.flater.filter(function (f) { return f.x + f.b > kart.bredde || f.y + f.h > kart.hoyde; }).map(function (f) { return f.navn; });
     if (utenfor.length) $('overlapp').textContent += HaptSprak.t(' Går utenfor utgangen: ', ' Outside the output: ') + utenfor.join(', ') + '.';
     var brukt = kart.flater.reduce(function (a, f) { return a + f.b * f.h; }, 0);
-    $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + HaptSprak.t(' flater, ', ' surfaces, ') + Math.round(brukt / (kart.bredde * kart.hoyde) * 100) + HaptSprak.t(' % av utgangen i bruk.', ' % of the output in use.');
+    $('info').textContent = kart.bredde + ' × ' + kart.hoyde + ' px, ' + kart.flater.length + (kart.flater.length === 1 ? HaptSprak.t(' flate, ', ' surface, ') : HaptSprak.t(' flater, ', ' surfaces, ')) + Math.round(brukt / (kart.bredde * kart.hoyde) * 100) + HaptSprak.t(' % av utgangen i bruk.', '% of the output in use.');
   }
 
   $('mal').addEventListener('change', function () {

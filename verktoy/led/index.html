@@ -500,13 +500,13 @@ details[open] summary { margin-bottom: 14px; }
     $('tilPixelmap').href = '../pixelmap/?' + new URLSearchParams({ legg: pnavn(p) + ' ' + c + '×' + r, b: W, h: H, pw: p.px, ph: ph }).toString();
 
     sisteTekst = T_('LED-vegg: ', 'LED wall: ') + pnavn(p) + '\n' +
-      (blandet ? antStore + ' × ' + cm(p) + ' cm + ' + antSma + ' × ' + cm(lite) + ' cm\n' : c + ' × ' + r + ' = ' + n + T_(' paneler\n', ' panels\n')) +
+      (blandet ? antStore + ' × ' + cm(p) + ' cm + ' + antSma + ' × ' + cm(lite) + ' cm\n' : c + ' × ' + r + ' = ' + n + T_(' paneler\n', n === 1 ? ' panel\n' : ' panels\n')) +
       T_('Størrelse: ', 'Size: ') + nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m (' + format(bmm / hmm) + ')\n' +
       T_('Oppløsning: ', 'Resolution: ') + W + ' × ' + H + ' px\n' +
       T_('Vekt: ', 'Weight: ') + nf(kg, 0) + T_(' kg (bare paneler)\n', ' kg (panels only)\n') +
       T_('Effekt: maks ', 'Power: max ') + nf(maks / 1000, 2) + T_(' kW, snitt ', ' kW, average ') + nf(snitt / 1000, 2) + ' kW\n' +
-      T_('Kurser: ', 'Circuits: ') + kurser + ' × ' + kurs + ' A (' + perKurs + T_(' paneler per kurs)\n', ' panels per circuit)\n') +
-      'Data: ' + d.hz + ' Hz, ' + d.bit + ' bit, ' + d.perPort + T_(' paneler per port\n', ' panels per port\n') +
+      T_('Kurser: ', 'Circuits: ') + kurser + ' × ' + kurs + ' A (' + perKurs + T_(' paneler per kurs)\n', perKurs === 1 ? ' panel per circuit)\n' : ' panels per circuit)\n') +
+      'Data: ' + d.hz + ' Hz, ' + d.bit + ' bit, ' + d.perPort + T_(' paneler per port\n', d.perPort === 1 ? ' panel per port\n' : ' panels per port\n') +
       T_('Porter: ', 'Ports: ') + d.porter + T_(' hoved', ' main') + (d.backupPorter ? ' + ' + d.backupPorter + ' backup' : '') + ', ' + d.prosessorer + T_(' prosessor', ' processor') + (d.prosessorer === 1 ? '' : T_('er', 's'));
 
     lagreTilstand();
@@ -563,7 +563,7 @@ details[open] summary { margin-bottom: 14px; }
     var spenn = function (l, en, flere) { var a = Math.min.apply(null, l), b = Math.max.apply(null, l); return a === b ? en + ' ' + a : flere + ' ' + a + '–' + b; };
     var rd = T_('rad', 'row'), rdr = T_('rader', 'rows');
     var hva = modus === 'rad' ? spenn(rl, rd, rdr) : spenn(kl, T_('kolonne', 'column'), T_('kolonner', 'columns')) + (rl.length < r0 ? ', ' + spenn(rl, rd, rdr) : '');
-    return hva + ', ' + kj.length + T_(' paneler, inn i ', ' panels, in at ') + navn(kj[0]) + T_(', ut i ', ', out at ') + navn(kj[kj.length - 1]);
+    return hva + ', ' + kj.length + T_(' paneler, inn i ', kj.length === 1 ? ' panel, in at ' : ' panels, in at ') + navn(kj[0]) + T_(', ut i ', ', out at ') + navn(kj[kj.length - 1]);
   }
   var r0 = 0;
 
@@ -616,7 +616,7 @@ details[open] summary { margin-bottom: 14px; }
     var inntak = [16, 32, 63, 125, 250].filter(function (a) { return a >= maksFase; })[0];
     h += '<p>' + T_('Inntak: ', 'Supply: ') + (inntak ? T_('minst ', 'at least ') + inntak + ' A CEE' + (nett === '1' ? T_(' enfase', ' single-phase') : T_(' 3-fase', ' 3-phase')) : T_('mer enn 250 A, del på flere inntak', 'more than 250 A, split across several supplies')) + T_(', regnet med maks effekt på alle paneler.', ', based on max power on all panels.') + '</p>';
 
-    h += '<h3>' + T_('Kabler', 'Cables') + '</h3><p>Data: ' + dk.length + T_(' hjemkabler', ' home runs') + (d.backupPorter ? ' + ' + dk.length + ' backup' : '') + T_(' og ', ' and ') + (c * r - dk.length) + T_(' panelkabler. Strøm: ', ' panel jumpers. Power: ') + sk.length + T_(' tilførsler og ', ' feeds and ') + (c * r - sk.length) + T_(' panelkabler.', ' panel jumpers.') + '</p>';
+    h += '<h3>' + T_('Kabler', 'Cables') + '</h3><p>Data: ' + dk.length + T_(' hjemkabler', dk.length === 1 ? ' home run' : ' home runs') + (d.backupPorter ? ' + ' + dk.length + ' backup' : '') + T_(' og ', ' and ') + (c * r - dk.length) + T_(' panelkabler. Strøm: ', c * r - dk.length === 1 ? ' panel jumper. Power: ' : ' panel jumpers. Power: ') + sk.length + T_(' tilførsler og ', sk.length === 1 ? ' feed and ' : ' feeds and ') + (c * r - sk.length) + T_(' panelkabler.', c * r - sk.length === 1 ? ' panel jumper.' : ' panel jumpers.') + '</p>';
     h += '<p class="note">' + (HaptSprak.en() ? 'The plan snakes ' + (modus === 'rad' ? 'row by row' : 'column by column') + ' from the ' + (fraBunn ? 'bottom' : 'top') + ', so the chains stay short and even. Check that the panels can take power chains this long (the max number through powerCON is in the datasheet).' : 'Forslaget går i slange ' + (modus === 'rad' ? 'rad for rad' : 'kolonne for kolonne') + ' fra ' + (fraBunn ? 'bunnen' : 'toppen') + ', så kjedene blir korte og like. Sjekk at panelene tåler så lange strømkjeder (maks antall gjennom powerCON står i databladet).') + '</p>';
     $('kabling-ut').innerHTML = h;
     return { data: dk, strom: sk };
