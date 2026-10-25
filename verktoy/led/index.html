@@ -269,6 +269,8 @@ details[open] summary { margin-bottom: 14px; }
     if (!valgt) { var pk = $('produsent').value; valgt = alle.filter(function (p) { return produsentAv(p) === pk; })[0] || alle[0]; }
     var prod = [];
     alle.forEach(function (p) { var k = produsentAv(p); if (prod.indexOf(k) < 0) prod.push(k); });
+    // Produsentene i alfabetisk rekkefølge, egne paneler sist
+    prod.sort(function (a, b) { return (a === EGNE) - (b === EGNE) || a.localeCompare(b, 'nb', { sensitivity: 'base' }); });
     var ps = $('produsent'); ps.innerHTML = '';
     prod.forEach(function (k) {
       var o = document.createElement('option');
@@ -490,6 +492,7 @@ details[open] summary { margin-bottom: 14px; }
     if (!d.perPort) adv.push(T_('Ett panel har flere piksler enn én port klarer ved denne frekvensen og bitdybden.', 'One panel has more pixels than a single port can drive at this frame rate and bit depth.'));
     if (mangler.length) adv.push(T_('Du har ikke nok paneler: mangler ', 'Not enough panels: short of ') + mangler.join(og) + ' cm.');
     if (blandet) adv.push(T_('Med små paneler blandet inn regnes porter og kurser som om alle var store, så de er på den sikre siden.', 'With small panels mixed in, ports and circuits are calculated as if all panels were large, so they are on the safe side.'));
+    if (p.merk) adv.push(T_(p.merk, p.merkEn));
     $('advarsler').innerHTML = adv.map(function (s) { return '<p class="warn"></p>'; }).join('');
     Array.prototype.forEach.call($('advarsler').children, function (el, i) { el.textContent = adv[i]; });
 
