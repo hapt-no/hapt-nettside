@@ -226,7 +226,7 @@ details[open] summary { margin-bottom: 14px; }
           <button class="btn ghost" type="button" id="kopier">Kopier oppsummering</button>
         </div>
       </div>
-      <p class="note" data-en="Panel figures are from the manufacturer's datasheet and should be checked against the panels you actually have. Weight excludes rigging, frames and cables. Port capacity is scaled by frame rate (60 Hz ÷ selected Hz) and bit depth. A panel is never split between two ports.">Paneltallene er fra produsentens datablad og bør sjekkes mot panelene dere faktisk har. Vekt er uten rigg, bakker og kabler. Portkapasiteten skaleres med bildefrekvens (60 Hz ÷ valgt Hz) og bitdybde. Et panel deles aldri mellom to porter.</p>
+      <p class="note" data-en="Panel figures are from the manufacturer's datasheet and should be checked against the panels you actually have. Weight excludes rigging, frames and cables unless the panel note says otherwise. Port capacity is scaled by frame rate (60 Hz ÷ selected Hz) and bit depth. A panel is never split between two ports.">Paneltallene er fra produsentens datablad og bør sjekkes mot panelene dere faktisk har. Vekt er uten rigg, bakker og kabler, med mindre panelmerknaden sier noe annet. Portkapasiteten skaleres med bildefrekvens (60 Hz ÷ valgt Hz) og bitdybde. Et panel deles aldri mellom to porter.</p>
     </div>
   </div>
 </div>
@@ -269,6 +269,8 @@ details[open] summary { margin-bottom: 14px; }
     if (!valgt) { var pk = $('produsent').value; valgt = alle.filter(function (p) { return produsentAv(p) === pk; })[0] || alle[0]; }
     var prod = [];
     alle.forEach(function (p) { var k = produsentAv(p); if (prod.indexOf(k) < 0) prod.push(k); });
+    // Produsentene i alfabetisk rekkefølge, egne paneler sist
+    prod.sort(function (a, b) { return (a === EGNE) - (b === EGNE) || a.localeCompare(b, 'nb', { sensitivity: 'base' }); });
     var ps = $('produsent'); ps.innerHTML = '';
     prod.forEach(function (k) {
       var o = document.createElement('option');
@@ -442,6 +444,8 @@ details[open] summary { margin-bottom: 14px; }
     };
     // Panelene står mellom fase og N (TN) eller mellom to faser (IT), altså 230 V per panel i begge tilfeller.
     var perKurs = Math.max(1, Math.floor(kurs * 230 * margin / p.maks));
+    // Noen paneler tåler bare et visst antall i samme strømkjede (paneler.js: maksKjede)
+    if (p.maksKjede) perKurs = Math.min(perKurs, p.maksKjede);
     var kurser = Math.ceil(n / perKurs);
     var d = data(p, c, r, n);
     // Kurser etter kablingsforslaget (hele kolonner kan gi én kurs mer enn rent regnestykke)
@@ -465,7 +469,7 @@ details[open] summary { margin-bottom: 14px; }
       [T_('Effekt maks', 'Max power'), nf(maks / 1000, 2) + ' kW'],
       [T_('Effekt snitt', 'Average power'), nf(snitt / 1000, 2) + ' kW'],
       [faser === 1 ? T_('Strøm maks (230 V)', 'Max current (230 V)') : T_('Strøm maks per fase (jevnt fordelt)', 'Max current per phase (evenly balanced)'), nf(fase(maks), 1) + ' A'],
-      [T_('Paneler per ' + kurs + ' A kurs', 'Panels per ' + kurs + ' A circuit'), perKurs + '  (' + nf(margin * 100, 0) + T_(' % last)', ' % load)')],
+      [T_('Paneler per ' + kurs + ' A kurs', 'Panels per ' + kurs + ' A circuit'), perKurs + (p.maksKjede && perKurs === p.maksKjede ? T_('  (maks per strømkjede)', '  (max per power link)') : '  (' + nf(margin * 100, 0) + T_(' % last)', ' % load)'))],
       [T_('Kurser à ' + kurs + ' A', kurs + ' A circuits'), kurser],
       [T_('Datamengde', 'Data rate'), nf(W * H * d.hz * d.bit * 3 / 1e9, 2) + ' Gbit/s'],
       [T_('Kapasitet per port', 'Capacity per port'), nf(d.kap, 0) + ' px  (' + d.hz + ' Hz, ' + d.bit + ' bit)'],
@@ -490,6 +494,10 @@ details[open] summary { margin-bottom: 14px; }
     if (!d.perPort) adv.push(T_('Ett panel har flere piksler enn én port klarer ved denne frekvensen og bitdybden.', 'One panel has more pixels than a single port can drive at this frame rate and bit depth.'));
     if (mangler.length) adv.push(T_('Du har ikke nok paneler: mangler ', 'Not enough panels: short of ') + mangler.join(og) + ' cm.');
     if (blandet) adv.push(T_('Med små paneler blandet inn regnes porter og kurser som om alle var store, så de er på den sikre siden.', 'With small panels mixed in, ports and circuits are calculated as if all panels were large, so they are on the safe side.'));
+    // Merknader fra paneldataene (f.eks. vekt med støtteramme), for det store og eventuelt det lille panelet
+    var merknader = [];
+    [p, blandet ? lite : null].forEach(function (x) { if (x && x.merk && merknader.indexOf(T_(x.merk, x.merkEn)) < 0) merknader.push(T_(x.merk, x.merkEn)); });
+    adv = adv.concat(merknader);
     $('advarsler').innerHTML = adv.map(function (s) { return '<p class="warn"></p>'; }).join('');
     Array.prototype.forEach.call($('advarsler').children, function (el, i) { el.textContent = adv[i]; });
 
@@ -507,7 +515,8 @@ details[open] summary { margin-bottom: 14px; }
       T_('Effekt: maks ', 'Power: max ') + nf(maks / 1000, 2) + T_(' kW, snitt ', ' kW, average ') + nf(snitt / 1000, 2) + ' kW\n' +
       T_('Kurser: ', 'Circuits: ') + kurser + ' × ' + kurs + ' A (' + perKurs + T_(' paneler per kurs)\n', perKurs === 1 ? ' panel per circuit)\n' : ' panels per circuit)\n') +
       'Data: ' + d.hz + ' Hz, ' + d.bit + ' bit, ' + d.perPort + T_(' paneler per port\n', d.perPort === 1 ? ' panel per port\n' : ' panels per port\n') +
-      T_('Porter: ', 'Ports: ') + d.porter + T_(' hoved', ' main') + (d.backupPorter ? ' + ' + d.backupPorter + ' backup' : '') + ', ' + d.prosessorer + T_(' prosessor', ' processor') + (d.prosessorer === 1 ? '' : T_('er', 's'));
+      T_('Porter: ', 'Ports: ') + d.porter + T_(' hoved', ' main') + (d.backupPorter ? ' + ' + d.backupPorter + ' backup' : '') + ', ' + d.prosessorer + T_(' prosessor', ' processor') + (d.prosessorer === 1 ? '' : T_('er', 's')) +
+      merknader.map(function (m) { return '\n' + m; }).join('');
 
     lagreTilstand();
   }
