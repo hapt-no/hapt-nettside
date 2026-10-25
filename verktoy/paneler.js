@@ -5,6 +5,7 @@
 // utleiefirmaer i Norge og Europa har på lager. Der en modell finnes i flere versjoner med ulike tall, er det
 // tyngste og mest strømkrevende tallet brukt, så rigg og kurser havner på den sikre siden. Sjekk mot eget datablad.
 // merk / merkEn: kort merknad som vises under resultatet når panelet er valgt.
+// maksKjede: maks antall paneler per strømkjede ifølge produsenten; kalkulatoren legger aldri flere på én kurs.
 // Egne paneler lagres i nettleseren (localStorage) under nøkkelen «hapt-paneler».
 (function () {
   var innebygd = [
@@ -37,44 +38,51 @@
     { id: 'absen-pl29-v10', navn: 'Absen PL2.9 V10', b: 500, h: 500, px: 168, py: 168, kg: 8, maks: 135, snitt: 45, pitch: 2.976 },
     { id: 'absen-pl29pro-v2', navn: 'Absen PL2.9 Pro V2', b: 500, h: 500, px: 168, py: 168, kg: 8, maks: 152.5, snitt: 51, pitch: 2.976 },
     // PL3.9 Pro: inne og ute. V3 kom i desember 2025; databladet sier 11,5 kg for 50 × 100, produktsiden 12 kg (brukt her).
+    // Pro V2 fra Absens datablad V20240517. Noen utleieark sier 16 kg for 50 × 100 (trolig 2 × 8 kg ved en feil).
     { id: 'absen-pl39pro-v2-2h', navn: 'Absen PL3.9 Pro V2', fam: 'pl39pro-v2', b: 500, h: 1000, px: 128, py: 256, kg: 13, maks: 400, snitt: 133.5, pitch: 3.906 },
     { id: 'absen-pl39pro-v2', navn: 'Absen PL3.9 Pro V2', fam: 'pl39pro-v2', b: 500, h: 500, px: 128, py: 128, kg: 8, maks: 200, snitt: 66.75, pitch: 3.906 },
     { id: 'absen-pl39pro-v3-2h', navn: 'Absen PL3.9 Pro V3', fam: 'pl39pro-v3', b: 500, h: 1000, px: 128, py: 256, kg: 12, maks: 360, snitt: 120, pitch: 3.906 },
     { id: 'absen-pl39pro-v3', navn: 'Absen PL3.9 Pro V3', fam: 'pl39pro-v3', b: 500, h: 500, px: 128, py: 128, kg: 7, maks: 180, snitt: 60, pitch: 3.906 },
 
     // INFiLED (infiled.com). AR3.9: tallene for ARmk2 (12,5 kg, 360/120 W), som er over første versjon (12,46 kg, 270/90 W).
+    // Utleiefirmaet LANG oppgir 14,3 kg og 108 mm dybde for sin «AR3.9 plus LE»; ingen INFiLED-datablad har det tallet.
     { id: 'infiled-ar39-2h', navn: 'INFiLED AR3.9', fam: 'ar39', b: 500, h: 1000, px: 128, py: 256, kg: 12.5, maks: 360, snitt: 120, pitch: 3.906 },
     { id: 'infiled-ar39', navn: 'INFiLED AR3.9', fam: 'ar39', b: 500, h: 500, px: 128, py: 128, kg: 8, maks: 180, snitt: 60, pitch: 3.906 },
     // DB2.6 Pro: 150/50 W i begge versjoner. Vekt fra første versjon (8,8 kg); INFiLED oppgir 8 kg for DBmk2, men kg og lb spriker der.
     { id: 'infiled-db26pro', navn: 'INFiLED DB2.6 Pro', b: 500, h: 500, px: 192, py: 192, kg: 8.8, maks: 150, snitt: 50, pitch: 2.604 },
 
     // ROE Visual (roevisual.com). Black Quartz: ROE oppgir 22 kg med støtteramme for 50 × 100 (17,8 kg uten).
-    { id: 'roe-bq39', navn: 'ROE Black Quartz BQ3.9', fam: 'bq39', b: 500, h: 1000, px: 128, py: 256, kg: 22, maks: 360, snitt: 180, pitch: 3.906,
-      merk: 'ROE Black Quartz: vekten for 50 × 100 er med støtteramme, slik ROE oppgir den (17,8 kg uten).', merkEn: 'ROE Black Quartz: the 50 × 100 weight includes the support frame, as ROE lists it (17.8 kg without).' },
+    // Effekt fra den første brosjyren (380/190 W); dagens produktside sier 360/180 W (BQ3.9) og 370/185 W (BQ4.6).
+    { id: 'roe-bq39', navn: 'ROE Black Quartz BQ3.9', fam: 'bq39', b: 500, h: 1000, px: 128, py: 256, kg: 22, maks: 380, snitt: 190, pitch: 3.906,
+      merk: 'ROE Black Quartz: vekten for 50 × 100 cm er med støtteramme, slik ROE oppgir den (17,8 kg uten).', merkEn: 'ROE Black Quartz: the 50 × 100 cm weight includes the support frame, as ROE lists it (17.8 kg without it).' },
     { id: 'roe-bq39-half', navn: 'ROE Black Quartz BQ3.9', fam: 'bq39', b: 500, h: 500, px: 128, py: 128, kg: 9.8, maks: 190, snitt: 85, pitch: 3.906 },
-    { id: 'roe-bq46', navn: 'ROE Black Quartz BQ4.6', fam: 'bq46', b: 500, h: 1000, px: 108, py: 216, kg: 22, maks: 370, snitt: 185, pitch: 4.63,
-      merk: 'ROE Black Quartz: vekten for 50 × 100 er med støtteramme, slik ROE oppgir den (17,8 kg uten).', merkEn: 'ROE Black Quartz: the 50 × 100 weight includes the support frame, as ROE lists it (17.8 kg without).' },
+    { id: 'roe-bq46', navn: 'ROE Black Quartz BQ4.6', fam: 'bq46', b: 500, h: 1000, px: 108, py: 216, kg: 22, maks: 380, snitt: 190, pitch: 4.63,
+      merk: 'ROE Black Quartz: vekten for 50 × 100 cm er med støtteramme, slik ROE oppgir den (17,8 kg uten).', merkEn: 'ROE Black Quartz: the 50 × 100 cm weight includes the support frame, as ROE lists it (17.8 kg without it).' },
     { id: 'roe-bq46-half', navn: 'ROE Black Quartz BQ4.6', fam: 'bq46', b: 500, h: 500, px: 108, py: 108, kg: 9.8, maks: 190, snitt: 85, pitch: 4.63 },
-    // Carbon CB5 (første versjon): hvit utgave 500/250 W, Black HB 650/330 W. Den høyeste er brukt.
+    // Carbon CB5 (første versjon): hvit utgave 500/250 W (halv 250/130 W), Black HB 650/330 W (halv 330/170 W). Black HB er brukt.
     { id: 'roe-cb5', navn: 'ROE Carbon CB5', fam: 'cb5', b: 600, h: 1200, px: 104, py: 208, kg: 13.85, maks: 650, snitt: 330, pitch: 5.77,
-      merk: 'ROE Carbon CB5 (første versjon): strømmen er regnet med Black HB-utgaven, 650 W per panel. Den vanlige hvite trekker 500 W.', merkEn: 'ROE Carbon CB5 (first version): power is based on the Black HB version, 650 W per panel. The standard white one draws 500 W.' },
-    { id: 'roe-cb5-half', navn: 'ROE Carbon CB5', fam: 'cb5', b: 600, h: 600, px: 104, py: 104, kg: 7.95, maks: 250, snitt: 130, pitch: 5.77 },
+      merk: 'ROE Carbon CB5 (første versjon): effekten er regnet ut fra Black HB-utgaven, maks 650 W per panel (330 W for 60 × 60 cm). Den vanlige hvite trekker opptil 500 W (250 W).', merkEn: 'ROE Carbon CB5 (first version): power is based on the Black HB version, max 650 W per panel (330 W for 60 × 60 cm). The standard white one draws up to 500 W (250 W).' },
+    { id: 'roe-cb5-half', navn: 'ROE Carbon CB5', fam: 'cb5', b: 600, h: 600, px: 104, py: 104, kg: 7.95, maks: 330, snitt: 170, pitch: 5.77,
+      merk: 'ROE Carbon CB5 (første versjon): effekten er regnet ut fra Black HB-utgaven, maks 650 W per panel (330 W for 60 × 60 cm). Den vanlige hvite trekker opptil 500 W (250 W).', merkEn: 'ROE Carbon CB5 (first version): power is based on the Black HB version, max 650 W per panel (330 W for 60 × 60 cm). The standard white one draws up to 500 W (250 W).' },
     { id: 'roe-cb5mk2', navn: 'ROE Carbon CB5 MKII', fam: 'cb5mk2', b: 600, h: 1200, px: 104, py: 208, kg: 13.6, maks: 480, snitt: 240, pitch: 5.77 },
     { id: 'roe-cb5mk2-half', navn: 'ROE Carbon CB5 MKII', fam: 'cb5mk2', b: 600, h: 600, px: 104, py: 104, kg: 7.2, maks: 250, snitt: 125, pitch: 5.77 },
     { id: 'roe-dm26', navn: 'ROE Diamond DM2.6', b: 500, h: 500, px: 192, py: 192, kg: 5.76, maks: 180, snitt: 90, pitch: 2.604 },
     { id: 'roe-rb23', navn: 'ROE Ruby RB2.3', b: 500, h: 500, px: 216, py: 216, kg: 8.16, maks: 180, snitt: 90, pitch: 2.315 },
     { id: 'roe-rb26', navn: 'ROE Ruby RB2.6', b: 500, h: 500, px: 192, py: 192, kg: 8.5, maks: 160, snitt: 80, pitch: 2.604 },
-    // Topaz: nåværende datablad (februar 2026). Tidlige ark oppga mer (TP2.6 8,4 kg 190/95 W, TP1.9 160/80 W).
-    { id: 'roe-tp19', navn: 'ROE Topaz TP1.9', b: 500, h: 500, px: 256, py: 256, kg: 8.3, maks: 140, snitt: 70, pitch: 1.953 },
-    { id: 'roe-tp26', navn: 'ROE Topaz TP2.6', b: 500, h: 500, px: 192, py: 192, kg: 8, maks: 140, snitt: 70, pitch: 2.604 },
+    // Topaz: tallene fra de første databladene (TP2.6 juni 2023, TP1.9 mars 2024), som utleiefirmaer som kjøpte tidlig kan ha.
+    // Nåværende datablad (februar 2026) sier mindre: TP2.6 8,0 kg og 140/70 W, TP1.9 8,3 kg og 140/70 W.
+    { id: 'roe-tp19', navn: 'ROE Topaz TP1.9', b: 500, h: 500, px: 256, py: 256, kg: 8.3, maks: 160, snitt: 80, pitch: 1.953 },
+    { id: 'roe-tp26', navn: 'ROE Topaz TP2.6', b: 500, h: 500, px: 192, py: 192, kg: 8.4, maks: 190, snitt: 95, pitch: 2.604 },
     // Vanish: gjennomsiktige. V8T er turnéutgaven (100 × 100 og 100 × 50).
     { id: 'roe-v8', navn: 'ROE Vanish V8', b: 1000, h: 500, px: 112, py: 56, kg: 6.5, maks: 320, snitt: 160, pitch: 8.93 },
     { id: 'roe-v8t', navn: 'ROE Vanish V8T', fam: 'v8t', b: 1000, h: 1000, px: 112, py: 112, kg: 18.2, maks: 480, snitt: 240, pitch: 8.93 },
     { id: 'roe-v8t-h', navn: 'ROE Vanish V8T', fam: 'v8t', b: 1000, h: 500, px: 112, py: 56, kg: 11.22, maks: 260, snitt: 130, pitch: 8.93 },
-    // Vanish ST V4ST: ROE oppgir vekten med stige (34,5 kg; 27,5 kg uten for 100 × 100). Maks 5 hele per strømkjede (220 V / 16 A).
-    { id: 'roe-v4st', navn: 'ROE Vanish ST V4ST', fam: 'v4st', b: 1000, h: 1000, px: 216, py: 216, kg: 34.5, maks: 700, snitt: 350, pitch: 4.63,
-      merk: 'ROE Vanish ST: vekten er med stige, slik ROE oppgir den (27,5 kg uten for 100 × 100). ROE tillater maks 5 hele paneler per strømkjede.', merkEn: 'ROE Vanish ST: the weight includes the ladder, as ROE lists it (27.5 kg without for 100 × 100). ROE allows at most 5 full panels per power link.' },
-    { id: 'roe-v4st-h', navn: 'ROE Vanish ST V4ST', fam: 'v4st', b: 1000, h: 500, px: 216, py: 108, kg: 21.5, maks: 350, snitt: 175, pitch: 4.63 }
+    // Vanish ST V4ST: ROE oppgir vekten med stige (34,5 kg; 27,5 kg uten for 100 × 100). Andre datablad gir 16,5 kg for 100 × 50,
+    // så 21,5 kg er trolig også med stige. Brukerhåndboka tillater maks 5 hele paneler per strømkjede (maksKjede).
+    { id: 'roe-v4st', navn: 'ROE Vanish ST V4ST', fam: 'v4st', b: 1000, h: 1000, px: 216, py: 216, kg: 34.5, maks: 700, snitt: 350, pitch: 4.63, maksKjede: 5,
+      merk: 'ROE Vanish ST: vekten er med stige, slik ROE oppgir den (27,5 kg uten for 100 × 100 cm). ROE tillater maks 5 hele paneler per strømkjede, så kursene deles etter det.', merkEn: 'ROE Vanish ST: the weight includes the ladder, as ROE lists it (27.5 kg without it for the 100 × 100 cm panel). ROE allows at most 5 full panels per power link, so circuits are split accordingly.' },
+    { id: 'roe-v4st-h', navn: 'ROE Vanish ST V4ST', fam: 'v4st', b: 1000, h: 500, px: 216, py: 108, kg: 21.5, maks: 350, snitt: 175, pitch: 4.63,
+      merk: 'ROE Vanish ST 100 × 50 cm: vekten er slik ROE oppgir den, trolig med stige (andre datablad sier 16,5 kg uten).', merkEn: 'ROE Vanish ST 100 × 50 cm: the weight is as ROE lists it, probably including the ladder (other datasheets say 16.5 kg without).' }
   ];
 
   function hentEgne() {
