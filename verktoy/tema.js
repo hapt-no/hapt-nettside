@@ -105,5 +105,15 @@
     topp.appendChild(valg);
     HaptSprak.bruk(valg);
     midtstill();
+    // Ansvarsfraskrivelse nederst på alle verktøysidene (ikke på klokka, som er en stagetimer)
+    var wrap = document.querySelector('.wrap');
+    if (wrap && !document.body.classList.contains('klokke')) {
+      var ansvar = document.createElement('p');
+      ansvar.className = 'ansvar';
+      ansvar.textContent = 'Verktøyene er laget som hjelp i planleggingen. Tallene bygger på produsentenes datablad og vanlige formler, men vi kan ikke garantere at alt er riktig eller oppdatert til enhver tid. Sjekk alltid mot datablad, produsent og forholdene på stedet før du rigger, kobler strøm eller bestiller utstyr. Bruk av verktøyene skjer på eget ansvar, og HAPT AS er ikke ansvarlig for feil eller tap som følger av dem.';
+      ansvar.dataset.en = 'These tools are a planning aid. The figures are based on manufacturers&#39; datasheets and common formulas, but we cannot guarantee that everything is correct or up to date at all times. Always check against datasheets, the manufacturer and the conditions on site before rigging, connecting power or ordering equipment. You use the tools at your own risk, and HAPT AS is not liable for errors or losses resulting from them.';
+      wrap.appendChild(ansvar);
+      HaptSprak.bruk(ansvar);
+    }
   });
 })();
