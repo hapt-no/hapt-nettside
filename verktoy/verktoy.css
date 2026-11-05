@@ -142,6 +142,7 @@ table.res tr.big td:last-child { font-size: 20px; font-weight: 600; }
 .kpi span { color: var(--muted); font-family: var(--font); font-weight: 500; font-size: 13.5px; }
 
 .note { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.ansvar { color: var(--muted); font-size: 12.5px; line-height: 1.5; max-width: 760px; margin: 56px 0 24px; padding-top: 16px; border-top: 1px solid var(--line); }
 .warn { color: var(--warn); font-size: 14px; margin-top: 8px; }
 .ok { color: var(--live); } .nei { color: var(--danger); }
 
