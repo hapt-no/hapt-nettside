@@ -1,7 +1,9 @@
 // Byggeoppskrift for AV Stumpfl Vario-lerret. Kan testes med node (module.exports nederst).
 // Kilder: avstumpfl.com (Vario specs, manual, frame/surface-sidene), forhandlerlister (BVS-X-deler), Theatrixx/Audio General produktguide.
-// Antakelse: hvert hjørne har 50 cm ben, så en side = 50 + elementer + 50. Det stemmer med alle Stumpfls standardstørrelser
-// (f.eks. 210 = 50 + 110 + 50, 240 = 50 + 110 + 30 + 50). Sjekk etikettene på delene.
+// Antakelse: hvert hjørne har 50 cm ben, så en side = 50 + elementer + 50. Det går opp for Stumpfls standardstørrelser
+// (f.eks. 210 = 50 + 110 + 50, 240 = 50 + 110 + 30 + 50), unntatt 16:10-breddene 282, 378, 426 (Vario 32) og 372, 484, 708 (Vario 64).
+// De er ikke hele 5 cm, så de trenger tilpasningselementer som ikke står i elementlista, og lengden på dem er ikke kjent.
+// For dem brukes Stumpfls mål og vekt, tilpasningselementet regnes ut av rammemålet og merkes som ikke bekreftet. Sjekk etikettene på delene.
 (function (root) {
   'use strict';
 
@@ -90,6 +92,38 @@
     return null;
   }
 
+  // Kan siden bygges nøyaktig av elementlista?
+  function byggbar(L, deler) { return L >= 2 * HJORNE && L % 5 === 0 && !!fyll(L - 2 * HJORNE, deler); }
+
+  // Stumpfls 16:10-størrelser kan ikke lages med 5 cm-avrundingen. Ligger ønsket ramme innen 3 cm fra en av dem
+  // (og går ikke opp nøyaktig selv), brukes standardstørrelsen. Andre størrelser regnes som før.
+  function nermesteStandard(r, p) {
+    var deler = system[p].deler, best = null, bestAvst = Infinity;
+    standard[p].forEach(function (x) {
+      var db = Math.abs(x[0] - r[0]), dh = Math.abs(x[1] - r[1]);
+      if (db > 3 || dh > 3 || db + dh >= bestAvst) return;
+      if (byggbar(x[0], deler) && byggbar(x[1], deler)) return; // de lager 5 cm-avrundingen allerede
+      best = x; bestAvst = db + dh;
+    });
+    if (best && byggbar(Math.round(r[0]), deler) && byggbar(Math.round(r[1]), deler)) return null;
+    return best;
+  }
+
+  // Elementer for en side. Går den ikke opp med elementlista, blir resten ett tilpasningselement
+  // med utregnet lengde (ikke bekreftet). Færrest elementer, ved likt antall flest 110-elementer.
+  function sideDeler(L, deler) {
+    var inne = L - 2 * HJORNE, f = fyll(inne, deler);
+    if (f) return f;
+    var minst = Math.min.apply(null, deler), storst = Math.max.apply(null, deler), best = null;
+    for (var k = 0; k <= inne - minst; k += 5) {
+      var rest = inne - k, kjent = rest <= storst ? fyll(k, deler) : null;
+      if (!kjent) continue;
+      var kand = kjent.concat([rest]);
+      if (!best || kand.length < best.length || (kand.length === best.length && antall110(kand) > antall110(best))) best = kand;
+    }
+    return best;
+  }
+
   // valg: { profil: 32|64|'auto', modus: 'bilde'|'ramme', b, h (cm), underkant (cm), duk }
   function regn(valg) {
     var res = { advarsler: [] };
@@ -105,13 +139,29 @@
     }
     var s = system[p];
     var r = tilRamme(p);
-    ob = nermesteSide(r[0], s.deler); oh = nermesteSide(r[1], s.deler);
+    var naerStd = nermesteStandard(r, p);
+    var nb = nermesteSide(r[0], s.deler), nh = nermesteSide(r[1], s.deler);
+    // Standardstørrelsen brukes bare når den ligger minst like nær som nærmeste størrelse av kjente elementer
+    if (naerStd && nb && nh && Math.abs(naerStd[0] - r[0]) + Math.abs(naerStd[1] - r[1]) > Math.abs(nb - r[0]) + Math.abs(nh - r[1])) naerStd = null;
+    if (naerStd) { ob = naerStd[0]; oh = naerStd[1]; }
+    else { ob = nb; oh = nh; }
     if (!ob || !oh) { res.feil = t('Klarer ikke å bygge den størrelsen.', 'Cannot build that size.'); return res; }
-    if (ob !== Math.round(r[0]) || oh !== Math.round(r[1])) res.advarsler.push(t('Justert til nærmeste størrelse som kan bygges: ' + ob + ' × ' + oh + ' cm ramme.', 'Adjusted to the nearest size that can be built: ' + ob + ' × ' + oh + ' cm frame.'));
+    if (ob !== Math.round(r[0]) || oh !== Math.round(r[1])) res.advarsler.push(naerStd
+      ? t('Justert til Stumpfls standardstørrelse ' + ob + ' × ' + oh + ' cm ramme.', 'Adjusted to the Stumpfl standard size ' + ob + ' × ' + oh + ' cm frame.')
+      : t('Justert til nærmeste størrelse som kan bygges: ' + ob + ' × ' + oh + ' cm ramme.', 'Adjusted to the nearest size that can be built: ' + ob + ' × ' + oh + ' cm frame.'));
+
+    var bunn = sideDeler(ob, s.deler), side = sideDeler(oh, s.deler);
+    if (!bunn || !side) { res.feil = t('Klarer ikke å bygge den størrelsen.', 'Cannot build that size.'); return res; }
+    // Tilpasningselementer som ikke står i elementlista (16:10-standardene): lengden er regnet ut, ikke bekreftet
+    res.ubekreftet = bunn.concat(side).filter(function (d, i, a) { return s.deler.indexOf(d) < 0 && a.indexOf(d) === i; });
+    if (res.ubekreftet.length) {
+      var flere = res.ubekreftet.length > 1;
+      res.advarsler.push(t('Denne størrelsen går ikke opp i hele 5 cm med de kjente elementlengdene. ' + (flere ? 'Tilpasningselementene på ' : 'Tilpasningselementet på ') + res.ubekreftet.join(' og ') + ' cm (merket ? på tegningen) er regnet ut av rammemålet, ikke bekreftet. Sjekk etikettene på delene.',
+        'This size is not a whole multiple of 5 cm with the known element lengths. ' + (flere ? 'The filler elements of ' : 'The filler element of ') + res.ubekreftet.join(' and ') + ' cm (marked ? in the drawing) ' + (flere ? 'are' : 'is') + ' calculated from the frame size, not confirmed. Check the labels on the parts.'));
+    }
     if (p === 32 && ((ob > 460 && oh > 310) || ob > 910 || oh > 345)) res.advarsler.push(t('Større enn Stumpfl lager Vario 32 som standard. Vurder Vario 64.', 'Larger than any standard Stumpfl Vario 32. Consider Vario 64.'));
 
-    var bunn = rekkefolge(fyll(ob - 2 * HJORNE, s.deler));
-    var side = rekkefolge(fyll(oh - 2 * HJORNE, s.deler));
+    bunn = rekkefolge(bunn); side = rekkefolge(side);
     res.profil = p; res.system = s;
     res.ramme = [ob, oh];
     res.bilde = [ob - 2 * s.kant, oh - 2 * s.kant];

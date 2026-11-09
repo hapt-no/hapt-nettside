@@ -13,8 +13,12 @@ GR={
  'Barco F80 (GLD/FLD/FLDX)':'Barco F80 (0,67" WQXGA+)',
 }
 alle=set(c['projektorfamilie'] for l in d['linser'] for c in l['kompatibilitet'])
+# Projektorfamilier som deler formler med en gruppe, men der enkelte linser ikke passer (kompatibilitet[].ikke_for_familie,
+# f.eks. ELPLM08 på L17xx/L15xx): de får egen gruppe i data.js med de samme formlene, uten de linsene.
+UNNTAK=sorted(set(x for l in d['linser'] for c in l['kompatibilitet'] for x in c.get('ikke_for_familie') or []))
 def gruppe(p):
     f=p['familie']
+    if f in UNNTAK: return f
     if f in GR: return GR[f]
     if f.startswith('Panasonic 1-chip'): return next(x for x in alle if x.startswith('Panasonic PT-REQ'))
     if f.startswith('Barco'):
@@ -42,19 +46,22 @@ def shift(s):
     return o
 L=[]
 for l in d['linser']:
-    f={}
+    f={}; ikke=set()
     for c in l['kompatibilitet']:
         fo=c.get('formel') or {}
         te=c.get('kastforhold_effektivt') or [None,None]
         f[c['projektorfamilie']]={'a0':fo.get('a_min',te[0]),'b0':fo.get('b_min_m'),'a1':fo.get('a_maks',te[1]),'b1':fo.get('b_maks_m'),
             'tr':c.get('kastforhold_oppgitt'),'note':c.get('merknad') or fo.get('merknad'),'k':c.get('kilde') or []}
+        ikke.update(c.get('ikke_for_familie') or [])
+    for x in UNNTAK:
+        if GR[x] in f and x not in ikke: f[x]=f[GR[x]]
     ls=l.get('linseforskyvning')
     L.append({'n':l['navn'],'nr':l.get('delenummer'),'m':l['merke'],'type':l.get('type'),'ref':l.get('avstand_maales_fra'),'st':l.get('status'),
       'note':l.get('merknad'),'frem':l.get('fremspring_fra_kabinettfront_mm'),'L1':l.get('linsefremspring_L1_m'),'f':f,'k':l.get('kilder') or [],
       'shift':shift(ls) if isinstance(ls,dict) else None})
 P=[]
 for p in d['projektorer']:
-    g=gruppe(p); assert g in alle,(g)
+    g=gruppe(p); assert g in alle or g in UNNTAK,(g)
     ps={}
     for e in (p['linseforskyvning'].get('per_linse') or []):
         for navn in e['linser']:

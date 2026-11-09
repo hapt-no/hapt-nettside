@@ -976,9 +976,9 @@
        "ET-D3LEU100",
        "ET-D3LEU101"
       ],
-      "vertikal_pct": 25,
-      "horisontal_pct": 24,
-      "merknad": "D3LEU101-spec: A=0,25, B=0,24 for RZ31K (tolkning av A/B usikker)"
+      "vertikal_pct": 55,
+      "horisontal_pct": 0,
+      "merknad": "Sideveis +25 % til én side og 0 % til den andre (Panasonic). Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 0 %."
      }
     ],
     "merknad": "Et sekundærtall (b=0,12) i Panasonics diagrammer er sannsynligvis gjenværende vertikal når horisontal er på maks - ikke bekreftet."
@@ -1060,20 +1060,21 @@
        "ET-D3LEU100",
        "ET-D3LEU101"
       ],
-      "vertikal_pct": 25,
-      "horisontal_pct": 24,
-      "merknad": "D3LEU101-spec: A=0,25, B=0,24 for RZ31K (tolkning av A/B usikker)"
+      "vertikal_pct": 55,
+      "horisontal_pct": 0,
+      "merknad": "Sideveis +25 % til én side og 0 % til den andre (Panasonic). Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 0 %."
      }
     ],
     "merknad": "Et sekundærtall (b=0,12) i Panasonics diagrammer er sannsynligvis gjenværende vertikal når horisontal er på maks - ikke bekreftet."
    },
-   "vekt_kg": 70.0,
+   "vekt_kg": 68.6,
    "vekt_merknad": "uten linse",
-   "status": "sekundaerkilde",
+   "status": "bekreftet",
    "kilder": [
+    "PA_RZ34K",
     "PDB_RZ34K"
    ],
-   "merknad": "Data fra projector-database (sekundærkilde)"
+   "merknad": "Vekt og forskyvning fra Panasonics spec-side for PT-RQ35K/RZ34K; projector-database som tilleggskilde."
   },
   {
    "merke": "Panasonic",
@@ -1143,9 +1144,9 @@
        "ET-D3LEU100",
        "ET-D3LEU101"
       ],
-      "vertikal_pct": 25,
-      "horisontal_pct": 24,
-      "merknad": "D3LEU101-spec: A=0,25, B=0,24 for RZ31K (tolkning av A/B usikker)"
+      "vertikal_pct": 24,
+      "horisontal_pct": 0,
+      "merknad": "D3LEU101-spec, RZ31K-raden (A = sideveis, B = vertikalt): V 24 %, sideveis +25 % til én side og 0 % til den andre. Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 0 %. Usikker avlesning."
      }
     ],
     "merknad": "Et sekundærtall (b=0,12) i Panasonics diagrammer er sannsynligvis gjenværende vertikal når horisontal er på maks - ikke bekreftet."
@@ -1226,9 +1227,9 @@
        "ET-D3LEU100",
        "ET-D3LEU101"
       ],
-      "vertikal_pct": 25,
-      "horisontal_pct": 24,
-      "merknad": "D3LEU101-spec: A=0,25, B=0,24 for RZ31K (tolkning av A/B usikker)"
+      "vertikal_pct": 55,
+      "horisontal_pct": 0,
+      "merknad": "D3LEU101-spec, RZ21K-raden (A = sideveis, B = vertikalt): V 55 %, sideveis +25 % til én side og 0 % til den andre. Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 0 %. Usikker avlesning."
      }
     ],
     "merknad": "Et sekundærtall (b=0,12) i Panasonics diagrammer er sannsynligvis gjenværende vertikal når horisontal er på maks - ikke bekreftet."
@@ -1546,15 +1547,6 @@
       "vertikal_pct": 35,
       "horisontal_pct": 20,
       "merknad": "forhandlerdata (Audio General), estimat"
-     },
-     {
-      "linser": [
-       "TLD+ 1.2 (fast)"
-      ],
-      "vertikal_min_pct": -10,
-      "vertikal_maks_pct": 110,
-      "horisontal_pct": 52,
-      "merknad": "forhandlerdata, estimat"
      }
     ]
    },
@@ -1661,6 +1653,174 @@
     "BA_F80_LENSES"
    ],
    "merknad": null
+  },
+  {
+   "merke": "Panasonic",
+   "modell": "PT-RQ35K2",
+   "familie": "Panasonic 3-chip DLP (ET-D75LE/ET-D3LE), 0,96\" WUXGA",
+   "opplosning_px": [
+    1920,
+    1200
+   ],
+   "aspekt": "16:10",
+   "lumen": 30500,
+   "lumen_merknad": null,
+   "panel_diagonal_tommer": 0.96,
+   "teknologi": "3-chip DLP laser",
+   "linsefatning": "Panasonic ET-D75LE / ET-D3LE (3-chip DLP)",
+   "linseforskyvning": {
+    "definisjon": "andel av bildehoyde V / bildebredde H fra standardposisjon (linseakse i bildesenter)",
+    "generelt": {
+     "vertikal_pct": 55,
+     "horisontal_pct": 20,
+     "merknad": "Med ET-D75LE8/LE10/LE20/LE30/LE40 (og D3-ekvivalenter)"
+    },
+    "per_linse": [
+     {
+      "linser": [
+       "ET-D75LE6",
+       "ET-D3LEW60"
+      ],
+      "vertikal_pct": 44,
+      "horisontal_pct": 15
+     },
+     {
+      "linser": [
+       "ET-D3LEW200",
+       "ET-D3LEW201"
+      ],
+      "vertikal_pct": 48,
+      "horisontal_pct": 15
+     },
+     {
+      "linser": [
+       "ET-D3LEW300"
+      ],
+      "vertikal_pct": 44,
+      "horisontal_pct": 15
+     },
+     {
+      "linser": [
+       "ET-D75LE50",
+       "ET-D3LEW50"
+      ],
+      "vertikal_pct": 0,
+      "horisontal_pct": 0,
+      "merknad": "Linseforskyvning kan ikke brukes"
+     },
+     {
+      "linser": [
+       "ET-D75LE95"
+      ],
+      "vertikal_opp_pct": 5,
+      "vertikal_ned_pct": 5,
+      "horisontal_pct": 12,
+      "merknad": "Fra LE95-spec (2026). Andre kilder viser '+78/+68 %' - annen referanse (bildet ligger helt over aksen)."
+     },
+     {
+      "linser": [
+       "ET-D3LEU100",
+       "ET-D3LEU101"
+      ],
+      "vertikal_pct": 55,
+      "horisontal_pct": 0,
+      "merknad": "Sideveis +25 % til én side og 0 % til den andre (Panasonic). Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 0 %."
+     }
+    ],
+    "merknad": "Et sekundærtall (b=0,12) i Panasonics diagrammer er sannsynligvis gjenværende vertikal når horisontal er på maks - ikke bekreftet."
+   },
+   "vekt_kg": 69.8,
+   "vekt_merknad": "uten linse",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_RQ35K2",
+    "PA_RQ35K2_KAT"
+   ],
+   "merknad": "Revisjon av PT-RQ35K (samme 0,96\"-DMD, linser og forskyvning). 32 000 lm senter. 4K (3840x2400) via Quad Pixel Drive på WUXGA-DMD."
+  },
+  {
+   "merke": "Panasonic",
+   "modell": "PT-RZ34K2",
+   "familie": "Panasonic 3-chip DLP (ET-D75LE/ET-D3LE), 0,96\" WUXGA",
+   "opplosning_px": [
+    1920,
+    1200
+   ],
+   "aspekt": "16:10",
+   "lumen": 30500,
+   "lumen_merknad": null,
+   "panel_diagonal_tommer": 0.96,
+   "teknologi": "3-chip DLP laser",
+   "linsefatning": "Panasonic ET-D75LE / ET-D3LE (3-chip DLP)",
+   "linseforskyvning": {
+    "definisjon": "andel av bildehoyde V / bildebredde H fra standardposisjon (linseakse i bildesenter)",
+    "generelt": {
+     "vertikal_pct": 55,
+     "horisontal_pct": 20,
+     "merknad": "Med ET-D75LE8/LE10/LE20/LE30/LE40 (og D3-ekvivalenter)"
+    },
+    "per_linse": [
+     {
+      "linser": [
+       "ET-D75LE6",
+       "ET-D3LEW60"
+      ],
+      "vertikal_pct": 44,
+      "horisontal_pct": 15
+     },
+     {
+      "linser": [
+       "ET-D3LEW200",
+       "ET-D3LEW201"
+      ],
+      "vertikal_pct": 48,
+      "horisontal_pct": 15
+     },
+     {
+      "linser": [
+       "ET-D3LEW300"
+      ],
+      "vertikal_pct": 44,
+      "horisontal_pct": 15
+     },
+     {
+      "linser": [
+       "ET-D75LE50",
+       "ET-D3LEW50"
+      ],
+      "vertikal_pct": 0,
+      "horisontal_pct": 0,
+      "merknad": "Linseforskyvning kan ikke brukes"
+     },
+     {
+      "linser": [
+       "ET-D75LE95"
+      ],
+      "vertikal_opp_pct": 5,
+      "vertikal_ned_pct": 5,
+      "horisontal_pct": 12,
+      "merknad": "Fra LE95-spec (2026). Andre kilder viser '+78/+68 %' - annen referanse (bildet ligger helt over aksen)."
+     },
+     {
+      "linser": [
+       "ET-D3LEU100",
+       "ET-D3LEU101"
+      ],
+      "vertikal_pct": 55,
+      "horisontal_pct": 0,
+      "merknad": "Sideveis +25 % til én side og 0 % til den andre (Panasonic). Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 0 %."
+     }
+    ],
+    "merknad": "Et sekundærtall (b=0,12) i Panasonics diagrammer er sannsynligvis gjenværende vertikal når horisontal er på maks - ikke bekreftet."
+   },
+   "vekt_kg": 68.6,
+   "vekt_merknad": "uten linse",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_RQ35K2",
+    "PA_RQ35K2_KAT"
+   ],
+   "merknad": "Revisjon av PT-RZ34K (samme 0,96\"-DMD, linser og forskyvning). 32 000 lm senter."
   }
  ],
  "linser": [
@@ -2443,10 +2603,12 @@
      ],
      "kilde": [
       "EP_PU2220",
-      "EP_PU2010",
-      "EP_L17XX"
+      "EP_PU2010"
      ],
-     "merknad": null
+     "merknad": "Ikke oppført for EB-L1755U/L1750U, L1505UH/L1500UH og L1495U/L1490U i Epsons L17xx-spec-ark (formel-, shift- og fremspringstabell), og vises derfor ikke for dem. Formel bekreftet for PU2200/PU2010.",
+     "ikke_for_familie": [
+      "Epson EB-L1000 (L17xx/L15xx)"
+     ]
     },
     {
      "projektorfamilie": "Epson EB-PU1000 (PU1007/PU1008, 0,76\")",
@@ -2515,7 +2677,6 @@
    "kilder": [
     "EP_PU2220",
     "EP_PU2010",
-    "EP_L17XX",
     "EP_PQ2220"
    ],
    "merknad": "Fremspring (mm) fra Epsons tabell 'Amount of Lens Protrusion'; tallene for samme linse varierer mellom spec-ark (ulikt kabinett og/eller ulik målepraksis). Epsons oppgitte kastforhold = L/W ved 100\" inkl. offset b; bruk a og b for faktisk avstand.",
@@ -3122,32 +3283,33 @@
      "kastforhold_oppgitt": "0.92-1.1 (RZ34K iflg. projector-database)",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 0.9332,
+      "a_min": 0.9411,
       "b_min_m": -0.0566,
-      "a_maks": 1.1189,
+      "a_maks": 1.1272,
       "b_maks_m": -0.0736,
       "original": {
        "enhet": "m_per_tomme_diag",
        "aspekt": "16:10",
        "min": [
-        0.0201,
+        0.02027,
         -0.0566
        ],
        "maks": [
-        0.0241,
+        0.02428,
         -0.0736
        ]
       }
      },
      "kastforhold_effektivt": [
-      0.9332,
-      1.1189
+      0.9411,
+      1.1272
      ],
      "kilde": [
-      "PA_RZ31K",
-      "PA_RZ21K"
+      "PA_RZ21K",
+      "PA_RZ34K_SPEC",
+      "PA_RZ31K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ21K- og PT-RZ34K-spec (16:10). PT-RZ31K-spec (2019) oppgir 0,0201/0,0241, ca. 1 % kortere. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3155,6 +3317,7 @@
    "kilder": [
     "PA_RZ31K",
     "PA_RZ21K",
+    "PA_RZ34K_SPEC",
     "PA_RQ35K_MAN",
     "PA_LE10"
    ],
@@ -3202,7 +3365,7 @@
       "PA_RZ31K",
       "PA_RZ21K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3254,7 +3417,7 @@
       "PA_RZ31K",
       "PA_RZ21K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3306,7 +3469,7 @@
       "PA_RZ31K",
       "PA_RZ21K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3358,7 +3521,7 @@
       "PA_RZ31K",
       "PA_RZ21K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3388,32 +3551,33 @@
      "kastforhold_oppgitt": "7.3-13.8",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 7.4051,
+      "a_min": 7.452,
       "b_min_m": -0.3862,
-      "a_maks": 13.8771,
+      "a_maks": 13.9625,
       "b_maks_m": -0.3598,
       "original": {
        "enhet": "m_per_tomme_diag",
        "aspekt": "16:10",
        "min": [
-        0.1595,
+        0.16051,
         -0.3862
        ],
        "maks": [
-        0.2989,
+        0.30074,
         -0.3598
        ]
       }
      },
      "kastforhold_effektivt": [
-      7.4051,
-      13.8771
+      7.452,
+      13.9625
      ],
      "kilde": [
-      "PA_RZ31K",
-      "PA_RZ21K"
+      "PA_RZ21K",
+      "PA_RQ35K2_SPEC",
+      "PA_RZ31K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ21K- og PT-RQ35K2-spec (16:10). PT-RZ31K-spec (2019) oppgir 0,1595/0,2989, ca. 0,6 % kortere. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3421,6 +3585,7 @@
    "kilder": [
     "PA_RZ31K",
     "PA_RZ21K",
+    "PA_RQ35K2_SPEC",
     "PA_RQ35K_MAN",
     "PA_LE10"
    ],
@@ -3462,7 +3627,7 @@
       "PA_RZ31K",
       "PA_RZ21K"
      ],
-     "merknad": "Formel fra PT-RZ31K spec-fil (16:10). PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs. Tallene i RZ21K-spec-filen stemmer med disse dersom de er 16:9-formler (forhold 1,028) - tolkning."
+     "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3608,15 +3773,17 @@
       0.3853
      ],
      "kilde": [
-      "PA_D3LEU101"
+      "PA_D3LEU101",
+      "PA_D3LEU100_WEB"
      ],
-     "merknad": "Formel L = 0,0083 x SD - 0,0664 (16:10, RZ31K/RZ21K) lest ut av D3LEU101-spec; gir ~0,355 ved 100\" mot oppgitt 0,370 - mulig feilavlest, verifiser."
+     "merknad": "Formel L = 0,0083 x SD - 0,0664 (16:10, RZ31K/RZ21K) fra D3LEU101-spec, bekreftet mot Panasonics tabell. Oppgitt kastforhold 0,370 gjelder ved 200\" (bildestørrelse 200-600\")."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
-   "status": "estimert",
+   "status": "bekreftet",
    "kilder": [
     "PA_D3LEU101",
+    "PA_D3LEU100_WEB",
     "PA_RQ35K_MAN"
    ],
    "merknad": "Fant ingen 'ET-D75LE100' hos Panasonic; antar at brukeren mener ET-D3LEU100/101.",
@@ -3659,11 +3826,11 @@
      "kilde": [
       "PA_D3LEW200"
      ],
-     "merknad": "Spec-filen merker koeffisientene 16:10, men de gir 0,669-0,877 mot oppgitt 0,645-0,850; som 16:9-koeffisienter gir de 0,650-0,854. Aspekt-tilordningen er usikker - verifiser."
+     "merknad": "16:10 bekreftet mot Panasonics tabell. Oppgitt kastforhold 0,645-0,850 gjelder ved 200\" (bildestørrelse 200-600\")."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
-   "status": "estimert",
+   "status": "bekreftet",
    "kilder": [
     "PA_D3LEW200",
     "PA_D3LEW200_WEB",
@@ -3854,16 +4021,39 @@
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
      "kastforhold_oppgitt": "0.680-0.950",
-     "formel": null,
-     "kilde": [
-      "PA_C1W400_WEB"
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.6973,
+      "b_min_m": -0.0416,
+      "a_maks": 0.9684,
+      "b_maks_m": -0.0389,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.5913,
+        -0.0416
+       ],
+       "maks": [
+        0.8212,
+        -0.0389
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      0.6973,
+      0.9684
      ],
-     "merknad": "Formel ikke funnet - bruk kastforhold (Panasonic-kastforhold = L/W ved 100\" inkl. offset; offset typisk -3 til -9 cm)"
+     "kilde": [
+      "PA_C1W400",
+      "PA_C1W400_WEB"
+     ]
     }
    ],
-   "avstand_maales_fra": "Antas fra linsefront som de andre ET-C1-linsene (ikke bekreftet for denne)",
-   "status": "delvis",
+   "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
+   "status": "bekreftet",
    "kilder": [
+    "PA_C1W400",
     "PA_C1W400_WEB"
    ],
    "merknad": null
@@ -3879,16 +4069,39 @@
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
      "kastforhold_oppgitt": "0.940-1.39",
-     "formel": null,
-     "kilde": [
-      "PA_C1W500_WEB"
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.9568,
+      "b_min_m": -0.0344,
+      "a_maks": 1.4101,
+      "b_maks_m": -0.0448,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.8114,
+        -0.0344
+       ],
+       "maks": [
+        1.1958,
+        -0.0448
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      0.9568,
+      1.4101
      ],
-     "merknad": "Formel ikke funnet - bruk kastforhold (Panasonic-kastforhold = L/W ved 100\" inkl. offset; offset typisk -3 til -9 cm)"
+     "kilde": [
+      "PA_C1W500",
+      "PA_C1W500_WEB"
+     ]
     }
    ],
-   "avstand_maales_fra": "Antas fra linsefront som de andre ET-C1-linsene (ikke bekreftet for denne)",
-   "status": "delvis",
+   "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
+   "status": "bekreftet",
    "kilder": [
+    "PA_C1W500",
     "PA_C1W500_WEB"
    ],
    "merknad": null
@@ -3996,16 +4209,39 @@
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
      "kastforhold_oppgitt": "3.30-6.60",
-     "formel": null,
-     "kilde": [
-      "PA_C1T800_WEB"
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 3.4635,
+      "b_min_m": -0.3521,
+      "a_maks": 7.2202,
+      "b_maks_m": -1.3252,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        2.937,
+        -0.3521
+       ],
+       "maks": [
+        6.1227,
+        -1.3252
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      3.4635,
+      7.2202
      ],
-     "merknad": "Formel ikke funnet - bruk kastforhold (Panasonic-kastforhold = L/W ved 100\" inkl. offset; offset typisk -3 til -9 cm)"
+     "kilde": [
+      "PA_C1T800",
+      "PA_C1T800_WEB"
+     ]
     }
    ],
-   "avstand_maales_fra": "Antas fra linsefront som de andre ET-C1-linsene (ikke bekreftet for denne)",
-   "status": "delvis",
+   "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
+   "status": "bekreftet",
    "kilder": [
+    "PA_C1T800",
     "PA_C1T800_WEB"
    ],
    "merknad": null
@@ -4713,28 +4949,31 @@
    "kompatibilitet": [
     {
      "projektorfamilie": "Barco UDX-W / HDX (WUXGA 0,96\")",
-     "kastforhold_oppgitt": "0.73",
+     "kastforhold_oppgitt": "0.67",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 0.73,
+      "a_min": 0.67,
       "b_min_m": null,
-      "a_maks": 0.73,
+      "a_maks": 0.67,
       "b_maks_m": null,
       "merknad": "Kun kastforhold publisert; b ukjent"
      },
      "kastforhold_effektivt": [
-      0.73,
-      0.73
+      0.67,
+      0.67
      ],
      "kilde": [
+      "BA_TLD067",
       "BA_UDXW32",
       "CN_R9862000"
-     ]
+     ],
+     "merknad": "'0.73' er SXGA+-navnet; Barco oppgir 0,67:1 på WUXGA ('TLD+ lens (0.67:1 WUXGA) (0.73:1 SXGA+)'). Kun kastforhold publisert; b ukjent."
     }
    ],
    "avstand_maales_fra": "Ikke oppgitt i Barcos nåværende dokumentasjon; Barco henviser til lens calculator (±5 % toleranse). Eldre Barco TLD-formeldokument (2006) målte PD fra kabinettfront/ringen rundt linsen (SLM). UDX laseravstandsmåler måler fra prosjektorens front. Barco publiserer ikke offset b - behandles som b=0 (ren kastforhold x bredde).",
    "status": "estimert",
    "kilder": [
+    "BA_TLD067",
     "BA_UDXW32",
     "CN_R9862000",
     "AG_BARCO"
@@ -5710,7 +5949,7 @@
   },
   {
    "id": "BA_GC084",
-   "url": "https://www.barco.com/de/product/gc-lens-084-102"
+   "url": "https://www.barco.com/en/product/gc-lens-084-102"
   },
   {
    "id": "BA_GC185",
@@ -5747,6 +5986,46 @@
   {
    "id": "CN_R9862000",
    "url": "https://creationnetworks.net/products/barco-r9862000-tld-lens-0-73-1"
+  },
+  {
+   "id": "PA_RZ34K",
+   "url": "https://ap.pnd.panasonic.com/sg/en/download-specifications/34"
+  },
+  {
+   "id": "PA_RZ34K_SPEC",
+   "url": "https://bizpartner.panasonic.net/public/ppr/file_view/198447"
+  },
+  {
+   "id": "PA_RQ35K2",
+   "url": "https://docs.connect.panasonic.com/projector/products/rq35k/spec/"
+  },
+  {
+   "id": "PA_RQ35K2_KAT",
+   "url": "https://docs.connect.panasonic.com/projector/download/catalog/pdf/PT-RQ35K2_Series_ctlg_en.pdf"
+  },
+  {
+   "id": "PA_RQ35K2_SPEC",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/175188"
+  },
+  {
+   "id": "PA_D3LEU100_WEB",
+   "url": "https://docs.connect.panasonic.com/projector/products/d3leu100/spec/"
+  },
+  {
+   "id": "PA_C1W400",
+   "url": "https://content.connect.panasonic.com/jp-ja/fai/file/56841"
+  },
+  {
+   "id": "PA_C1W500",
+   "url": "https://content.connect.panasonic.com/jp-ja/fai/file/56842"
+  },
+  {
+   "id": "PA_C1T800",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/172882"
+  },
+  {
+   "id": "BA_TLD067",
+   "url": "https://www.barco.com/nl/support/tld-067"
   }
  ]
 }

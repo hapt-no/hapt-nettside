@@ -81,7 +81,7 @@ ol.steg li { padding: 4px 0; }
         <h2 data-en="Build steps">Byggeoppskrift</h2>
         <ol class="steg" id="steg"></ol>
       </div>
-      <p class="note" data-en="Based on Stumpfl's standard sizes, manual and parts lists (Vario 32 elements: 30, 45, 60, 65, 70, 80, 85, 90, 100 and 110 cm). Vario 64 is calculated with the same lengths, but only the 100 cm element is confirmed for it, so check the labels. Weight is taken from Stumpfl for standard sizes and estimated for others.">Bygget på Stumpfls standardstørrelser, manual og delelister (Vario 32-elementer: 30, 45, 60, 65, 70, 80, 85, 90, 100 og 110 cm). Vario 64 er regnet med de samme lengdene, men der er bare 100 cm-elementet bekreftet, så sjekk etikettene. Vekt er hentet fra Stumpfl for standardstørrelser og anslått for andre.</p>
+      <p class="note" data-en="Based on Stumpfl's standard sizes, manual and parts lists (Vario 32 elements: 30, 45, 60, 65, 70, 80, 85, 90, 100 and 110 cm). Vario 64 is calculated with the same lengths, but only the 100 cm element is confirmed for it, so check the labels. Stumpfl's 16:10 sizes (e.g. 282 × 180 and 708 × 450 cm) are not whole multiples of 5 cm. For those, the filler element is calculated from the frame size and marked ?, because its length is not confirmed. Weight is taken from Stumpfl for standard sizes and estimated for others.">Bygget på Stumpfls standardstørrelser, manual og delelister (Vario 32-elementer: 30, 45, 60, 65, 70, 80, 85, 90, 100 og 110 cm). Vario 64 er regnet med de samme lengdene, men der er bare 100 cm-elementet bekreftet, så sjekk etikettene. Stumpfls 16:10-størrelser (f.eks. 282 × 180 og 708 × 450 cm) går ikke opp i hele 5 cm. Der er tilpasningselementet regnet ut av rammemålet og merket ?, fordi lengden ikke er bekreftet. Vekt er hentet fra Stumpfl for standardstørrelser og anslått for andre.</p>
     </div>
   </div>
 </div>
@@ -131,7 +131,9 @@ ol.steg li { padding: 4px 0; }
     // Deleliste
     // Tredje felt i en rad er elementlengden (for fargen), så den ikke må leses ut av teksten
     var rader = [[t('Hjørner', 'Corners'), '4']];
-    r.deler.forEach(function (d) { rader.push(['Element ' + d.lengde + ' cm', d.antall, d.lengde]); });
+    // Utregnede tilpasningselementer (16:10-standardene) er ikke bekreftet og merkes med ?
+    var ukjent = function (d) { return r.ubekreftet.indexOf(d) >= 0; };
+    r.deler.forEach(function (d) { rader.push(['Element ' + d.lengde + ' cm' + (ukjent(d.lengde) ? t(' (utregnet, ikke bekreftet – sjekk etiketten)', ' (calculated, not confirmed – check the label)') : ''), d.antall, d.lengde]); });
     if (r.midtstotte) rader.push([t('Midtstøtte (topp- og bunnstykke)', 'Centre support (top and bottom piece)'), r.midtstotter + t(' sett', r.midtstotter > 1 ? ' sets' : ' set')]);
     rader.push([t('Bein ', 'Legs ') + (r.bein ? r.bein.navn : t('(ingen passer)', '(none fits)')), r.beinAntall + (r.midtbein ? ' (' + r.midtbein + t(' midtbein)', r.midtbein > 1 ? ' centre legs)' : ' centre leg)') : '')]);
     rader.push([t('Duk', 'Screen surface'), r.duk.navn + ', ' + r.bilde[0] + ' × ' + r.bilde[1] + ' cm' + (r.skjoter ? ', ' + r.skjoter + t(' sveis', r.skjoter > 1 ? ' seams' : ' seam') : '')]);
@@ -141,12 +143,12 @@ ol.steg li { padding: 4px 0; }
     rader.forEach(function (x) {
       var tr = document.createElement('tr'); tr.innerHTML = '<td></td><td></td>';
       tr.children[0].textContent = x[0]; tr.children[1].textContent = x[1];
-      if (x[2]) tr.children[0].innerHTML = '<span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:8px;background:' + farger[x[2]] + '"></span>' + tr.children[0].textContent;
+      if (x[2]) tr.children[0].innerHTML = '<span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:8px;background:' + (farger[x[2]] || '#7d828a') + '"></span>' + tr.children[0].textContent;
       tab.appendChild(tr);
     });
 
     // Byggeoppskrift
-    var side = function (l) { return l.length ? '50 + ' + l.join(' + ') + ' + 50' : '50 + 50'; };
+    var side = function (l) { return l.length ? '50 + ' + l.map(function (d) { return d + (ukjent(d) ? '?' : ''); }).join(' + ') + ' + 50' : '50 + 50'; };
     var steg = [
       t('Legg ut de 4 hjørnene på gulvet, med forsiden ned.', 'Lay the 4 corners out on the floor, face down.'),
       t('Topp og bunn (', 'Top and bottom (') + r.ramme[0] + ' cm): ' + side(r.bunn) + '.',
@@ -179,8 +181,8 @@ ol.steg li { padding: 4px 0; }
     var k = r.system.kant;
     s += '<rect x="' + k + '" y="' + k + '" width="' + (W - 2 * k) + '" height="' + (H - 2 * k) + '" fill="#15181c"/>';
     s += '<text x="' + W / 2 + '" y="' + H / 2 + '" fill="#4b5058" font-size="' + fs * 1.4 + '" text-anchor="middle" dominant-baseline="central">' + r.bilde[0] + ' × ' + r.bilde[1] + '</text>';
-    var seg = function (x1, y1, x2, y2, farge, tekst, loddrett) {
-      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + farge + '" stroke-width="' + tk + '"/>';
+    var seg = function (x1, y1, x2, y2, farge, tekst, loddrett, stiplet) {
+      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + farge + '" stroke-width="' + tk + '"' + (stiplet ? ' stroke-dasharray="' + tk * 2 + ' ' + tk + '"' : '') + '/>';
       if (tekst) {
         var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
         s += '<text x="' + (loddrett ? mx + tk * 1.6 : mx) + '" y="' + (loddrett ? my : my - tk * 1.4) + '" fill="#ecedee" font-size="' + fs + '" text-anchor="' + (loddrett ? 'start' : 'middle') + '" dominant-baseline="' + (loddrett ? 'central' : 'auto') + '">' + tekst + '</text>';
@@ -189,7 +191,9 @@ ol.steg li { padding: 4px 0; }
     var langs = function (liste, x0, y0, dx, dy, loddrett) {
       var pos = c;
       liste.forEach(function (d, i) {
-        seg(x0 + dx * pos, y0 + dy * pos, x0 + dx * (pos + d), y0 + dy * (pos + d), farger[d] || '#7d828a', String(d), loddrett);
+        // Utregnet tilpasningselement (ikke bekreftet): stiplet og merket med ?
+        var ukj = r.ubekreftet.indexOf(d) >= 0;
+        seg(x0 + dx * pos, y0 + dy * pos, x0 + dx * (pos + d), y0 + dy * (pos + d), farger[d] || '#7d828a', d + (ukj ? '?' : ''), loddrett, ukj);
         // skjøt
         s += '<circle cx="' + (x0 + dx * pos) + '" cy="' + (y0 + dy * pos) + '" r="' + tk * 0.7 + '" fill="#0c0d0f" stroke="#7d828a" stroke-width="' + tk * 0.3 + '"/>';
         pos += d;

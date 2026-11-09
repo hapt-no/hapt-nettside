@@ -25,16 +25,18 @@ Epsons kalkulator gir sannsynligvis samme tabellverdier. Avvikene brukeren ser k
 - **Epson PU1007 lens-kompatibilitet:** Tabellen ble feiltolket ved uttrekk. PU1007 er antatt lik PU1008, fordi ELPLM08 er standardlinse.
 - **Epson PQ2200:** Spec-arket oppgir 1920×1080-paneler (4K via pikselskift) på 1,04". Vekten (28,8/29,2 kg) kunne ikke kobles sikkert til modell, så den er satt til null. ELPLX02-kompatibilitet per modell er usikker.
 - **Epson ELPLX02-shift:** Bare figur i arket. L17xx-arket gir +20/−5 % V og ca. 15 % H.
+- **Epson ELPLM08** står ikke i formel-, shift- og fremspringstabellen i L17xx/L15xx-spec-arket. `ikke_for_familie` i kompatibiliteten gjør at bygg.py gir L17xx-modellene egen gruppe uten linsen.
 - **Epson ELPLM12/ELPLX03 osv.:** Hører til EB-L20000U/L25000U/L30000U og passer ikke PU/L1000. Ikke kartlagt.
-- **Panasonic ET-D75LE-formler** er hentet fra PT-RZ31K-spec (16:10). RZ21K-spec ga tall som stemmer nøyaktig hvis de er 16:9-koeffisienter (faktor 1,028), men det er min tolkning. RQ35K/RZ34K/RZ21K har samme 0,96"-DMD og står i samme gruppe i Panasonics linse-specs.
-- **Panasonic ET-D3LEW200:** Koeffisientene passer bedre med 16:9 enn med 16:10 (ca. 3,5 % forskjell). Merket `estimert`.
-- **Panasonic "ET-D75LE100"** finnes ikke hos Panasonic. Jeg antok at det betyr ET-D3LEU100/101 (0,37 UST). Formelen gir 0,355 ved 100" mot oppgitt 0,370 og kan være feillest. Merket `estimert`.
+- **Panasonic ET-D75LE-formler** er hentet fra PT-RZ31K-spec (16:10). RZ21K-spec merker sine tall 16:10 og har et eget 16:9-sett, så tolkningen av RZ21K-tallene som 16:9 var feil. LE6 og LE8 bruker nå tallene fra RZ21K-, RZ34K- og RQ35K2-spec (0,02027/0,02428 og 0,16051/0,30074 per tomme); RZ31K-spec (2019) avviker 0,6–1 % for disse to. LE10/LE20/LE30/LE40/LE50 er like i RZ21K- og RZ31K-spec. RQ35K/RZ34K/RZ21K har samme 0,96"-DMD og står i samme gruppe i Panasonics linse-specs. PT-RQ35K2/RZ34K2 er revisjoner av RQ35K/RZ34K med samme linser og forskyvning.
+- **Panasonic ET-D3LEW200:** 16:10-koeffisientene er bekreftet mot Panasonics tabell. Oppgitt kastforhold gjelder ved 200" (bildestørrelse 200–600"), som forklarer avviket på ca. 3,5 % ved 100".
+- **Panasonic "ET-D75LE100"** finnes ikke hos Panasonic. Jeg antok at det betyr ET-D3LEU100/101 (0,37 UST). Formelen er bekreftet mot Panasonics tabell; oppgitt 0,370 gjelder ved 200" (bildestørrelse 200–600"). Sideveis forskyvning er +25 % til én side og 0 % til den andre; kalkulatoren regner sideveis likt begge veier og bruker derfor 0 %.
 - **Panasonic ET-D75LE90:** Ingen formel funnet. Den er erstattet av LE95.
 - **Panasonic RQ22K/RQ32K (WQXGA):** Ingen ET-D75LE-formler funnet, bare LE95 og D3LEW300. DMD ca. 0,9" er utledet. Vekten er ikke funnet.
-- **Panasonic ET-C1W400/W500/T800:** Bare kastforhold, ingen formel.
+- **Panasonic ET-C1W400/W500/T800:** Formler fra Panasonics linse-spec (m per m diagonal, 16:10), regnet om som de andre ET-C1-linsene.
 - **Panasonic PT-MZ (LCD, ET-EM-linser):** Ikke dekket, fordi den er lite brukt i utleie for store venues. Kan legges til.
 - **Barco shift per linse** publiseres ikke. Bare prosjektornivå er oppgitt ("avhengig av linse"). Barcos prosentdefinisjon er ikke bekreftet. HDX-tall per linse for faste linser er forhandlerdata (Audio General).
 - **Barco TLD+ kastforhold:** Barcos egne sider er inkonsistente (f.eks. 1,87–2,56 og 1,89–2,55 for samme linse). JSON bruker tallene i UDX-produktsidens tilbehørsliste for WU, WQ og 0,98", med avvik i `merknad`.
+- **Barco TLD+ 0.73 (fast), R9862000:** "0.73" er SXGA+-navnet. Barco oppgir 0,67:1 på WUXGA, og det er tallet som brukes. Navnet er beholdt fordi bygg.py matcher forskyvning per linse på navn.
 - **Barco G-linser** fra brukerens liste (1,52–2,03, 2,0–4,0, 3,9–7,8) finnes ikke i dagens G62-manual. Der er det 1,52–2,92 og 2,90–5,50. 2,0–4,0 er en GC-linse for G100.
 - **Barco GC 0,65–0,75, 4,0–7,2 og 7,2–10,8:** Delenummer er ikke funnet.
 - **Barco G62:** DMD-størrelse er ikke oppgitt.
