@@ -233,7 +233,10 @@ ol.steg li { padding: 4px 0; }
   $('h').addEventListener('input', function () { $('format').value = ''; });
   document.querySelectorAll('input, select').forEach(function (el) { el.addEventListener('input', regn); el.addEventListener('change', regn); });
   $('kopier').onclick = function () {
-    navigator.clipboard.writeText(sisteTekst).then(function () { kopiert = true; kopierTekst(); setTimeout(function () { kopiert = false; kopierTekst(); }, 1500); });
+    HaptKopier(sisteTekst).then(function (ok) {
+      if (!ok) { $('kopier').textContent = t('Kunne ikke kopiere', 'Could not copy'); setTimeout(kopierTekst, 1500); return; }
+      kopiert = true; kopierTekst(); setTimeout(function () { kopiert = false; kopierTekst(); }, 1500);
+    });
   };
   window.addEventListener('hapt-sprak', function () { dukTekst(); kopierTekst(); regn(); });
   dukTekst(); kopierTekst();

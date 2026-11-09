@@ -208,7 +208,10 @@
     document.body.appendChild(a); a.click(); a.remove();
   };
   $('kopierHex').onclick = function () {
-    navigator.clipboard.writeText(hex(sisteBytes)).then(function () { kopiert = true; kopiKnapp(); setTimeout(function () { kopiert = false; kopiKnapp(); }, 1500); });
+    HaptKopier(hex(sisteBytes)).then(function (ok) {
+      if (!ok) { $('kopierHex').textContent = t_('Kunne ikke kopiere', 'Could not copy'); setTimeout(kopiKnapp, 1500); return; }
+      kopiert = true; kopiKnapp(); setTimeout(function () { kopiert = false; kopiKnapp(); }, 1500);
+    });
   };
   function kopiKnapp() { $('kopierHex').textContent = kopiert ? t_('Kopiert', 'Copied') : t_('Kopier som hex', 'Copy as hex'); }
 

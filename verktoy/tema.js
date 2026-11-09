@@ -56,6 +56,25 @@
   };
   document.documentElement.lang = sprak === 'en' ? 'en' : 'no';
   document.addEventListener('DOMContentLoaded', function () { topplinje(); bruk(document); });
+
+  // Kopier tekst til utklippstavla. Er den sperret (eller mangler), prøves en skjult tekstboks.
+  // Gir et løfte med true når teksten ble kopiert, ellers false.
+  window.HaptKopier = function (tekst) {
+    function reserve() {
+      var t = document.createElement('textarea');
+      t.value = tekst; t.setAttribute('readonly', '');
+      t.style.position = 'fixed'; t.style.top = '-1000px'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      t.remove();
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(tekst).then(function () { return true; }, reserve);
+    }
+    return Promise.resolve(reserve());
+  };
 })();
 
 // Fargesett for verktøyene: mørk (standard), grå eller lys, som i hapt-o-clock. Huskes i nettleseren.
