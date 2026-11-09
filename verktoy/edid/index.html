@@ -137,7 +137,10 @@
     var ugyldig = feil.length > 0;
     $('lastBin').disabled = ugyldig; $('kopierHex').disabled = ugyldig;
     if (ugyldig) feil.push(t_('Filen lages ikke før dette er rettet.', 'No file is made until this is fixed.'));
-    if ($('hdmi').checked && Math.max.apply(null, t.map(function (x) { return x.klokke; })) > 340) feil.push(t_('Pikselklokka er over 340 MHz. Det krever HDMI 2.0 hele veien, og ikke alle kilder godtar det uten HDMI 2.0-blokk.', 'The pixel clock is above 340 MHz. That needs HDMI 2.0 end to end, and not all sources accept it without an HDMI 2.0 block.'));
+    // HDMI 1.4 stopper på 340 MHz, HDMI 2.0 (TMDS, 18 Gbit/s) på 600 MHz. Over det må lenken være HDMI 2.1 (FRL)
+    var maksKlokke = Math.max.apply(null, t.map(function (x) { return x.klokke; }));
+    if ($('hdmi').checked && maksKlokke > 600) feil.push(t_('Pikselklokka er over 600 MHz. Det er over grensen for HDMI 2.0 (TMDS) og krever HDMI 2.1 (FRL) hele veien. Filen har ingen HDMI 2.1-blokk, så kilden kan nekte å sende det.', 'The pixel clock is above 600 MHz. That is beyond HDMI 2.0 (TMDS) and needs HDMI 2.1 (FRL) end to end. The file has no HDMI 2.1 block, so the source may refuse to send it.'));
+    else if ($('hdmi').checked && maksKlokke > 340) feil.push(t_('Pikselklokka er over 340 MHz. Det krever HDMI 2.0 hele veien, og ikke alle kilder godtar det uten HDMI 2.0-blokk.', 'The pixel clock is above 340 MHz. That needs HDMI 2.0 end to end, and not all sources accept it without an HDMI 2.0 block.'));
 
     var rader = [];
     t.forEach(function (x, i) {

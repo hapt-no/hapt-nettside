@@ -82,7 +82,12 @@
     { id: 'roe-v4st', navn: 'ROE Vanish ST V4ST', fam: 'v4st', b: 1000, h: 1000, px: 216, py: 216, kg: 34.5, maks: 700, snitt: 350, pitch: 4.63, maksKjede: 5,
       merk: 'ROE Vanish ST: vekten er med stige, slik ROE oppgir den (27,5 kg uten for 100 × 100 cm). ROE tillater maks 5 hele paneler per strømkjede, så kursene deles etter det.', merkEn: 'ROE Vanish ST: the weight includes the ladder, as ROE lists it (27.5 kg without it for the 100 × 100 cm panel). ROE allows at most 5 full panels per power link, so circuits are split accordingly.' },
     { id: 'roe-v4st-h', navn: 'ROE Vanish ST V4ST', fam: 'v4st', b: 1000, h: 500, px: 216, py: 108, kg: 21.5, maks: 350, snitt: 175, pitch: 4.63,
-      merk: 'ROE Vanish ST 100 × 50 cm: vekten er slik ROE oppgir den, trolig med stige (andre datablad sier 16,5 kg uten).', merkEn: 'ROE Vanish ST 100 × 50 cm: the weight is as ROE lists it, probably including the ladder (other datasheets say 16.5 kg without).' }
+      merk: 'ROE Vanish ST 100 × 50 cm: vekten er slik ROE oppgir den, trolig med stige (andre datablad sier 16,5 kg uten).', merkEn: 'ROE Vanish ST 100 × 50 cm: the weight is as ROE lists it, probably including the ladder (other datasheets say 16.5 kg without).' },
+    // Vanish Air Rental (VAR): gjennomsiktig utleiepanel, lansert desember 2025 og kjøpt inn av flere europeiske utleiefirmaer i 2026.
+    // Tallene er for uteversjonen VAO (11,8 kg, 650/325 W, IP65), likt hos ROE og LMG. Inneversjonen VAI er 8,6 kg på ROEs
+    // produktside (eldre kilder opptil 9,6 kg). Ingen kilde oppgir maks paneler per strømkjede, så maksKjede er ikke satt.
+    { id: 'roe-var', navn: 'ROE Vanish Air Rental', b: 1000, h: 1000, px: 144, py: 144, kg: 11.8, maks: 650, snitt: 325, pitch: 6.94,
+      merk: 'ROE Vanish Air Rental: tallene er for uteversjonen (VAO). Inneversjonen (VAI) er lettere, 8,6 kg per panel ifølge ROE.', merkEn: 'ROE Vanish Air Rental: the figures are for the outdoor version (VAO). The indoor version (VAI) is lighter, 8.6 kg per panel according to ROE.' }
   ];
 
   function hentEgne() {
