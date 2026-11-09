@@ -301,11 +301,16 @@ details[open] summary { margin-bottom: 14px; }
     return nf(r, 2) + ':1';
   }
 
+  // Høyst 200 store paneler i hver retning (100 m med 50 cm-paneler). Større tall er nesten alltid
+  // en skrivefeil (mm i meterfeltet), og da ville siden låse seg mens den tegner.
+  var MAKS_PANELER = 200, kuttet = false;
+  function kutt(n, maks) { if (n > maks) { kuttet = true; return maks; } return n; }
+
   // Finn nærmeste antall paneler for ønsket bredde og høyde (i meter)
   function forslag(p, bm, hm, u) {
-    var pb = p.b / 1000, ph = (u || p).h / 1000;
-    var cs = [Math.max(1, Math.floor(bm / pb)), Math.max(1, Math.ceil(bm / pb))];
-    var rs = [Math.max(1, Math.floor(hm / ph)), Math.max(1, Math.ceil(hm / ph))];
+    var pb = p.b / 1000, ph = (u || p).h / 1000, mr = MAKS_PANELER * (u && u !== p ? 2 : 1);
+    var cs = [kutt(Math.max(1, Math.floor(bm / pb)), MAKS_PANELER), kutt(Math.max(1, Math.ceil(bm / pb)), MAKS_PANELER)];
+    var rs = [kutt(Math.max(1, Math.floor(hm / ph)), mr), kutt(Math.max(1, Math.ceil(hm / ph)), mr)];
     var ut = [], sett = {};
     cs.forEach(function (c) { rs.forEach(function (r) {
       var k = c + 'x' + r; if (sett[k]) return; sett[k] = 1;
@@ -320,7 +325,7 @@ details[open] summary { margin-bottom: 14px; }
     var u = lite || p;
     if (modus === 'antall') {
       var radIn = +$('rad').value || 1;
-      return { c: Math.max(1, Math.round(+$('kol').value || 1)), r: Math.max(1, Math.round(lite ? radIn * 2 : radIn)) };
+      return { c: kutt(Math.max(1, Math.round(+$('kol').value || 1)), MAKS_PANELER), r: kutt(Math.max(1, Math.round(lite ? radIn * 2 : radIn)), lite ? MAKS_PANELER * 2 : MAKS_PANELER) };
     }
     var bm, hm;
     if (modus === 'maal') { bm = +$('mb').value || 1; hm = +$('mh').value || 1; }
@@ -403,6 +408,7 @@ details[open] summary { margin-bottom: 14px; }
     if (!p) return;
     var lite = $('bland').checked ? HaptPaneler.lite(p) : null;
     oppdaterLagerfelt(p, lite);
+    kuttet = false;
     var a = hentAntall(p, lite), c = a.c;
     var T = lagerFor(p.id), S = lite ? lagerFor(lite.id) : null;
     var plan = lite ? fordel(c, a.r, T, S) : { t: a.r, s: 0 };
@@ -493,6 +499,7 @@ details[open] summary { margin-bottom: 14px; }
     if (W > 1920 && W * H > 1920 * 1200 && W * H <= 3840 * 2160) adv.push(T_('Mer enn Full HD: kilden må sende over 1080p, eller bildet skaleres.', 'More than Full HD: the source must output above 1080p, or the image will be scaled.'));
     if (!d.perPort) adv.push(T_('Ett panel har flere piksler enn én port klarer ved denne frekvensen og bitdybden.', 'One panel has more pixels than a single port can drive at this frame rate and bit depth.'));
     if (mangler.length) adv.push(T_('Du har ikke nok paneler: mangler ', 'Not enough panels: short of ') + mangler.join(og) + ' cm.');
+    if (kuttet) adv.push(T_('Veggen er begrenset til 200 paneler i hver retning.', 'The wall is limited to 200 panels in each direction.') + (modus === 'antall' ? '' : T_(' Sjekk at målene er skrevet i meter.', ' Check that the sizes are entered in metres.')));
     if (blandet) adv.push(T_('Med små paneler blandet inn regnes porter og kurser som om alle var store, så de er på den sikre siden.', 'With small panels mixed in, ports and circuits are calculated as if all panels were large, so they are on the safe side.'));
     // Merknader fra paneldataene (f.eks. vekt med støtteramme), for det store og eventuelt det lille panelet
     var merknader = [];
@@ -747,7 +754,8 @@ details[open] summary { margin-bottom: 14px; }
   var kopiert = false;
   function kopierTekst() { $('kopier').textContent = kopiert ? T_('Kopiert', 'Copied') : T_('Kopier oppsummering', 'Copy summary'); }
   $('kopier').onclick = function () {
-    navigator.clipboard.writeText(sisteTekst).then(function () {
+    HaptKopier(sisteTekst).then(function (ok) {
+      if (!ok) { $('kopier').textContent = T_('Kunne ikke kopiere', 'Could not copy'); setTimeout(kopierTekst, 1500); return; }
       kopiert = true; kopierTekst(); setTimeout(function () { kopiert = false; kopierTekst(); }, 1500);
     });
   };

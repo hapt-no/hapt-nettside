@@ -443,7 +443,10 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
   var kopiTekst = function () { return T('Kopier oppsummering', 'Copy summary'); }, kopiert = false;
   $('kopier').onclick = function () {
     var k = this;
-    if (navigator.clipboard) navigator.clipboard.writeText(regn.tekst).then(function () { kopiert = true; k.textContent = T('Kopiert', 'Copied'); setTimeout(function () { kopiert = false; k.textContent = kopiTekst(); }, 1500); });
+    HaptKopier(regn.tekst).then(function (ok) {
+      if (!ok) { k.textContent = T('Kunne ikke kopiere', 'Could not copy'); setTimeout(function () { k.textContent = kopiTekst(); }, 1500); return; }
+      kopiert = true; k.textContent = T('Kopiert', 'Copied'); setTimeout(function () { kopiert = false; k.textContent = kopiTekst(); }, 1500);
+    });
   };
 
   var lagret = null;

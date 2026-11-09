@@ -317,7 +317,7 @@
     $('o-annet').label = T('Annet', 'Other');
   };
   var kopier = function (tekst, knapp) {
-    if (navigator.clipboard) navigator.clipboard.writeText(tekst).then(function () { knapp.textContent = T('Kopiert', 'Copied'); setTimeout(tekster, 1500); });
+    HaptKopier(tekst).then(function (ok) { knapp.textContent = ok ? T('Kopiert', 'Copied') : T('Kunne ikke kopiere', 'Could not copy'); setTimeout(tekster, 1500); });
   };
   $('o-kopier').onclick = function () { kopier(opptak.tekst, this); };
   $('s-kopier').onclick = function () { kopier(stream.tekst, this); };
