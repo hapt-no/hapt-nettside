@@ -355,7 +355,7 @@ details[open] summary { margin-bottom: 14px; }
   function data(p, c, r, n) {
     var pr = prosessorer[$('prosessor').value];
     var hz = +$('hz').value, bit = +$('bit').value;
-    var kap = Math.floor((+$('kap').value || 655360) * (60 / hz) * pr.bit[bit]);
+    var kap = Math.floor(Math.max(0, +$('kap').value || 655360) * (60 / hz) * pr.bit[bit]);
     var pxPanel = p.px * p.py;
     var perPort = Math.floor(kap / pxPanel);
     var kabling = $('kabling').value;
