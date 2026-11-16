@@ -70,7 +70,7 @@ ol.steg li { padding: 4px 0; }
       <div id="adv"></div>
       <div class="card">
         <div class="preview luft"><svg id="tegning" role="img" aria-label="Tegning av rammen sett bakfra" data-en-aria-label="Drawing of the frame seen from the back"></svg></div>
-        <p class="note" data-en="Seen from the back, as you build it on the floor. The numbers are the length of each element in cm. Each corner has 50 cm arms.">Sett bakfra, slik du bygger den på gulvet. Tallene er lengden på hvert element i cm. Hjørnene har 50 cm ben.</p>
+        <p class="note" data-en="Seen from the back, as you build it on the floor. The numbers are the length of each element in cm. Each corner has 105 cm arms (4 corners = 210 × 210 cm basic frame); Vario 32 also has corner sets with shorter vertical arms for frames 160 and 180 cm high.">Sett bakfra, slik du bygger den på gulvet. Tallene er lengden på hvert element i cm. Hjørnene har 105 cm ben (4 hjørner = grunnramme 210 × 210 cm); Vario 32 har også hjørnesett med kortere loddrette ben for rammer på 160 og 180 cm høyde.</p>
       </div>
       <div class="card">
         <h2 data-en="Parts list">Deleliste</h2>
@@ -130,7 +130,7 @@ ol.steg li { padding: 4px 0; }
 
     // Deleliste
     // Tredje felt i en rad er elementlengden (for fargen), så den ikke må leses ut av teksten
-    var rader = [[t('Hjørner', 'Corners'), '4']];
+    var rader = [[t('Hjørner (sett ', 'Corners (set ') + r.hjorne.navn + ' cm)', '4']];
     // Utregnede tilpasningselementer (16:10-standardene) er ikke bekreftet og merkes med ?
     var ukjent = function (d) { return r.ubekreftet.indexOf(d) >= 0; };
     r.deler.forEach(function (d) { rader.push(['Element ' + d.lengde + ' cm' + (ukjent(d.lengde) ? t(' (utregnet, ikke bekreftet – sjekk etiketten)', ' (calculated, not confirmed – check the label)') : ''), d.antall, d.lengde]); });
@@ -148,15 +148,17 @@ ol.steg li { padding: 4px 0; }
     });
 
     // Byggeoppskrift
-    var side = function (l) { return l.length ? '50 + ' + l.map(function (d) { return d + (ukjent(d) ? '?' : ''); }).join(' + ') + ' + 50' : '50 + 50'; };
+    // ben = hjørnebenet i hver ende (vannrett eller loddrett)
+    var side = function (l, ben) { return [ben].concat(l.map(function (d) { return d + (ukjent(d) ? '?' : ''); })).concat([ben]).join(' + '); };
     var steg = [
-      t('Legg ut de 4 hjørnene på gulvet, med forsiden ned.', 'Lay the 4 corners out on the floor, face down.'),
-      t('Topp og bunn (', 'Top and bottom (') + r.ramme[0] + ' cm): ' + side(r.bunn) + '.',
-      t('Sidene (', 'Sides (') + r.ramme[1] + ' cm): ' + side(r.venstre) + '.',
+      t('Legg ut de 4 hjørnene (sett ' + r.hjorne.navn + ' cm) på gulvet, med forsiden ned.', 'Lay the 4 corners (set ' + r.hjorne.navn + ' cm) out on the floor, face down.'),
+      t('Topp og bunn (', 'Top and bottom (') + r.ramme[0] + ' cm): ' + side(r.bunn, r.hjorne.b) + '.',
+      t('Sidene (', 'Sides (') + r.ramme[1] + ' cm): ' + side(r.venstre, r.hjorne.h) + '.',
       t('Sett sammen etter etikettene. Står det to tilpasningsdeler på samme side, kommer 110-elementene mellom dem.', 'Assemble according to the labels. If a side has two filler elements, the 110 elements go between them.')
     ];
-    if (r.midtstotte) steg.push(t('Midtstøtte' + (r.midtstotter > 1 ? 'r (' + r.midtstotter + ')' : '') + ': toppstykke + ' + r.midt.join(' + ') + ' + bunnstykke, plassert ' + (r.midtstotter > 1 ? 'jevnt fordelt.' : 'midt på.'),
-      'Centre support' + (r.midtstotter > 1 ? 's (' + r.midtstotter + ')' : '') + ': top piece + ' + r.midt.join(' + ') + ' + bottom piece, ' + (r.midtstotter > 1 ? 'spaced evenly.' : 'placed in the middle.')));
+    var midt = r.midt && r.midt.length ? r.midt.join(' + ') + ' + ' : '';
+    if (r.midtstotte) steg.push(t('Midtstøtte' + (r.midtstotter > 1 ? 'r (' + r.midtstotter + ')' : '') + ': toppstykke + ' + midt + 'bunnstykke, plassert ' + (r.midtstotter > 1 ? 'jevnt fordelt' : 'midt på') + ' (antatt som sidene, ikke bekreftet; sjekk mot utleiers deleliste).',
+      'Centre support' + (r.midtstotter > 1 ? 's (' + r.midtstotter + ')' : '') + ': top piece + ' + midt + 'bottom piece, ' + (r.midtstotter > 1 ? 'spaced evenly' : 'placed in the middle') + ' (assumed to match the sides, not confirmed; check against the rental company\'s parts list).'));
     steg.push(t('Fest duken med trykknappene: start i hjørnene, så midt på hver side, og fyll ut mellom.', 'Attach the surface with the snap fasteners: start at the corners, then the middle of each side, and fill in between.'));
     steg.push(r.bein ? t('Monter ' + r.beinAntall + ' × ' + r.bein.navn + '-bein' + (r.midtbein ? ' (inkl. midtbein)' : '') + ' og still underkanten til ' + (+$('uk').value || 0) + ' cm. Sett på stagene mot rammen.',
       'Fit ' + r.beinAntall + ' × ' + r.bein.navn + ' legs' + (r.midtbein ? ' (incl. centre legs)' : '') + ' and set the bottom edge to ' + (+$('uk').value || 0) + ' cm. Attach the braces to the frame.')
@@ -171,7 +173,7 @@ ol.steg li { padding: 4px 0; }
   }
 
   function tegn(r) {
-    var W = r.ramme[0], H = r.ramme[1], c = 50;
+    var W = r.ramme[0], H = r.ramme[1], cb = r.hjorne.b, ch = r.hjorne.h;
     var pad = Math.max(W, H) * 0.08, fs = Math.max(W, H) / 45, tk = Math.max(W, H) / 110;
     var leg = r.bein ? Math.min(+$('uk').value || 0, 200) : 0;
     var svg = $('tegning');
@@ -189,7 +191,7 @@ ol.steg li { padding: 4px 0; }
       }
     };
     var langs = function (liste, x0, y0, dx, dy, loddrett) {
-      var pos = c;
+      var pos = loddrett ? ch : cb;
       liste.forEach(function (d, i) {
         // Utregnet tilpasningselement (ikke bekreftet): stiplet og merket med ?
         var ukj = r.ubekreftet.indexOf(d) >= 0;
@@ -206,7 +208,7 @@ ol.steg li { padding: 4px 0; }
     langs(r.hoyre, W, 0, 0, 1, true);
     // Hjørner
     [[0, 0, 1, 1], [W, 0, -1, 1], [0, H, 1, -1], [W, H, -1, -1]].forEach(function (h) {
-      s += '<path d="M' + (h[0] + h[2] * c) + ' ' + h[1] + ' L' + h[0] + ' ' + h[1] + ' L' + h[0] + ' ' + (h[1] + h[3] * c) + '" fill="none" stroke="#ecedee" stroke-width="' + tk * 1.3 + '" stroke-linejoin="miter"/>';
+      s += '<path d="M' + (h[0] + h[2] * cb) + ' ' + h[1] + ' L' + h[0] + ' ' + h[1] + ' L' + h[0] + ' ' + (h[1] + h[3] * ch) + '" fill="none" stroke="#ecedee" stroke-width="' + tk * 1.3 + '" stroke-linejoin="miter"/>';
     });
     // Midtstøtter
     for (var m = 1; m <= r.midtstotter; m++) {
@@ -216,11 +218,11 @@ ol.steg li { padding: 4px 0; }
     }
     // Bein
     if (leg > 0) {
-      var beinX = [c * 0.6, W - c * 0.6];
+      var beinX = [30, W - 30];
       for (m = 1; m <= r.midtbein; m++) beinX.push(Math.round(W * m / (r.midtstotter + 1)));
       beinX.forEach(function (x) {
         s += '<line x1="' + x + '" y1="' + H + '" x2="' + x + '" y2="' + (H + leg) + '" stroke="#7d828a" stroke-width="' + tk + '"/>';
-        s += '<line x1="' + (x - c * 0.5) + '" y1="' + (H + leg) + '" x2="' + (x + c * 0.5) + '" y2="' + (H + leg) + '" stroke="#7d828a" stroke-width="' + tk + '"/>';
+        s += '<line x1="' + (x - 25) + '" y1="' + (H + leg) + '" x2="' + (x + 25) + '" y2="' + (H + leg) + '" stroke="#7d828a" stroke-width="' + tk + '"/>';
       });
       s += '<line x1="' + (-pad * 0.6) + '" y1="' + (H + leg) + '" x2="' + (W + pad * 0.6) + '" y2="' + (H + leg) + '" stroke="#2a2e33" stroke-width="' + tk * 0.5 + '"/>';
     }

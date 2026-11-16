@@ -86,6 +86,18 @@ window.HaptProjektorEN = {
   "forhandlerdata": "dealer data",
   "G-linse": "G lens",
   "GC-linse": "GC lens",
+  // Ukentlig sjekk 16.11.2026
+  "Panasonic: ±59 % V / ±29 % H. ±56 % V / ±19 % H med ET-D75LE6/ET-D3LEW60/ET-D3LEW300, +69–84 % V / ±21 % H med ET-D75LE95, ingen forskyvning med ET-D3LEW50": "Panasonic: ±59% V / ±29% H. ±56% V / ±19% H with ET-D75LE6/ET-D3LEW60/ET-D3LEW300, +69–84% V / ±21% H with ET-D75LE95, no shift with ET-D3LEW50",
+  "Antatt lik ET-D75LE6/ET-D3LEW60 på samme prosjektor (ikke oppgitt for RQ22K)": "Assumed the same as ET-D75LE6/ET-D3LEW60 on the same projector (not stated for RQ22K)",
+  "+78–88 % V, ±9 % H (bildet ligger helt over linseaksen; Panasonic oppgir et område, ikke ±)": "+78–88% V, ±9% H (the image sits entirely above the lens axis; Panasonic gives a range, not ±)",
+  "12 400 lm senter": "12,400 lm centre",
+  "zoom 0.924-1.28": "zoom 0.924-1.28",
+  "UST fast med speil, 0.380": "UST fixed with mirror, 0.380",
+  "L1 = fra speilets reflekterende flate til lerret. Panasonic oppgir: L2 (linsespiss) = L1 + 0,0156 m; L3 (kabinettfront) = L1 - 0,2477 m; L4 (kabinettbakkant) = L1 - 0,7857 m.": "L1 = from the mirror's reflective surface to the screen. Panasonic states: L2 (lens tip) = L1 + 0.0156 m; L3 (chassis front) = L1 - 0.2477 m; L4 (chassis rear) = L1 - 0.7857 m.",
+  "Barco oppgir 0,85-1,06 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent.": "Barco gives 0.85-1.06 for the 2560 × 1600 area; calculated here against the full chip (2716 px). Only throw ratio published; b unknown.",
+  "Barco oppgir 1,06-1,43 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent.": "Barco gives 1.06-1.43 for the 2560 × 1600 area; calculated here against the full chip (2716 px). Only throw ratio published; b unknown.",
+  "Barco oppgir 1,43-2,12 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent.": "Barco gives 1.43-2.12 for the 2560 × 1600 area; calculated here against the full chip (2716 px). Only throw ratio published; b unknown.",
+  "Barco oppgir 2,12-3,18 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent.": "Barco gives 2.12-3.18 for the 2560 × 1600 area; calculated here against the full chip (2716 px). Only throw ratio published; b unknown.",
   // Linsenavn med norsk i seg
   "ELPLM15 (= ELPLM09 optikk)": "ELPLM15 (= ELPLM09 optics)",
   "TLD+ 0.73 (fast)": "TLD+ 0.73 (fixed)",

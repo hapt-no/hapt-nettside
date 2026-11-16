@@ -17,16 +17,17 @@
     { id: 'uni-urm3-26', navn: 'Unilumin URM III 2.6 inne', b: 500, h: 500, px: 192, py: 192, kg: 8, maks: 140, snitt: 45, pitch: 2.604 },
     { id: 'uni-urm3-39-2h', navn: 'Unilumin URM III 3.9 inne', fam: 'urm3-39-inne', b: 500, h: 1000, px: 128, py: 256, kg: 14, maks: 248, snitt: 72, pitch: 3.906 },
     { id: 'uni-urm3-39', navn: 'Unilumin URM III 3.9 inne', fam: 'urm3-39-inne', b: 500, h: 500, px: 128, py: 128, kg: 8, maks: 124, snitt: 36, pitch: 3.906 },
-    // Glux BAtn 6: oppløsning bekreftet av Martin; vekt fra BAtn-serien, effekt anslått fra BAtn 10-databladet (270/135 W per panel)
-    { id: 'glux-batn6', navn: 'Glux BAtn 6', b: 500, h: 1000, px: 72, py: 144, kg: 4.8, maks: 270, snitt: 135, pitch: 6.94 },
-    // Uniview UR Pro (ledwallcentral.com). 50 × 100 er «2H»-panelene. Pixel Logic oppgir 12,5 kg for 50 × 100, så sjekk vekten mot databladet.
+    // Glux BAtn 6: oppløsning bekreftet av Martin; vekt og effekt fra Glux-presentasjonen 2013 (BAtn6: 4,8 kg, 300/150 W per panel). Glux' BAtn-brosjyre oppgir også maks ≤300 W per panel.
+    { id: 'glux-batn6', navn: 'Glux BAtn 6', b: 500, h: 1000, px: 72, py: 144, kg: 4.8, maks: 300, snitt: 150, pitch: 6.94 },
+    // Uniview UR Pro (ledwallcentral.com). 50 × 100 er «2H»-panelene. Inne 50 × 50 er 8,8 kg (univiewled.com, 11.11.2026; Pixel Logic oppgir 8,5 kg, ledwallcentral 6,8 kg).
+    // 50 × 100: ledwallcentral 11,4 kg, Uniview 10,6/10,8 kg, Pixel Logic 12,5 kg, så sjekk mot databladet.
     // fam: paneler med samme fam har samme bredde og pitch og kan blandes i samme vegg (store + små).
     { id: 'univ-urpro26-2h', navn: 'Uniview UR Pro 2.6 inne', fam: 'urpro26-inne', b: 500, h: 1000, px: 192, py: 384, kg: 11.4, maks: 300, snitt: 100, pitch: 2.604 },
-    { id: 'univ-urpro26', navn: 'Uniview UR Pro 2.6 inne', fam: 'urpro26-inne', b: 500, h: 500, px: 192, py: 192, kg: 6.8, maks: 150, snitt: 50, pitch: 2.604 },
+    { id: 'univ-urpro26', navn: 'Uniview UR Pro 2.6 inne', fam: 'urpro26-inne', b: 500, h: 500, px: 192, py: 192, kg: 8.8, maks: 150, snitt: 50, pitch: 2.604 },
     { id: 'univ-urpro29-2h', navn: 'Uniview UR Pro 2.9 inne', fam: 'urpro29-inne', b: 500, h: 1000, px: 168, py: 336, kg: 11.4, maks: 300, snitt: 100, pitch: 2.976 },
-    { id: 'univ-urpro29', navn: 'Uniview UR Pro 2.9 inne', fam: 'urpro29-inne', b: 500, h: 500, px: 168, py: 168, kg: 6.8, maks: 150, snitt: 50, pitch: 2.976 },
+    { id: 'univ-urpro29', navn: 'Uniview UR Pro 2.9 inne', fam: 'urpro29-inne', b: 500, h: 500, px: 168, py: 168, kg: 8.8, maks: 150, snitt: 50, pitch: 2.976 },
     { id: 'univ-urpro39-2h', navn: 'Uniview UR Pro 3.9 inne', fam: 'urpro39-inne', b: 500, h: 1000, px: 128, py: 256, kg: 11.4, maks: 300, snitt: 100, pitch: 3.906 },
-    { id: 'univ-urpro39', navn: 'Uniview UR Pro 3.9 inne', fam: 'urpro39-inne', b: 500, h: 500, px: 128, py: 128, kg: 6.8, maks: 150, snitt: 50, pitch: 3.906 },
+    { id: 'univ-urpro39', navn: 'Uniview UR Pro 3.9 inne', fam: 'urpro39-inne', b: 500, h: 500, px: 128, py: 128, kg: 8.8, maks: 150, snitt: 50, pitch: 3.906 },
     { id: 'univ-urpro29-2h-ute', navn: 'Uniview UR Pro 2.9 ute', fam: 'urpro29-ute', b: 500, h: 1000, px: 168, py: 336, kg: 12, maks: 340, snitt: 110, pitch: 2.976 },
     { id: 'univ-urpro29-ute', navn: 'Uniview UR Pro 2.9 ute', fam: 'urpro29-ute', b: 500, h: 500, px: 168, py: 168, kg: 9, maks: 170, snitt: 55, pitch: 2.976 },
     { id: 'univ-urpro39-2h-ute', navn: 'Uniview UR Pro 3.9 ute', fam: 'urpro39-ute', b: 500, h: 1000, px: 128, py: 256, kg: 12, maks: 340, snitt: 110, pitch: 3.906 },
