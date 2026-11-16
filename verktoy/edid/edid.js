@@ -55,7 +55,7 @@
     return {
       hAktiv: hAktiv, vAktiv: vAktiv, hBlank: hBlank, vBlank: vbiLinjer,
       hFp: hFp, hSync: hSync, vFp: vFp, vSync: vSync,
-      klokke: klokke, hPos: true, vPos: versjon === 2,
+      klokke: klokke, hPos: true, vPos: false, // CVT-RB (v1 og v2): alltid H+ V−
       totalH: totalH, totalV: totalV,
       hz: klokke * 1e6 / (totalH * totalV), hKhz: klokke * 1e3 / totalH
     };

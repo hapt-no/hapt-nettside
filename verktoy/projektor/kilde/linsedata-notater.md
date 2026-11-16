@@ -31,8 +31,8 @@ Epsons kalkulator gir sannsynligvis samme tabellverdier. Avvikene brukeren ser k
 - **Panasonic ET-D3LEW200:** 16:10-koeffisientene er bekreftet mot Panasonics tabell. Oppgitt kastforhold gjelder ved 200" (bildestørrelse 200–600"), som forklarer avviket på ca. 3,5 % ved 100".
 - **Panasonic "ET-D75LE100"** finnes ikke hos Panasonic. Jeg antok at det betyr ET-D3LEU100/101 (0,37 UST). Formelen er bekreftet mot Panasonics tabell; oppgitt 0,370 gjelder ved 200" (bildestørrelse 200–600"). Sideveis forskyvning er +25 % til én side og 0 % til den andre; kalkulatoren regner sideveis likt begge veier og bruker derfor 0 %.
 - **Panasonic ET-D75LE90:** Ingen formel funnet. Den er erstattet av LE95.
-- **Panasonic RQ22K/RQ32K (WQXGA):** Ingen ET-D75LE-formler funnet, bare LE95 og D3LEW300. DMD ca. 0,9" er utledet. Vekten er ikke funnet.
-- **Panasonic ET-C1W400/W500/T800:** Formler fra Panasonics linse-spec (m per m diagonal, 16:10), regnet om som de andre ET-C1-linsene.
+- **Panasonic RQ22K/RQ32K (WQXGA):** Ingen ET-D75LE-formler funnet, bare LE95, D3LEW300 og D3LEW600. DMD 0,9" og vekt 54,0 kg er bekreftet i Panasonics spec-fil. ET-D3LEW300 gir ±56 % V / ±19 % H på RQ22K (linsens spec). Forskyvningen for D3LEW600 på RQ22K er ikke oppgitt; den er satt lik LE6/D3LEW60 (56/19).
+- **Panasonic ET-C1W400/W500/T800/T900/U200:** Formler fra Panasonics linse-spec (m per m diagonal, 16:10), regnet om som de andre ET-C1-linsene. T900 har positiv offset b (+0,29 m), sjekket mot Panasonics tabell. U200 er speil-UST som LE95: avstanden måles fra speilflaten, og forskyvningen (+78–88 % V, ±9 % H) er et område som kalkulatoren bare viser som tekst.
 - **Panasonic PT-MZ (LCD, ET-EM-linser):** Ikke dekket, fordi den er lite brukt i utleie for store venues. Kan legges til.
 - **Barco shift per linse** publiseres ikke. Bare prosjektornivå er oppgitt ("avhengig av linse"). Barcos prosentdefinisjon er ikke bekreftet. HDX-tall per linse for faste linser er forhandlerdata (Audio General).
 - **Barco TLD+ kastforhold:** Barcos egne sider er inkonsistente (f.eks. 1,87–2,56 og 1,89–2,55 for samme linse). JSON bruker tallene i UDX-produktsidens tilbehørsliste for WU, WQ og 0,98", med avvik i `merknad`.
@@ -47,3 +47,4 @@ Epsons kalkulator gir sannsynligvis samme tabellverdier. Avvikene brukeren ser k
 2. La brukeren velge "fra linsefront" eller "fra kabinettfront" og legg til fremspringet.
 3. For Barco: bruk kastforhold × bredde. Marker at offset er ukjent, og tilby en manuell korreksjon i mm.
 4. Vis ±5 % toleranse, som alle tre produsentene oppgir.
+- **Ukentlig sjekk 16.11.2026:** Barco F80 GLD-kastforhold regnes mot hele 2716-brikken (Barcos navn gjelder 2560 × 1600). Epson PU22xx/L17xx/PQ22xx har nå sideveis forskyvning per linse (18 %, PQ 16 %); på L17xx oppgir en fotnote ca. 10 % for ELPLU03/U03S/W05 (én kilde). ELPLR04 vises ikke for PU2200 (ikke i Epsons PU2220-spec). PQ2200 bruker PU2200-fremspringet (samme tabell i PQ-spec). ET-D75LE40 L1 = 0,124 (fire spec-filer; RQ35K-manualen sier 0,135).

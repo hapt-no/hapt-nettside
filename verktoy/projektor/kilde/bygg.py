@@ -27,6 +27,7 @@ def gruppe(p):
 def frem(p):
     m=p['modell']
     if 'PU22' in m or 'PU21' in m: return 'PU2200'
+    if 'PQ22' in m: return 'PU2200'   # samme kabinett og samme fremspringstabell i Epsons PQ2220-spec
     if 'PU2010' in m: return 'PU2010'
     if 'PU100' in m: return 'PU1000'
     if 'EB-L1' in m: return 'L17xx'

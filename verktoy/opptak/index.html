@@ -218,7 +218,8 @@
     $('o-bitrate-felt').hidden = k !== 'egen';
     var video, navn;
     if (KODEK[k]) { navn = KODEK[k][0]; video = KODEK[k][1] * (W * H) / (1920 * 1080) * fps / 29.97; }
-    else if (k === 'ukomp10') { navn = T('Ukomprimert 10 bit 4:2:2', 'Uncompressed 10-bit 4:2:2'); video = W * H * 20 * fps / 1e6; }
+    // v210 (slik QuickTime og Blackmagic lagrer 10 bit 4:2:2): 6 piksler i 16 byte, hver linje fylt opp til hele 128 byte (Apple TN2162, DeckLink SDK)
+    else if (k === 'ukomp10') { navn = T('Ukomprimert 10 bit 4:2:2', 'Uncompressed 10-bit 4:2:2'); video = Math.ceil(W / 48) * 1024 * H * fps / 1e6; }
     else if (k === 'ukomp8') { navn = T('Ukomprimert 8 bit 4:2:2', 'Uncompressed 8-bit 4:2:2'); video = W * H * 16 * fps / 1e6; }
     else { navn = T('Egen bitrate', 'Custom bitrate'); video = Math.max(0.1, +$('o-bitrate').value || 0); }
     var kan = Math.max(0, +$('o-kanaler').value || 0), lyd = kan * 48000 * (+$('o-bit').value) / 1e6;
