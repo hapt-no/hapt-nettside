@@ -25,7 +25,7 @@
       sikker: true,
       maks: [450, 335],
       midtstotte: 500, midtbein: 600,
-      vekt: function (o) { return 17 + (o - 740) * 0.0125; },
+      vekt: function (o, m) { return 18 + (o - 740) * 0.0125 + 4 * (m || 0); },
       bein: 'T32'
     },
     64: {
@@ -34,11 +34,13 @@
       sikker: false,
       maks: [1200, 600],
       midtstotte: 700, midtbein: 700,
-      vekt: function (o) { return 39 + (o - 1400) * 0.03; },
+      vekt: function (o, m) { return 36 + (o - 1150) * 0.0214 + 17 * (m || 0); },
       bein: 'AT32/64'
     }
   };
 
+  // Vekt for ikke-standard størrelser (system.vekt): lineær i omkrets, tilpasset så den aldri ligger under Stumpfls tabell,
+  // pluss ca. 4 kg (Vario 32) / 17 kg (Vario 64, med midtbein) per midtstøtte.
   var standard = {
     32: [[210, 160, 17], [240, 180, 19], [280, 210, 20], [320, 245, 21], [360, 270, 23], [400, 300, 25], [280, 160, 19], [310, 180, 20], [365, 210, 22], [420, 240, 23], [460, 270, 26], [250, 160, 18], [282, 180, 19], [330, 210, 21], [378, 240, 23], [426, 270, 26], [410, 210, 22], [500, 250, 29], [600, 300, 34], [610, 210, 32]],
     64: [[400, 300, 39], [500, 380, 46], [600, 450, 53], [700, 520, 75], [800, 600, 81], [365, 210, 36], [420, 240, 38], [460, 270, 41], [540, 310, 46], [650, 370, 53], [372, 240, 38], [420, 270, 40], [484, 310, 44], [580, 370, 52], [708, 450, 78], [800, 400, 77], [1200, 400, 93]]
@@ -221,7 +223,7 @@
     var omkrets = 2 * (ob + oh);
     var std = standard[p].filter(function (x) { return x[0] === ob && x[1] === oh; })[0];
     res.standard = !!std;
-    res.vekt = std ? std[2] : Math.max(10, Math.round(s.vekt(omkrets)));
+    res.vekt = std ? std[2] : Math.max(10, Math.round(s.vekt(omkrets, res.midtstotter)));
 
     // Duk
     var duk = duker.filter(function (d) { return d.id === valg.duk; })[0] || duker[0];

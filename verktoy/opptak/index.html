@@ -199,6 +199,7 @@
   });
 
   // Mbit/s ved 1920 × 1080 og 29,97 bilder/s. Apple ProRes White Paper og Avid DNxHR-tabell; skaleres med piksler og bildetakt.
+  // Unntak: ProRes 1280 × 720 er halvparten av 1080-raten (Apples tabell), ikke 0,444.
   var KODEK = {
     'pr-proxy': ['ProRes 422 Proxy', 45], 'pr-lt': ['ProRes 422 LT', 102], 'pr-422': ['ProRes 422', 147],
     'pr-hq': ['ProRes 422 HQ', 220], 'pr-4444': ['ProRes 4444', 330], 'pr-xq': ['ProRes 4444 XQ', 500],
@@ -217,7 +218,7 @@
     var fps = +$('o-fps').value, k = $('o-kodek').value;
     $('o-bitrate-felt').hidden = k !== 'egen';
     var video, navn;
-    if (KODEK[k]) { navn = KODEK[k][0]; video = KODEK[k][1] * (W * H) / (1920 * 1080) * fps / 29.97; }
+    if (KODEK[k]) { navn = KODEK[k][0]; var andel = (k.indexOf('pr-') === 0 && W === 1280 && H === 720) ? 0.5 : (W * H) / (1920 * 1080); video = KODEK[k][1] * andel * fps / 29.97; }
     // v210 (slik QuickTime og Blackmagic lagrer 10 bit 4:2:2): 6 piksler i 16 byte, hver linje fylt opp til hele 128 byte (Apple TN2162, DeckLink SDK)
     else if (k === 'ukomp10') { navn = T('Ukomprimert 10 bit 4:2:2', 'Uncompressed 10-bit 4:2:2'); video = Math.ceil(W / 48) * 1024 * H * fps / 1e6; }
     else if (k === 'ukomp8') { navn = T('Ukomprimert 8 bit 4:2:2', 'Uncompressed 8-bit 4:2:2'); video = W * H * 16 * fps / 1e6; }

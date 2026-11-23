@@ -115,9 +115,9 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
         <div class="field"><label for="gain" data-en="Screen (gain)">Duk (gain)</label>
           <select id="gain">
             <option value="1" data-en="1.0 (matte white)">1,0 (matt hvit)</option>
-            <option value="1.02" data-en="1.02 Stumpfl Flex White CI">1,02 Stumpfl Flex White CI</option>
-            <option value="1.18" data-en="1.18 Stumpfl Flex Rear CI">1,18 Stumpfl Flex Rear CI</option>
-            <option value="2.25" data-en="2.25 Stumpfl Flex Rear MO">2,25 Stumpfl Flex Rear MO</option>
+            <option value="0.96" data-en="0.96 Stumpfl Flex White CI">0,96 Stumpfl Flex White CI</option>
+            <option value="0.89" data-en="0.89 Stumpfl Flex Rear CI">0,89 Stumpfl Flex Rear CI</option>
+            <option value="2.05" data-en="2.05 Stumpfl Flex Rear MO">2,05 Stumpfl Flex Rear MO</option>
             <option value="0.7" data-en="0.7 (grey / diffuse rear projection)">0,7 (grå / bakprojeksjon diffus)</option>
             <option value="1.3" data-en="1.3">1,3</option>
           </select>
@@ -216,7 +216,12 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
   function panelAsp(p) { return p.res[0] / p.res[1]; }
 
   // Avstand fra referansepunkt til linsens målepunkt (m) når man måler fra kabinettfronten
+  // Speillinse (LE95, C1U200): stort negativt fremspring. Små negative tall (noen Epson-linser på L17xx) er linser som ligger litt inne i kabinettet.
+  var speil = function (fr) { return fr != null && fr <= -0.05; };
+  var mmTekst = function (m) { return tall(m * 1000, Math.abs(m) < 0.001 ? 1 : 0); };
+  // Linsens fremspring fra kabinettfronten (m). Negativt for speillinser: avstanden gjelder speilflaten, og kabinettfronten står nærmere lerretet.
   function fremspring(p, l) {
+    if (p.L1 && p.L1[l.n] != null) return p.L1[l.n];   // egen tabell for prosjektoren (PT-RZ31K)
     if (l.L1 != null) return l.L1;
     if (l.frem && p.frem && l.frem[p.frem] != null) return l.frem[p.frem] / 1000;
     return null;
@@ -264,6 +269,27 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
       Lmin = Lmax = Lz = dist;
       res.push([T('Bredde ved denne avstanden', 'Width at this distance'), m2(Math.min(bv, bt)) + ' – ' + m2(Math.max(bv, bt)) + T(' (hele feltet)', ' (full area)')]);
     }
+    $('linseNote').textContent = [l.type ? T('Type: ', 'Type: ') + dt(l.type) + '.' : '', l.ref ? T('Avstand måles fra: ', 'Distance measured from: ') + dt(l.ref) : '', dt(l.f[p.g].note) || ''].filter(Boolean).join(' ');
+    $('refTekst').textContent = !kab ? '' : fr == null ? T('Fremspring er ikke oppgitt for denne linsen, så avstanden gjelder linsefronten.', 'Protrusion is not stated for this lens, so the distance is from the lens front.') :
+      speil(fr) ? T('Speillinse: kabinettfronten står ', 'Mirror lens: the chassis front is ') + mmTekst(-fr) + T(' mm nærmere lerretet enn speilflaten (datablad; mål gjerne selv).', ' mm closer to the screen than the mirror surface (data sheet; worth measuring yourself).') :
+      fr < 0 ? T('Linsen ligger ', 'The lens sits ') + mmTekst(-fr) + T(' mm innenfor kabinettfronten (datablad; mål gjerne selv).', ' mm behind the chassis front (data sheet; worth measuring yourself).') :
+      T('Linsen stikker ', 'The lens protrudes ') + mmTekst(fr) + T(' mm ut fra kabinettet (datablad; mål gjerne selv).', ' mm from the chassis (data sheet; worth measuring yourself).');
+    // Umulig oppsett: avstanden er kortere enn linsen kan gi bilde på (bilde-modus), eller bildet er så lite at
+    // avstanden blir negativ (avstand-modus, f.eks. med fremspring fra kabinettfronten)
+    // Linsefronten må også stå foran lerretet (med fremspring fra kabinettfronten kan den ellers havne bak det)
+    var forNaer = modus === 'bilde' ? !(lr > 0 && Math.min(fb, bv, bt) > 0) : !(Math.min(Lmin, Lmax, Lz) > 0 && Math.min(Lmin, Lmax, Lz) - tillegg > 0);
+    if (forNaer) {
+      var msg = modus === 'bilde' ? T('For nær: avstanden er kortere enn denne linsen kan gi bilde på.', 'Too close: the distance is shorter than this lens can project at.') : T('Bildet er mindre enn denne linsen kan gi på denne avstanden (avstanden blir negativ).', 'The image is smaller than this lens can produce (the distance would be negative).');
+      $('k1').textContent = modus === 'bilde' ? m2(Lmin) : '–'; $('k2').textContent = '–';
+      $('k1t').textContent = modus === 'bilde' ? T('avstand (oppgitt)', 'distance (entered)') : T('avstand', 'distance'); $('k2t').textContent = T('bilde', 'image'); $('k3').textContent = '–'; $('k3').className = ''; $('k4').textContent = '–';
+      if (!erFast) $('zoomTekst').textContent = '';
+      $('res').innerHTML = ''; $('varsel').hidden = false; $('varsel').textContent = msg; $('tegning').innerHTML = '';
+      alleLinser(p, li, fe, ia, kab);
+      bredder(p, F, ia, tillegg, Lz, z, kab && fr != null);
+      regn.tekst = p.m + ' ' + p.n + T(' med ', ' with ') + dt(l.n) + '\n' + msg;
+      lagre();
+      return;
+    }
     var diag = Math.sqrt(ib * ib + ih * ih);
     // Zoom: hvor på zoomen og kastforholdet der (avstand / bredde på feltet)
     if (!erFast) $('zoomTekst').textContent = (z <= 0 ? T('vid', 'wide') : z >= 1 ? 'tele' : tall(z * 100, 0) + pst()) + ' · ' + T('kastforhold ', 'throw ratio ') + tall((Lz - tillegg) / fe.b, 2);
@@ -290,7 +316,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
     var dL = Lz;
     if (modus === 'avstand') res.push([T('Faktisk kastforhold', 'Actual throw ratio'), erFast || Math.abs(Lmax - Lmin) < 0.005 ? tall((Lz - tillegg) / fe.b, 3) : tall((Lz - tillegg) / fe.b, 3) + T(' ved valgt zoom (vid ', ' at chosen zoom (wide ') + tall((Lmin - tillegg) / fe.b, 3) + ', tele ' + tall((Lmax - tillegg) / fe.b, 3) + T(') ved denne bredden', ') at this width')]);
     else res.push([T('Faktisk kastforhold', 'Actual throw ratio'), tall((dL - tillegg) / fe.b, 3) + T(' (avstand / bredde på feltet)', ' (distance / width of the area)')]);
-    if (kab) res.push([T('Linsefremspring', 'Lens protrusion'), fr != null ? tall(fr * 1000, 0) + T(' mm lagt til', ' mm added') : T('ukjent for denne linsen, ikke lagt til', 'unknown for this lens, not added')]);
+    if (kab) res.push([T('Linsefremspring', 'Lens protrusion'), fr == null ? T('ukjent for denne linsen, ikke lagt til', 'unknown for this lens, not added') : fr < 0 ? mmTekst(-fr) + T(' mm trukket fra', ' mm subtracted') + (speil(fr) ? T(' (speillinse)', ' (mirror lens)') : '') : mmTekst(fr) + T(' mm lagt til', ' mm added')]);
     res.push([T('Piksel på duken', 'Pixel on screen'), tall(fe.b * 1000 / p.res[0], 1) + ' mm (' + p.res[0] + ' × ' + p.res[1] + ')']);
 
     // Linseforskyvning: hvor mye bildesenteret ligger over/under og til siden for linsesenteret, i % av bildehøyde/-bredde
@@ -326,11 +352,9 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
     if (!F.bKjent) varsel.push(T('Produsenten oppgir bare kastforhold for denne linsen, ikke offset. Avstanden kan bomme noen titalls cm; mål opp eller sjekk i produsentens kalkulator.', 'The manufacturer only states the throw ratio for this lens, not the offset. The distance can be off by a few tens of cm; measure it or check in the manufacturer\'s calculator.'));
     if (l.st && l.st !== 'bekreftet') varsel.push(T('Linsedataene er ', 'Lens data: ') + status(l.st) + '.');
     $('varsel').hidden = !varsel.length; $('varsel').textContent = varsel.join(' ');
-    $('linseNote').textContent = [l.type ? T('Type: ', 'Type: ') + dt(l.type) + '.' : '', l.ref ? T('Avstand måles fra: ', 'Distance measured from: ') + dt(l.ref) : '', dt(l.f[p.g].note) || ''].filter(Boolean).join(' ');
-    $('refTekst').textContent = kab ? (fr != null ? T('Linsen stikker ', 'The lens protrudes ') + tall(fr * 1000, 0) + T(' mm ut fra kabinettet (datablad; mål gjerne selv).', ' mm from the chassis (data sheet; worth measuring yourself).') : T('Fremspring er ikke oppgitt for denne linsen, så avstanden gjelder linsefronten.', 'Protrusion is not stated for this lens, so the distance is from the lens front.')) : '';
 
     tegnSide(dL, lh, uk, fe.h, kab && fr != null);
-    alleLinser(p, li, fe, ia, tillegg);
+    alleLinser(p, li, fe, ia, kab);
     bredder(p, F, ia, tillegg, dL, z, kab && fr != null);
     regn.tekst = p.m + ' ' + p.n + T(' med ', ' with ') + dt(l.n) + '\n' + res.map(function (r) { return r[0] + ': ' + r[1]; }).join('\n');
     lagre();
@@ -381,16 +405,18 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
       T('Trykk på en rad for å regne fra den avstanden.', 'Tap a row to calculate from that distance.') : T('Linsen når ikke fokus på disse avstandene.', 'The lens cannot focus at these distances.'));
   }
 
-  function alleLinser(p, valgt, fe, ia, tillegg) {
+  function alleLinser(p, valgt, fe, ia, kab) {
     var rader = linserFor(p).map(function (i) {
       var l = L[i], F = formel(p, l), tekst, passer = true;
+      var tillegg = kab ? (fremspring(p, l) || 0) : 0;   // hver linse har sitt eget fremspring
       if (modus === 'avstand') {
         var a = F.a0 * fe.b + F.b0 + tillegg, b = F.a1 * fe.b + F.b1 + tillegg;
-        tekst = Math.abs(a - b) < 0.005 ? m2(a) : tall(Math.min(a, b), 2) + ' – ' + m2(Math.max(a, b));
+        passer = Math.min(a, b) > 0 && Math.min(a, b) - tillegg > 0;
+        tekst = !passer ? T('for lite bilde', 'image too small') : Math.abs(a - b) < 0.005 ? m2(a) : tall(Math.min(a, b), 2) + ' – ' + m2(Math.max(a, b));
       } else {
         var dist = +$('avstand').value || 0, lr = dist - tillegg;
         var bv = (lr - F.b0) / F.a0, bt = (lr - F.b1) / F.a1;
-        passer = Math.min(bv, bt) > 0;
+        passer = lr > 0 && Math.min(bv, bt) > 0;
         tekst = passer ? (Math.abs(bv - bt) < 0.005 ? m2(bv) : tall(Math.min(bv, bt), 2) + ' – ' + m2(Math.max(bv, bt))) + T(' bredt', ' wide') : T('for nær', 'too close');
       }
       return '<tr data-i="' + i + '" class="' + (i === valgt ? 'valgt' : '') + '"><td>' + dt(l.n) + ' <span class="st ' + (l.st || '') + '">' + (l.st && l.st !== 'bekreftet' ? status(l.st) : '') + '</span></td><td class="tall">' + trTekst(l.f[p.g].tr) + '</td><td class="tall' + (passer ? '' : ' ut') + '">' + tekst + '</td></tr>';
@@ -429,6 +455,8 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
   var felter = ['proj', 'linse', 'ref', 'malType', 'mal', 'avstand', 'zoom', 'format', 'linseH', 'underkant', 'sideveis', 'lumen', 'stack', 'gain'];
   function lagre() {
     var o = { modus: modus }; felter.forEach(function (id) { o[id] = $(id).value; });
+    // Navnene lagres også, så nye linser/prosjektorer midt i lista ikke gir feil valg neste gang
+    o.projNavn = P[+o.proj] ? P[+o.proj].n : null; o.linseNavn = L[+o.linse] ? L[+o.linse].n : null;
     try { localStorage.setItem('hapt-projektor', JSON.stringify(o)); } catch (e) {}
   }
   function settModus(m) {
@@ -449,12 +477,21 @@ details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
     });
   };
 
-  var lagret = null;
+  // Før november 2026 ble linsen lagret bare som plassen i lista. Siden er nye linser satt inn midt i lista,
+  // så gamle lagrede tall slås opp i den gamle rekkefølgen.
+  var GAMLE_LINSER = ["ELPLX02 / X02S / X02W / X02WS","ELPLX01 / X01S / X01W / X01WS","ELPLU03 / ELPLU03S","ELPLU04","ELPLW05","ELPLW08","ELPLW06","ELPLM08","ELPLM15 (= ELPLM09 optikk)","ELPLM10","ELPLM11","ELPLL08","ELPLR04","ELPLM12 / ELPLX03 / ELPLU05 / ELPLW07 / ELPLM13 / ELPLM14 / ELPLL09 / ELPLL10 / ELPLR05","ET-D75LE6","ET-D75LE10","ET-D75LE20","ET-D75LE30","ET-D75LE40","ET-D75LE8","ET-D75LE50","ET-D75LE95","ET-D75LE90","ET-D75LE100 / ET-D3LEU100 / ET-D3LEU101","ET-D3LEW200 / ET-D3LEW201","ET-D3LEW300","ET-C1U100","ET-C1W300","ET-C1W400","ET-C1W500","ET-C1S600","ET-C1T700","ET-C1T800","TLD+ 0.38/0.39 UST 90°","TLD+ 0.65-0.85 ST 90°","TLD+ Ultra 0.85-1.24","TLD+ 1.16-1.49","TLD+ 1.39-1.87","TLD+ 1.87-2.56","TLD+ 2.56-4.17","TLD+ 4.17-6.95","TLD+ 6.93-10.3","TLD+ 0.73 (fast)","G lens 0.36 UST","G lens 0.37-0.4 UST 90°","G lens 0.65-0.75 ST","G lens 0.75-0.95 ST","G lens 0.95-1.22","G lens 1.22-1.52 (standard)","G lens 1.52-2.92 long zoom","G lens 2.90-5.50 ultra long zoom","(brukerens liste) G lens 1.52-2.03 / 2.0-4.0 / 3.9-7.8","GC lens 0.65-0.75","GC lens 0.84-1.02","GC lens 1.02-1.36","GC lens 1.2-1.5","GC lens 1.5-2.0","GC lens 2.0-4.0","GC lens 4.0-7.2","GC lens 7.2-10.8","FLDX 0.38 UST 90°","GLD 0.85-1.06","GLD 1.06-1.43","GLD 1.43-2.12","GLD 2.12-3.18"];
+  var finnNavn = function (liste, navn) { for (var i = 0; i < liste.length; i++) if (liste[i].n === navn) return i; return -1; };
+  var lagret = null, pi = -1;
   try { lagret = JSON.parse(localStorage.getItem('hapt-projektor') || 'null'); } catch (e) {}
-  if (lagret && P[+lagret.proj]) {
-    $('proj').value = lagret.proj; fyllLinser(false);
-    felter.forEach(function (id) { if (id !== 'proj' && lagret[id] !== undefined) $(id).value = lagret[id]; });
-    if ($('linse').value === '' || linserFor(P[+$('proj').value]).indexOf(+$('linse').value) < 0) fyllLinser(false);
+  if (lagret) { pi = lagret.projNavn ? finnNavn(P, lagret.projNavn) : -1; if (pi < 0 && P[+lagret.proj]) pi = +lagret.proj; }
+  if (lagret && pi >= 0) {
+    $('proj').value = pi; fyllLinser(false);
+    felter.forEach(function (id) { if (id !== 'proj' && id !== 'linse' && lagret[id] !== undefined) $(id).value = lagret[id]; });
+    // Stumpfls gain ble rettet i november 2026: gamle lagrede verdier peker på den nye duken
+    if ($('gain').selectedIndex < 0) $('gain').value = ({ '1.02': '0.96', '1.18': '0.89', '2.25': '2.05' })[lagret.gain] || '1';
+    var lnavn = lagret.linseNavn || (lagret.linse != null && lagret.linse !== '' ? GAMLE_LINSER[+lagret.linse] : null);
+    var lnr = lnavn ? finnNavn(L, lnavn) : -1;
+    if (lnr >= 0 && linserFor(P[pi]).indexOf(lnr) >= 0) $('linse').value = lnr; else fyllLinser(false);
     settModus(lagret.modus === 'bilde' ? 'bilde' : 'avstand');
   } else {
     var std = 0; P.forEach(function (p, i) { if (p.n === 'EB-PU2220B') std = i; });

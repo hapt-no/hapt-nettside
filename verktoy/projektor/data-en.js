@@ -12,7 +12,7 @@ window.HaptProjektorEN = {
   "Normal; 10500 lm Quiet. Med ELPLM15.": "Normal; 10,500 lm Quiet. With ELPLM15.",
   "Maks V og H ikke samtidig": "Max V and H not at the same time",
   "Ingen oppover-flytting ved maks horisontal. Horisontal 'ca. 15 %' fra fotnote.": "No upward shift at max horizontal. Horizontal 'approx. 15%' from a footnote.",
-  "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote, usikker tolkning).": "ELPLU03S with 16:9 centred: 32%. Horizontal approx. 10% (footnote, uncertain reading).",
+  "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote 8 i Epsons japanske og engelske L17xx-spec).": "ELPLU03S with 16:9 centred: 32%. Horizontal approx. 10% (footnote 8 in Epson's Japanese and English L17xx specs).",
   "Linseforskyvning ikke støttet": "Lens shift not supported",
   "Normal; 8400 lm Quiet. Med ELPLM15.": "Normal; 8,400 lm Quiet. With ELPLM15.",
   "Normal; 6300 lm Quiet. Med ELPLM15.": "Normal; 6,300 lm Quiet. With ELPLM15.",
@@ -69,7 +69,7 @@ window.HaptProjektorEN = {
   "zoom tele": "zoom tele",
   "fast vidvinkel": "fixed wide",
   "UST fast med speil, 0.36": "UST fixed with mirror, 0.36",
-  "L1 = fra speilets reflekterende flate til lerret. Panasonic oppgir: L2 (linsespiss) = L1 + 0,029 m; L3 (kabinettfront) = L1 - 0,292 m; L4 (kabinettbakkant) = L1 - 1,072 m.": "L1 = from the mirror's reflective surface to the screen. Panasonic states: L2 (lens tip) = L1 + 0.029 m; L3 (chassis front) = L1 - 0.292 m; L4 (chassis rear) = L1 - 1.072 m.",
+  "L1 = fra speilets reflekterende flate til lerret. Panasonic oppgir: L2 (linsespiss) = L1 + 0,029 m; L3 (kabinettfront) = L1 - 0,292 m (PT-RZ31K: L1 - 0,26 m); L4 (kabinettbakkant) = L1 - 1,072 m.": "L1 = from the mirror's reflective surface to the screen. Panasonic states: L2 (lens tip) = L1 + 0.029 m; L3 (chassis front) = L1 - 0.292 m (PT-RZ31K: L1 - 0.26 m); L4 (chassis rear) = L1 - 1.072 m.",
   "UST fast (eldre)": "UST fixed (older)",
   "Shift (RZ21K-spec): H ±6 %, V 0,05/0,73 (tolkning usikker)": "Shift (RZ21K spec): H ±6%, V 0.05/0.73 (reading uncertain)",
   "UST fast 0.37 (periskop)": "UST fixed 0.37 (periscope)",
@@ -101,5 +101,17 @@ window.HaptProjektorEN = {
   // Linsenavn med norsk i seg
   "ELPLM15 (= ELPLM09 optikk)": "ELPLM15 (= ELPLM09 optics)",
   "TLD+ 0.73 (fast)": "TLD+ 0.73 (fixed)",
-  "(brukerens liste) G lens 1.52-2.03 / 2.0-4.0 / 3.9-7.8": "(user's list) G lens 1.52-2.03 / 2.0-4.0 / 3.9-7.8"
+  "(brukerens liste) G lens 1.52-2.03 / 2.0-4.0 / 3.9-7.8": "(user's list) G lens 1.52-2.03 / 2.0-4.0 / 3.9-7.8",
+  "Panasonic (ET-D3LEU100-spec, takmontert PT-RQ22K): V ±59 %, H +29 % / -5 %. Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 5 %. D3LEU101-tabellen, RQ22K-raden: A 0,29, B 0,59, b 0,15, y 0,05, z 0,50 (z = maks V ved 5 % sideveis; tolkning).": "Panasonic (ET-D3LEU100 spec, ceiling-mounted PT-RQ22K): V ±59%, H +29% / -5%. The calculator treats sideways shift as equal both ways and therefore checks against 5%. D3LEU101 table, RQ22K row: A 0.29, B 0.59, b 0.15, y 0.05, z 0.50 (z = max V at 5% sideways; our reading).",
+  "15 500 lm senter; 4K via Quad Pixel Drive": "15,500 lm centre; 4K via Quad Pixel Drive",
+  "15 500 lm senter": "15,500 lm centre",
+  "ANSI; 21 000 senter, 22 000 ISO": "ANSI; 21,000 centre, 22,000 ISO",
+  "Formel bare fra linse-spec; kastforhold 1,35-1,84 også i RQ22K-spec.": "Formula from the lens spec only; throw ratio 1.35-1.84 also in the RQ22K spec.",
+  "Formel fra linse-spec (2022 og 2026); kastforhold 2,57-5,00 også i RQ22K-spec.": "Formula from the lens spec (2022 and 2026); throw ratio 2.57-5.00 also in the RQ22K spec.",
+  "Formel L = 0,3497 x SD (m) - 0,0664 (= 0,0089 x SD i tommer - 0,0664), 16:10, RQ32K/RQ22K/RQ13K. Oppgitt kastforhold 0,397 gjelder ved 200\".": "Formula L = 0.3497 x SD (m) - 0.0664 (= 0.0089 x SD in inches - 0.0664), 16:10, RQ32K/RQ22K/RQ13K. The stated throw ratio 0.397 applies at 200\".",
+  "Oppgitt kastforhold 0,693-0,913 gjelder ved 200\".": "The stated throw ratio 0.693-0.913 applies at 200\".",
+  "fast": "fixed",
+  "TLD+ 1.2 (fast)": "TLD+ 1.2 (fixed)",
+  "'1.2' er SXGA+-navnet (1,23:1); Barco oppgir 1,14:1 på WUXGA ('TLD+ lens (1.14:1 WUXGA) (1.23:1 SXGA+)'). Kun kastforhold publisert; b ukjent.": "'1.2' is the SXGA+ name (1.23:1); Barco gives 1.14:1 on WUXGA ('TLD+ lens (1.14:1 WUXGA) (1.23:1 SXGA+)'). Only the throw ratio is published; b unknown.",
+  "Ikke publisert for UDX/HDX (Barco oppgir HDX-forskyvning bare for zoomlinser, maks ±40 % H). Barcos linse-spec (2016) gjelder SLM: G5/G8 ±64 % H, +100/−20 % V; R6/R8 ±59 % H, +84/−20 % V. Audio General: ±52 % H, −10/+110 % V (over prosjektorens ±40 % H).": "Not published for UDX/HDX (Barco gives HDX shift only for zoom lenses, max ±40% H). Barco's lens spec (2016) covers SLM: G5/G8 ±64% H, +100/−20% V; R6/R8 ±59% H, +84/−20% V. Audio General: ±52% H, −10/+110% V (above the projector's ±40% H)."
 };
