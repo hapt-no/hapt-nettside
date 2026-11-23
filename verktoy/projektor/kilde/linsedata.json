@@ -49,6 +49,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 32
      },
      {
@@ -59,6 +60,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 24,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -115,6 +117,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 32
      },
      {
@@ -125,6 +128,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 24,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -181,6 +185,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 32
      },
      {
@@ -191,6 +196,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 24,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -247,6 +253,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 32
      },
      {
@@ -257,6 +264,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 24,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -313,6 +321,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 32
      },
      {
@@ -323,6 +332,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 24,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -379,6 +389,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 32
      },
      {
@@ -389,6 +400,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 24,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -540,6 +552,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 31
      },
      {
@@ -549,7 +562,9 @@
        "ELPLW05"
       ],
       "vertikal_maks_pct": 24,
-      "merknad": "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote, usikker tolkning)."
+      "horisontal_pct": 10,
+      "vertikal_ved_maks_horisontal_pct": 0,
+      "merknad": "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote 8 i Epsons japanske og engelske L17xx-spec)."
      },
      {
       "linser": [
@@ -574,7 +589,8 @@
    "vekt_merknad": "uten linse (ca. 24 kg med ELPLM15)",
    "status": "bekreftet",
    "kilder": [
-    "EP_L17XX"
+    "EP_L17XX",
+    "EP_L17XX_EN"
    ],
    "merknad": "Japansk spec-ark. Projeksjonsformler identiske med PU2200-serien. EB-L1715S ikke dekket."
   },
@@ -612,6 +628,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 31
      },
      {
@@ -621,7 +638,9 @@
        "ELPLW05"
       ],
       "vertikal_maks_pct": 24,
-      "merknad": "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote, usikker tolkning)."
+      "horisontal_pct": 10,
+      "vertikal_ved_maks_horisontal_pct": 0,
+      "merknad": "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote 8 i Epsons japanske og engelske L17xx-spec)."
      },
      {
       "linser": [
@@ -646,7 +665,8 @@
    "vekt_merknad": "uten linse (ca. 24 kg med ELPLM15)",
    "status": "bekreftet",
    "kilder": [
-    "EP_L17XX"
+    "EP_L17XX",
+    "EP_L17XX_EN"
    ],
    "merknad": "Japansk spec-ark. Projeksjonsformler identiske med PU2200-serien. EB-L1715S ikke dekket."
   },
@@ -684,6 +704,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 60,
+      "horisontal_pct": 18,
       "vertikal_ved_maks_horisontal_pct": 31
      },
      {
@@ -693,7 +714,9 @@
        "ELPLW05"
       ],
       "vertikal_maks_pct": 24,
-      "merknad": "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote, usikker tolkning)."
+      "horisontal_pct": 10,
+      "vertikal_ved_maks_horisontal_pct": 0,
+      "merknad": "ELPLU03S med 16:9 sentrert: 32 %. Horisontalt ca. 10 % (fotnote 8 i Epsons japanske og engelske L17xx-spec)."
      },
      {
       "linser": [
@@ -718,7 +741,8 @@
    "vekt_merknad": "uten linse (ca. 24 kg med ELPLM15)",
    "status": "bekreftet",
    "kilder": [
-    "EP_L17XX"
+    "EP_L17XX",
+    "EP_L17XX_EN"
    ],
    "merknad": "Japansk spec-ark. Projeksjonsformler identiske med PU2200-serien. EB-L1715S ikke dekket."
   },
@@ -755,6 +779,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 58,
+      "horisontal_pct": 16,
       "vertikal_ved_maks_horisontal_pct": 33
      },
      {
@@ -765,6 +790,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 18,
+      "horisontal_pct": 16,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -817,6 +843,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 58,
+      "horisontal_pct": 16,
       "vertikal_ved_maks_horisontal_pct": 33
      },
      {
@@ -827,6 +854,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 18,
+      "horisontal_pct": 16,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -879,6 +907,7 @@
        "ELPLL08"
       ],
       "vertikal_maks_pct": 58,
+      "horisontal_pct": 16,
       "vertikal_ved_maks_horisontal_pct": 33
      },
      {
@@ -889,6 +918,7 @@
        "ELPLM08"
       ],
       "vertikal_maks_pct": 18,
+      "horisontal_pct": 16,
       "vertikal_ved_maks_horisontal_pct": 0
      },
      {
@@ -933,7 +963,8 @@
      {
       "linser": [
        "ET-D75LE6",
-       "ET-D3LEW60"
+       "ET-D3LEW60",
+       "ET-D3LEW600"
       ],
       "vertikal_pct": 44,
       "horisontal_pct": 15
@@ -1017,7 +1048,8 @@
      {
       "linser": [
        "ET-D75LE6",
-       "ET-D3LEW60"
+       "ET-D3LEW60",
+       "ET-D3LEW600"
       ],
       "vertikal_pct": 44,
       "horisontal_pct": 15
@@ -1101,7 +1133,8 @@
      {
       "linser": [
        "ET-D75LE6",
-       "ET-D3LEW60"
+       "ET-D3LEW60",
+       "ET-D3LEW600"
       ],
       "vertikal_pct": 44,
       "horisontal_pct": 15
@@ -1155,9 +1188,34 @@
    "vekt_merknad": "uten linse",
    "status": "bekreftet",
    "kilder": [
-    "PA_RZ31K"
+    "PA_RZ31K",
+    "PA_LE10",
+    "PA_D3LEW300",
+    "PA_D3LEW600",
+    "PA_D3LEU101",
+    "PA_D3LEW200",
+    "PA_D3LEW60",
+    "PA_D3LET80",
+    "PA_D3LES20",
+    "PA_D3LEW50"
    ],
-   "merknad": "31 000 lm senter (HIGH)"
+   "merknad": "31 000 lm senter (HIGH)",
+   "linsefremspring_L1_m_per_linse": {
+    "ET-D75LE6": 0.182,
+    "ET-D75LE10": 0.095,
+    "ET-D75LE20": 0.091,
+    "ET-D75LE30": 0.091,
+    "ET-D75LE40": 0.094,
+    "ET-D75LE8": 0.224,
+    "ET-D75LE50": 0.173,
+    "ET-D75LE100 / ET-D3LEU100 / ET-D3LEU101": 0.255,
+    "ET-D3LEW200 / ET-D3LEW201": 0.321,
+    "ET-D3LEW300": 0.242,
+    "ET-D3LEW600": 0.202,
+    "ET-D3LEW10": 0.18,
+    "ET-D3LET30": 0.15,
+    "ET-D75LE95": -0.26
+   }
   },
   {
    "merke": "Panasonic",
@@ -1184,7 +1242,8 @@
      {
       "linser": [
        "ET-D75LE6",
-       "ET-D3LEW60"
+       "ET-D3LEW60",
+       "ET-D3LEW600"
       ],
       "vertikal_pct": 44,
       "horisontal_pct": 15
@@ -1253,19 +1312,31 @@
    "aspekt": "16:10",
    "lumen": 20000,
    "lumen_merknad": "21 000 lm senter",
-   "panel_diagonal_tommer": null,
+   "panel_diagonal_tommer": 0.9,
    "teknologi": "3-chip DLP laser",
    "linsefatning": "Panasonic ET-D75LE / ET-D3LE (3-chip DLP)",
    "linseforskyvning": {
     "definisjon": "andel av V/H",
-    "generelt": null,
+    "generelt": {
+     "vertikal_pct": 59,
+     "horisontal_pct": 29,
+     "merknad": "Panasonic: ±59 % V / ±29 % H. ±56 % V / ±19 % H med ET-D75LE6/ET-D3LEW60/ET-D3LEW300, +69–84 % V / ±21 % H med ET-D75LE95, ingen forskyvning med ET-D3LEW50"
+    },
     "per_linse": [
      {
       "linser": [
-       "ET-D3LEW200"
+       "ET-D3LEW300"
       ],
       "vertikal_pct": 56,
       "horisontal_pct": 19
+     },
+     {
+      "linser": [
+       "ET-D3LEW600"
+      ],
+      "vertikal_pct": 56,
+      "horisontal_pct": 19,
+      "merknad": "Antatt lik ET-D75LE6/ET-D3LEW60 på samme prosjektor (ikke oppgitt for RQ22K)"
      },
      {
       "linser": [
@@ -1274,18 +1345,59 @@
       "vertikal_opp_pct": 10,
       "vertikal_ned_pct": 5,
       "horisontal_pct": 21
+     },
+     {
+      "linser": [
+       "ET-D75LE6",
+       "ET-D3LEW60"
+      ],
+      "vertikal_pct": 56,
+      "horisontal_pct": 19
+     },
+     {
+      "linser": [
+       "ET-D75LE50",
+       "ET-D3LEW50"
+      ],
+      "vertikal_pct": 0,
+      "horisontal_pct": 0,
+      "merknad": "Linseforskyvning kan ikke brukes"
+     },
+     {
+      "linser": [
+       "ET-D3LEU100",
+       "ET-D3LEU101"
+      ],
+      "vertikal_pct": 59,
+      "horisontal_pct": 5,
+      "vertikal_ved_maks_horisontal_pct": 50,
+      "merknad": "Panasonic (ET-D3LEU100-spec, takmontert PT-RQ22K): V ±59 %, H +29 % / -5 %. Kalkulatoren regner sideveis likt begge veier og sjekker derfor mot 5 %. D3LEU101-tabellen, RQ22K-raden: A 0,29, B 0,59, b 0,15, y 0,05, z 0,50 (z = maks V ved 5 % sideveis; tolkning)."
+     },
+     {
+      "linser": [
+       "ET-D3LEW200",
+       "ET-D3LEW201"
+      ],
+      "vertikal_pct": 56,
+      "horisontal_pct": 19
      }
     ]
    },
-   "vekt_kg": null,
-   "vekt_merknad": null,
+   "vekt_kg": 54.0,
+   "vekt_merknad": "uten linse (linse følger ikke med; Panasonic oppgir gjennomsnittsverdi)",
    "status": "delvis",
    "kilder": [
     "PA_RQ22K",
     "PA_D3LEU101",
-    "PA_D3LEW300"
+    "PA_D3LEW300",
+    "PA_RQ22K_SPEC",
+    "PA_RQ32K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_D3LE_APP",
+    "PA_D3LEU100_EU",
+    "PA_D3LEW200"
    ],
-   "merknad": "WQXGA-DMD (ca. 0,9\", utledet av at kastforhold er ~1,07x RZ31K for samme linse - ikke bekreftet). Vekt og generell shift ikke funnet. For ET-D75LE-linser mangler egne formler (se prosjektorens spec-fil)."
+   "merknad": "WQXGA-DMD 0,9\" (Panasonic spec-fil)."
   },
   {
    "merke": "Panasonic",
@@ -1314,7 +1426,8 @@
        "ET-C1W500",
        "ET-C1S600",
        "ET-C1T700",
-       "ET-C1T800"
+       "ET-C1T800",
+       "ET-C1T900"
       ],
       "vertikal_pct": 60,
       "horisontal_pct": 29
@@ -1326,6 +1439,12 @@
       ],
       "vertikal_pct": 50,
       "horisontal_pct": 23
+     },
+     {
+      "linser": [
+       "ET-C1U200"
+      ],
+      "merknad": "+78–88 % V, ±9 % H (bildet ligger helt over linseaksen; Panasonic oppgir et område, ikke ±)"
      }
     ]
    },
@@ -1347,8 +1466,8 @@
    ],
    "aspekt": "16:10",
    "lumen": 12000,
-   "lumen_merknad": null,
-   "panel_diagonal_tommer": null,
+   "lumen_merknad": "12 400 lm senter",
+   "panel_diagonal_tommer": 0.8,
    "teknologi": "1-chip DLP laser",
    "linsefatning": "Panasonic ET-C1",
    "linseforskyvning": {
@@ -1364,7 +1483,8 @@
        "ET-C1W500",
        "ET-C1S600",
        "ET-C1T700",
-       "ET-C1T800"
+       "ET-C1T800",
+       "ET-C1T900"
       ],
       "vertikal_pct": 60,
       "horisontal_pct": 29
@@ -1376,17 +1496,24 @@
       ],
       "vertikal_pct": 50,
       "horisontal_pct": 23
+     },
+     {
+      "linser": [
+       "ET-C1U200"
+      ],
+      "merknad": "+78–88 % V, ±9 % H (bildet ligger helt over linseaksen; Panasonic oppgir et område, ikke ±)"
      }
     ]
    },
-   "vekt_kg": null,
-   "vekt_merknad": null,
-   "status": "delvis",
+   "vekt_kg": 27.0,
+   "vekt_merknad": "PT-REZ12L uten linse (28,7 kg med medfølgende linse, tilsv. ET-C1S600)",
+   "status": "bekreftet",
    "kilder": [
+    "PA_REZ12",
     "PA_C1S600",
     "PA_C1W300"
    ],
-   "merknad": "Linsespecene grupperer REZ12 med REQ12 (samme formler). Lumen fra modellnavn, vekt/panel ikke bekreftet."
+   "merknad": "Linsespecene grupperer REZ12 med REQ12 (samme formler)."
   },
   {
    "merke": "Barco",
@@ -1679,7 +1806,8 @@
      {
       "linser": [
        "ET-D75LE6",
-       "ET-D3LEW60"
+       "ET-D3LEW60",
+       "ET-D3LEW600"
       ],
       "vertikal_pct": 44,
       "horisontal_pct": 15
@@ -1763,7 +1891,8 @@
      {
       "linser": [
        "ET-D75LE6",
-       "ET-D3LEW60"
+       "ET-D3LEW60",
+       "ET-D3LEW600"
       ],
       "vertikal_pct": 44,
       "horisontal_pct": 15
@@ -1821,6 +1950,158 @@
     "PA_RQ35K2_KAT"
    ],
    "merknad": "Revisjon av PT-RZ34K (samme 0,96\"-DMD, linser og forskyvning). 32 000 lm senter."
+  },
+  {
+   "merke": "Panasonic",
+   "modell": "PT-REQ15",
+   "familie": "Panasonic 1-chip DLP REQ/REZ (ET-C1)",
+   "opplosning_px": [
+    1920,
+    1200
+   ],
+   "aspekt": "16:10",
+   "lumen": 15000,
+   "lumen_merknad": "15 500 lm senter; 4K via Quad Pixel Drive",
+   "panel_diagonal_tommer": 0.8,
+   "teknologi": "1-chip DLP laser",
+   "linsefatning": "Panasonic ET-C1",
+   "linseforskyvning": {
+    "definisjon": "% av bildehoyde/-bredde fra standardposisjon",
+    "generelt": {
+     "vertikal_pct": 60,
+     "horisontal_pct": 29
+    },
+    "per_linse": [
+     {
+      "linser": [
+       "ET-C1W400",
+       "ET-C1W500",
+       "ET-C1S600",
+       "ET-C1T700",
+       "ET-C1T800",
+       "ET-C1T900"
+      ],
+      "vertikal_pct": 60,
+      "horisontal_pct": 29
+     },
+     {
+      "linser": [
+       "ET-C1W300",
+       "ET-C1U100"
+      ],
+      "vertikal_pct": 50,
+      "horisontal_pct": 23
+     },
+     {
+      "linser": [
+       "ET-C1U200"
+      ],
+      "merknad": "+78–88 % V, ±9 % H (bildet ligger helt over linseaksen; Panasonic oppgir et område, ikke ±)"
+     }
+    ]
+   },
+   "vekt_kg": 27.0,
+   "vekt_merknad": "PT-REQ15L uten linse (28,7 kg med ET-C1S600)",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_REQ15",
+    "PA_C1T800",
+    "PA_C1T900"
+   ],
+   "merknad": "Linsespecene grupperer REQ15 med REQ12 (samme formler)."
+  },
+  {
+   "merke": "Panasonic",
+   "modell": "PT-REZ15",
+   "familie": "Panasonic 1-chip DLP REQ/REZ (ET-C1)",
+   "opplosning_px": [
+    1920,
+    1200
+   ],
+   "aspekt": "16:10",
+   "lumen": 15000,
+   "lumen_merknad": "15 500 lm senter",
+   "panel_diagonal_tommer": 0.8,
+   "teknologi": "1-chip DLP laser",
+   "linsefatning": "Panasonic ET-C1",
+   "linseforskyvning": {
+    "definisjon": "% av bildehoyde/-bredde fra standardposisjon",
+    "generelt": {
+     "vertikal_pct": 60,
+     "horisontal_pct": 29
+    },
+    "per_linse": [
+     {
+      "linser": [
+       "ET-C1W400",
+       "ET-C1W500",
+       "ET-C1S600",
+       "ET-C1T700",
+       "ET-C1T800",
+       "ET-C1T900"
+      ],
+      "vertikal_pct": 60,
+      "horisontal_pct": 29
+     },
+     {
+      "linser": [
+       "ET-C1W300",
+       "ET-C1U100"
+      ],
+      "vertikal_pct": 50,
+      "horisontal_pct": 23
+     },
+     {
+      "linser": [
+       "ET-C1U200"
+      ],
+      "merknad": "+78–88 % V, ±9 % H (bildet ligger helt over linseaksen; Panasonic oppgir et område, ikke ±)"
+     }
+    ]
+   },
+   "vekt_kg": 27.0,
+   "vekt_merknad": "PT-REZ15L uten linse (28,7 kg med medfølgende linse, tilsv. ET-C1S600)",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_REZ15",
+    "PA_C1T800",
+    "PA_C1T900"
+   ],
+   "merknad": "Linsespecene grupperer REZ15 med REZ12 (samme formler)."
+  },
+  {
+   "merke": "Barco",
+   "modell": "UDM-W22",
+   "familie": "Barco UDM (TLD+)",
+   "opplosning_px": [
+    1920,
+    1200
+   ],
+   "aspekt": "16:10",
+   "lumen": 20000,
+   "lumen_merknad": "ANSI; 21 000 senter, 22 000 ISO",
+   "panel_diagonal_tommer": 0.96,
+   "teknologi": "3-chip DLP laser",
+   "linsefatning": "Barco TLD+",
+   "linseforskyvning": {
+    "definisjon": "Barco-%",
+    "generelt": {
+     "vertikal_opp_pct": 160,
+     "vertikal_ned_pct": 150,
+     "horisontal_pct": 50,
+     "merknad": "avhengig av linse"
+    },
+    "per_linse": null
+   },
+   "vekt_kg": 48,
+   "vekt_merknad": null,
+   "status": "bekreftet",
+   "kilder": [
+    "BA_UDMW22",
+    "BA_UDMW22_MAN",
+    "BA_UDMW22_SPEC"
+   ],
+   "merknad": "Produktsiden og nåværende brukermanual (R5911443) oppgir opp 160 % / ned 150 % V og ±50 % H; spec-arket (sist oppdatert 27.11.2025) og produktarket fra 2020 oppgir -100/+130 % V og ±40 % H. De nyeste tallene er brukt, som for UDM-4K22."
   }
  ],
  "linser": [
@@ -2077,6 +2358,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 60,
     "PU2010": 89,
+    "PU1000": 89,
     "L17xx": 32
    }
   },
@@ -2198,6 +2480,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 89,
     "PU2010": 116,
+    "PU1000": 116,
     "L17xx": 59
    }
   },
@@ -2319,6 +2602,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 29,
     "PU2010": 56,
+    "PU1000": 56,
     "L17xx": -0.1
    }
   },
@@ -2440,6 +2724,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 89,
     "PU2010": 117,
+    "PU1000": 117,
     "L17xx": 60
    }
   },
@@ -2561,6 +2846,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 59,
     "PU2010": 89,
+    "PU1000": 89,
     "L17xx": 32
    }
   },
@@ -2682,7 +2968,8 @@
    "merknad": "Fremspring (mm) fra Epsons tabell 'Amount of Lens Protrusion'; tallene for samme linse varierer mellom spec-ark (ulikt kabinett og/eller ulik målepraksis). Epsons oppgitte kastforhold = L/W ved 100\" inkl. offset b; bruk a og b for faktisk avstand.",
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 19,
-    "PU2010": 48
+    "PU2010": 48,
+    "PU1000": 48
    }
   },
   {
@@ -2803,6 +3090,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 26,
     "PU2010": 53,
+    "PU1000": 53,
     "L17xx": -3.8
    }
   },
@@ -2924,6 +3212,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 69,
     "PU2010": 95,
+    "PU1000": 95,
     "L17xx": 38
    }
   },
@@ -3045,6 +3334,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 76,
     "PU2010": 99,
+    "PU1000": 99,
     "L17xx": 42
    }
   },
@@ -3166,6 +3456,7 @@
    "fremspring_fra_kabinettfront_mm": {
     "PU2200": 74,
     "PU2010": 99,
+    "PU1000": 99,
     "L17xx": 42
    }
   },
@@ -3203,11 +3494,13 @@
       0.7243
      ],
      "kilde": [
-      "EP_PU2220",
       "EP_PU2010",
       "EP_L17XX"
      ],
-     "merknad": "ELPLR04 står kun i PU2010- og L17xx-spec (som tilleggslinse, krever Lens Type-innstilling), ikke i PU2200-spec."
+     "merknad": "ELPLR04 står kun i PU2010- og L17xx-spec (som tilleggslinse, krever Lens Type-innstilling), ikke i PU2200-spec.",
+     "ikke_for_familie": [
+      "Epson EB-PU2100/PU2200"
+     ]
     },
     {
      "projektorfamilie": "Epson EB-PU1000 (PU1007/PU1008, 0,76\")",
@@ -3241,7 +3534,6 @@
    "avstand_maales_fra": "Ikke oppgitt. Speil-/foldelinse: referansepunktet (speilflate, linsefront eller kabinett) er ukjent - verifiser fysisk.",
    "status": "bekreftet",
    "kilder": [
-    "EP_PU2220",
     "EP_PU2010",
     "EP_L17XX",
     "EP_PQ2220"
@@ -3249,6 +3541,7 @@
    "merknad": "Fremspring (mm) fra Epsons tabell 'Amount of Lens Protrusion'; tallene for samme linse varierer mellom spec-ark (ulikt kabinett og/eller ulik målepraksis). Epsons oppgitte kastforhold = L/W ved 100\" inkl. offset b; bruk a og b for faktisk avstand.",
    "fremspring_fra_kabinettfront_mm": {
     "PU2010": 54,
+    "PU1000": 54,
     "L17xx": -2.3
    }
   },
@@ -3310,6 +3603,39 @@
       "PA_RZ31K"
      ],
      "merknad": "Formel fra PT-RZ21K- og PT-RZ34K-spec (16:10). PT-RZ31K-spec (2019) oppgir 0,0201/0,0241, ca. 1 % kortere. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "1.00-1.18",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.0075,
+      "b_min_m": -0.0566,
+      "a_maks": 1.2071,
+      "b_maks_m": -0.0736,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0217,
+        -0.0566
+       ],
+       "maks": [
+        0.026,
+        -0.0736
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      1.0075,
+      1.2071
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC",
+      "PA_D3LEW60"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3319,9 +3645,13 @@
     "PA_RZ21K",
     "PA_RZ34K_SPEC",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC",
+    "PA_D3LEW60"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
+   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold.",
    "linsefremspring_L1_m": 0.212
   },
   {
@@ -3366,6 +3696,38 @@
       "PA_RZ21K"
      ],
      "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "1.39-1.79",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.4114,
+      "b_min_m": -0.0857,
+      "a_maks": 1.8246,
+      "b_maks_m": -0.1085,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0304,
+        -0.0857
+       ],
+       "maks": [
+        0.0393,
+        -0.1085
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      1.4114,
+      1.8246
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3374,10 +3736,100 @@
     "PA_RZ31K",
     "PA_RZ21K",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
+   "merknad": "Ingen ET-D3LE-ekvivalent: ET-D3LEW10 har egen optikk (1,26-1,72:1, L1 0,210 m), se egen oppføring.",
    "linsefremspring_L1_m": 0.125
+  },
+  {
+   "navn": "ET-D3LEW10",
+   "delenummer": "ET-D3LEW10",
+   "merke": "Panasonic",
+   "type": "zoom 1.26-1.72",
+   "fokallengde_mm": [
+    26.6,
+    36.4
+   ],
+   "vekt_kg": 6.2,
+   "linsefremspring_L1_m": 0.21,
+   "kompatibilitet": [
+    {
+     "projektorfamilie": "Panasonic PT-RQ35K/RZ34K/RZ31K/RZ21K (0,96\" WUXGA, 16:10)",
+     "kastforhold_oppgitt": "1.26-1.72",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.2837,
+      "b_min_m": -0.0867,
+      "a_maks": 1.7542,
+      "b_maks_m": -0.1025,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        1.0886,
+        -0.0867
+       ],
+       "maks": [
+        1.4876,
+        -0.1025
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      1.2837,
+      1.7542
+     ],
+     "kilde": [
+      "PA_RQ35K2_SPEC",
+      "PA_RZ34K_SPEC",
+      "PA_D3LEW10"
+     ]
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "1.35-1.84",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.3743,
+      "b_min_m": -0.0867,
+      "a_maks": 1.8803,
+      "b_maks_m": -0.1025,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0296,
+        -0.0867
+       ],
+       "maks": [
+        0.0405,
+        -0.1025
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      1.3743,
+      1.8803
+     ],
+     "kilde": [
+      "PA_D3LEW10"
+     ],
+     "merknad": "Formel bare fra linse-spec; kastforhold 1,35-1,84 også i RQ22K-spec."
+    }
+   ],
+   "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_D3LEW10",
+    "PA_RQ35K2_SPEC",
+    "PA_RZ34K_SPEC",
+    "PA_RQ35K_MAN",
+    "PA_RQ45K_SPEC"
+   ],
+   "merknad": "Egen optikk, ikke lik ET-D75LE10 (1,26-1,72 mot 1,30-1,67; L1 0,210 mot 0,125 m). L1 0,21 m iflg. RQ35K2-, RZ34K- og RQ22K-spec; 0,18 m på PT-RZ31K/RQ32K (linse-spec)."
   },
   {
    "navn": "ET-D75LE20",
@@ -3418,6 +3870,38 @@
       "PA_RZ21K"
      ],
      "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "1.79-2.59",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.806,
+      "b_min_m": -0.0832,
+      "a_maks": 2.6278,
+      "b_maks_m": -0.1162,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0389,
+        -0.0832
+       ],
+       "maks": [
+        0.0566,
+        -0.1162
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      1.806,
+      2.6278
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3426,9 +3910,12 @@
     "PA_RZ31K",
     "PA_RZ21K",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
+   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold.",
    "linsefremspring_L1_m": 0.121
   },
   {
@@ -3470,6 +3957,38 @@
       "PA_RZ21K"
      ],
      "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "2.58-5.00",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 2.6092,
+      "b_min_m": -0.1131,
+      "a_maks": 5.0606,
+      "b_maks_m": -0.1765,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0562,
+        -0.1131
+       ],
+       "maks": [
+        0.109,
+        -0.1765
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      2.6092,
+      5.0606
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3478,10 +3997,98 @@
     "PA_RZ31K",
     "PA_RZ21K",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
+   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. ET-D3LET30 har egen oppføring (nesten samme formel, men L1 0,180 m).",
    "linsefremspring_L1_m": 0.121
+  },
+  {
+   "navn": "ET-D3LET30",
+   "delenummer": "ET-D3LET30",
+   "merke": "Panasonic",
+   "type": "zoom",
+   "fokallengde_mm": [
+    50.4,
+    98.0
+   ],
+   "vekt_kg": 5.8,
+   "linsefremspring_L1_m": 0.18,
+   "kompatibilitet": [
+    {
+     "projektorfamilie": "Panasonic PT-RQ35K/RZ34K/RZ31K/RZ21K (0,96\" WUXGA, 16:10)",
+     "kastforhold_oppgitt": "2.40-4.66",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 2.4303,
+      "b_min_m": -0.1261,
+      "a_maks": 4.7269,
+      "b_maks_m": -0.1892,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        2.0609,
+        -0.1261
+       ],
+       "maks": [
+        4.0084,
+        -0.1892
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      2.4303,
+      4.7269
+     ],
+     "kilde": [
+      "PA_RQ35K2_SPEC",
+      "PA_D3LET30"
+     ]
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "2.57-5.00",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 2.6046,
+      "b_min_m": -0.1261,
+      "a_maks": 5.0652,
+      "b_maks_m": -0.1892,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0561,
+        -0.1261
+       ],
+       "maks": [
+        0.1091,
+        -0.1892
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      2.6046,
+      5.0652
+     ],
+     "kilde": [
+      "PA_D3LET30"
+     ],
+     "merknad": "Formel fra linse-spec (2022 og 2026); kastforhold 2,57-5,00 også i RQ22K-spec."
+    }
+   ],
+   "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_D3LET30",
+    "PA_RQ35K2_SPEC",
+    "PA_RQ35K_MAN",
+    "PA_RQ45K_SPEC"
+   ],
+   "merknad": "Egen optikk, nesten samme formel som ET-D75LE30. L1 0,180 m på RQ35K(2)/RZ34K(2)/RZ21K/RQ22K; ca. 0,15 m på PT-RZ31K."
   },
   {
    "navn": "ET-D75LE40",
@@ -3522,6 +4129,38 @@
       "PA_RZ21K"
      ],
      "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "4.95-7.91",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 4.9956,
+      "b_min_m": -0.1577,
+      "a_maks": 7.9623,
+      "b_maks_m": -0.1615,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.1076,
+        -0.1577
+       ],
+       "maks": [
+        0.1715,
+        -0.1615
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      4.9956,
+      7.9623
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3530,10 +4169,15 @@
     "PA_RZ31K",
     "PA_RZ21K",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RZ34K_SPEC",
+    "PA_RQ35K2_SPEC",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
-   "linsefremspring_L1_m": 0.135
+   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. ET-D3LET40: L1 0,130 m.",
+   "linsefremspring_L1_m": 0.124
   },
   {
    "navn": "ET-D75LE8",
@@ -3578,6 +4222,38 @@
       "PA_RZ31K"
      ],
      "merknad": "Formel fra PT-RZ21K- og PT-RQ35K2-spec (16:10). PT-RZ31K-spec (2019) oppgir 0,1595/0,2989, ca. 0,6 % kortere. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "7.87-14.8",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 7.9855,
+      "b_min_m": -0.3862,
+      "a_maks": 14.9589,
+      "b_maks_m": -0.3598,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.172,
+        -0.3862
+       ],
+       "maks": [
+        0.3222,
+        -0.3598
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      7.9855,
+      14.9589
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3587,9 +4263,12 @@
     "PA_RZ21K",
     "PA_RQ35K2_SPEC",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
+   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold.",
    "linsefremspring_L1_m": 0.262
   },
   {
@@ -3628,6 +4307,36 @@
       "PA_RZ21K"
      ],
      "merknad": "Formel fra PT-RZ31K spec-fil (16:10), samme tall som i PT-RZ21K-spec. PT-RQ35K/RZ34K/RZ21K har samme DMD og deles med RZ31K i Panasonics linse-specs."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "0.746",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.7661,
+      "b_min_m": -0.0713,
+      "a_maks": 0.7661,
+      "b_maks_m": -0.0713,
+      "original": {
+       "enhet": "m_per_tomme_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.0165,
+        -0.0713
+       ],
+       "maks": null
+      }
+     },
+     "kastforhold_effektivt": [
+      0.7661,
+      0.7661
+     ],
+     "kilde": [
+      "PA_RQ22K_SPEC",
+      "PA_RQ22K_SPEC_BP",
+      "PA_RQ32K_SPEC",
+      "PA_D3LEW50"
+     ]
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3636,9 +4345,13 @@
     "PA_RZ31K",
     "PA_RZ21K",
     "PA_RQ35K_MAN",
-    "PA_LE10"
+    "PA_LE10",
+    "PA_RQ22K_SPEC",
+    "PA_RQ22K_SPEC_BP",
+    "PA_RQ32K_SPEC",
+    "PA_D3LEW50"
    ],
-   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold. Formler for PT-RQ22K/RQ32K (WQXGA) ikke funnet; kastforhold er ca. 1,07x høyere der.",
+   "merknad": "ET-D3LE-ekvivalent (f.eks. D3LEW60, D3LES20, D3LET80) har oppgitt samme eller nesten samme kastforhold.",
    "linsefremspring_L1_m": 0.203
   },
   {
@@ -3650,6 +4363,7 @@
     7.5
    ],
    "vekt_kg": 5.7,
+   "linsefremspring_L1_m": -0.292,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-RQ35K/RZ34K/RZ31K/RZ21K (0,96\" WUXGA, 16:10)",
@@ -3707,12 +4421,14 @@
      ]
     }
    ],
-   "avstand_maales_fra": "L1 = fra speilets reflekterende flate til lerret. Panasonic oppgir: L2 (linsespiss) = L1 + 0,029 m; L3 (kabinettfront) = L1 - 0,292 m; L4 (kabinettbakkant) = L1 - 1,072 m.",
+   "avstand_maales_fra": "L1 = fra speilets reflekterende flate til lerret. Panasonic oppgir: L2 (linsespiss) = L1 + 0,029 m; L3 (kabinettfront) = L1 - 0,292 m (PT-RZ31K: L1 - 0,26 m); L4 (kabinettbakkant) = L1 - 1,072 m.",
    "status": "bekreftet",
    "kilder": [
     "PA_LE95",
     "PA_LE95_OLD",
-    "PA_RQ35K_MAN"
+    "PA_RQ35K_MAN",
+    "PA_RZ34K_SPEC",
+    "PA_RQ35K2_SPEC"
    ],
    "merknad": null
   },
@@ -3777,6 +4493,35 @@
       "PA_D3LEU100_WEB"
      ],
      "merknad": "Formel L = 0,0083 x SD - 0,0664 (16:10, RZ31K/RZ21K) fra D3LEU101-spec, bekreftet mot Panasonics tabell. Oppgitt kastforhold 0,370 gjelder ved 200\" (bildestørrelse 200-600\")."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "0.397",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.4124,
+      "b_min_m": -0.0664,
+      "a_maks": 0.4124,
+      "b_maks_m": -0.0664,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.3497,
+        -0.0664
+       ],
+       "maks": null
+      }
+     },
+     "kastforhold_effektivt": [
+      0.4124,
+      0.4124
+     ],
+     "kilde": [
+      "PA_D3LEU101",
+      "PA_D3LE_APP"
+     ],
+     "merknad": "Formel L = 0,3497 x SD (m) - 0,0664 (= 0,0089 x SD i tommer - 0,0664), 16:10, RQ32K/RQ22K/RQ13K. Oppgitt kastforhold 0,397 gjelder ved 200\"."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3784,7 +4529,8 @@
    "kilder": [
     "PA_D3LEU101",
     "PA_D3LEU100_WEB",
-    "PA_RQ35K_MAN"
+    "PA_RQ35K_MAN",
+    "PA_D3LE_APP"
    ],
    "merknad": "Fant ingen 'ET-D75LE100' hos Panasonic; antar at brukeren mener ET-D3LEU100/101.",
    "linsefremspring_L1_m": 0.285
@@ -3827,6 +4573,39 @@
       "PA_D3LEW200"
      ],
      "merknad": "16:10 bekreftet mot Panasonics tabell. Oppgitt kastforhold 0,645-0,850 gjelder ved 200\" (bildestørrelse 200-600\")."
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "0.693-0.913",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.7158,
+      "b_min_m": -0.1001,
+      "a_maks": 0.9382,
+      "b_maks_m": -0.1076,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.607,
+        -0.1001
+       ],
+       "maks": [
+        0.7956,
+        -0.1076
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      0.7158,
+      0.9382
+     ],
+     "kilde": [
+      "PA_D3LEW200",
+      "PA_D3LE_APP",
+      "PA_D3LEW201"
+     ],
+     "merknad": "Oppgitt kastforhold 0,693-0,913 gjelder ved 200\"."
     }
    ],
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
@@ -3834,7 +4613,9 @@
    "kilder": [
     "PA_D3LEW200",
     "PA_D3LEW200_WEB",
-    "PA_RQ35K_MAN"
+    "PA_RQ35K_MAN",
+    "PA_D3LE_APP",
+    "PA_D3LEW201"
    ],
    "merknad": null,
    "linsefremspring_L1_m": 0.351
@@ -3849,6 +4630,7 @@
     19.6
    ],
    "vekt_kg": 8.0,
+   "linsefremspring_L1_m": 0.273,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-RQ35K/RZ34K/RZ31K/RZ21K (0,96\" WUXGA, 16:10)",
@@ -3914,7 +4696,92 @@
    "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
    "status": "bekreftet",
    "kilder": [
-    "PA_D3LEW300"
+    "PA_D3LEW300",
+    "PA_RQ35K2_SPEC"
+   ],
+   "merknad": null
+  },
+  {
+   "navn": "ET-D3LEW600",
+   "delenummer": "ET-D3LEW600",
+   "merke": "Panasonic",
+   "type": "zoom 0.924-1.28",
+   "fokallengde_mm": [
+    19.8,
+    27.5
+   ],
+   "vekt_kg": 7.6,
+   "linsefremspring_L1_m": 0.232,
+   "kompatibilitet": [
+    {
+     "projektorfamilie": "Panasonic PT-RQ35K/RZ34K/RZ31K/RZ21K (0,96\" WUXGA, 16:10)",
+     "kastforhold_oppgitt": "0.924-1.28",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.9498,
+      "b_min_m": -0.0835,
+      "a_maks": 1.3218,
+      "b_maks_m": -0.1185,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.8054,
+        -0.0835
+       ],
+       "maks": [
+        1.1209,
+        -0.1185
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      0.9498,
+      1.3218
+     ],
+     "kilde": [
+      "PA_RQ35K2_SPEC",
+      "PA_D3LEW600"
+     ]
+    },
+    {
+     "projektorfamilie": "Panasonic PT-RQ32K/RQ22K (WQXGA)",
+     "kastforhold_oppgitt": "0.993-1.38",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.018,
+      "b_min_m": -0.0835,
+      "a_maks": 1.417,
+      "b_maks_m": -0.1185,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.8633,
+        -0.0835
+       ],
+       "maks": [
+        1.2016,
+        -0.1185
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      1.018,
+      1.417
+     ],
+     "kilde": [
+      "PA_D3LEW600"
+     ]
+    }
+   ],
+   "avstand_maales_fra": "Panasonic (PT-RQ35K manual): 'Projection distance (distance from the front end of the projection lens to the screen)' -> fra linsefront. Avstand fra kabinettfront = L + L1 (linsens fremspring).",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_RQ35K2_SPEC",
+    "PA_D3LEW600",
+    "PA_RQ35K_MAN",
+    "PA_RQ45K_SPEC"
    ],
    "merknad": null
   },
@@ -3925,6 +4792,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": 4.7,
+   "linsefremspring_L1_m": 0.384,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -3960,7 +4828,8 @@
    "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
    "status": "bekreftet",
    "kilder": [
-    "PA_C1U100"
+    "PA_C1U100",
+    "PA_C1U100_J"
    ],
    "merknad": null
   },
@@ -3971,6 +4840,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": 2.6,
+   "linsefremspring_L1_m": 0.155,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -4006,7 +4876,8 @@
    "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
    "status": "bekreftet",
    "kilder": [
-    "PA_C1W300"
+    "PA_C1W300",
+    "PA_C1_OI"
    ],
    "merknad": null
   },
@@ -4017,6 +4888,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": 2.4,
+   "linsefremspring_L1_m": 0.149,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -4054,7 +4926,8 @@
    "status": "bekreftet",
    "kilder": [
     "PA_C1W400",
-    "PA_C1W400_WEB"
+    "PA_C1W400_WEB",
+    "PA_C1_OI"
    ],
    "merknad": null
   },
@@ -4065,6 +4938,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": null,
+   "linsefremspring_L1_m": 0.144,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -4102,7 +4976,8 @@
    "status": "bekreftet",
    "kilder": [
     "PA_C1W500",
-    "PA_C1W500_WEB"
+    "PA_C1W500_WEB",
+    "PA_C1_OI"
    ],
    "merknad": null
   },
@@ -4113,6 +4988,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": 1.7,
+   "linsefremspring_L1_m": 0.11,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -4148,7 +5024,8 @@
    "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
    "status": "bekreftet",
    "kilder": [
-    "PA_C1S600"
+    "PA_C1S600",
+    "PA_C1_OI"
    ],
    "merknad": null
   },
@@ -4159,6 +5036,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": 2.4,
+   "linsefremspring_L1_m": 0.16,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -4194,7 +5072,8 @@
    "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
    "status": "bekreftet",
    "kilder": [
-    "PA_C1T700"
+    "PA_C1T700",
+    "PA_C1_OI"
    ],
    "merknad": null
   },
@@ -4205,6 +5084,7 @@
    "type": "1-chip DLP zoom",
    "fokallengde_mm": null,
    "vekt_kg": null,
+   "linsefremspring_L1_m": 0.16,
    "kompatibilitet": [
     {
      "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
@@ -4242,9 +5122,109 @@
    "status": "bekreftet",
    "kilder": [
     "PA_C1T800",
-    "PA_C1T800_WEB"
+    "PA_C1T800_WEB",
+    "PA_C1T800_OI"
    ],
    "merknad": null
+  },
+  {
+   "navn": "ET-C1T900",
+   "delenummer": "ET-C1T900",
+   "merke": "Panasonic",
+   "type": "1-chip DLP zoom",
+   "fokallengde_mm": [
+    114.3,
+    194.2
+   ],
+   "vekt_kg": 2.65,
+   "linsefremspring_L1_m": 0.165,
+   "kompatibilitet": [
+    {
+     "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
+     "kastforhold_oppgitt": "6.50-11.1",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 6.3523,
+      "b_min_m": 0.2939,
+      "a_maks": 10.9879,
+      "b_maks_m": 0.2899,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        5.3867,
+        0.2939
+       ],
+       "maks": [
+        9.3177,
+        0.2899
+       ]
+      }
+     },
+     "kastforhold_effektivt": [
+      6.3523,
+      10.9879
+     ],
+     "kilde": [
+      "PA_C1T900"
+     ]
+    }
+   ],
+   "avstand_maales_fra": "Panasonic: 'distance from the front end of the projection lens to the screen' -> fra linsefront (bekreftet i linse-spec).",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_C1T900",
+    "PA_C1T900_WEB"
+   ],
+   "merknad": null
+  },
+  {
+   "navn": "ET-C1U200",
+   "delenummer": "ET-C1U200",
+   "merke": "Panasonic",
+   "type": "UST fast med speil, 0.380",
+   "fokallengde_mm": [
+    6.48
+   ],
+   "vekt_kg": 2.2,
+   "linsefremspring_L1_m": -0.2477,
+   "kompatibilitet": [
+    {
+     "projektorfamilie": "Panasonic PT-REQ/REZ (REQ12/REQ10/REQ80, REZ12/REZ10/REZ80, 16:10)",
+     "kastforhold_oppgitt": "0.380",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 0.3732,
+      "b_min_m": 0.0204,
+      "a_maks": 0.3732,
+      "b_maks_m": 0.0204,
+      "original": {
+       "enhet": "m_per_m_diag",
+       "aspekt": "16:10",
+       "min": [
+        0.3165,
+        0.0204
+       ],
+       "maks": null
+      }
+     },
+     "kastforhold_effektivt": [
+      0.3732,
+      0.3732
+     ],
+     "kilde": [
+      "PA_C1U200",
+      "PA_C1U200_MAN"
+     ]
+    }
+   ],
+   "avstand_maales_fra": "L1 = fra speilets reflekterende flate til lerret. Panasonic oppgir: L2 (linsespiss) = L1 + 0,0156 m; L3 (kabinettfront) = L1 - 0,2477 m; L4 (kabinettbakkant) = L1 - 0,7857 m.",
+   "status": "bekreftet",
+   "kilder": [
+    "PA_C1U200",
+    "PA_C1U200_MAN"
+   ],
+   "merknad": "Bildestørrelse 100–500\"."
   },
   {
    "navn": "TLD+ 0.38/0.39 UST 90°",
@@ -4317,8 +5297,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": "QDX-manual oppgir 0,36 for N4K 0,98\" og 0,39 for W/4K-UHD 0,96\"",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4394,8 +5373,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": "QDX-manual: 0,63-0,83 (0,98\")",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4471,8 +5449,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": null,
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4548,8 +5525,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": "Forhandlere: 1,16-1,49 WU / 1,24-1,56 WQ. Barco viser også en 'TLD+ Ultra 1.16-1.49' (annet delenr. ukjent).",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4625,8 +5601,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": "Forhandler: 1,48-2,0 WQ",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4702,10 +5677,9 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
-   "merknad": "Barco-produktsiden selv oppgir både 1,89-2,55 og 1,87-2,56 (WU)",
+   "merknad": "Barcos UDX-4K40-produktside oppgir både 1,89-2,55 og 1,87-2,56 (WU)",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
   },
   {
@@ -4779,8 +5753,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": "Forhandler: 2,56-4,17 WU / 2,73-4,43 WQ",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4856,8 +5829,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": null,
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4933,8 +5905,7 @@
    "status": "bekreftet",
    "kilder": [
     "BA_UDX4K40",
-    "BA_QDX_LENSES",
-    "BA_TLD187"
+    "BA_QDX_LENSES"
    ],
    "merknad": "Ikke for QDX N4K RGB (lasersikkerhet). Forhandler: 7,39-10,8 WQ",
    "linseforskyvning": "Ikke publisert per linse. Prosjektor: UDX -100/+130 % V, ±40 % H 'avhengig av linse'. HDX: -30/+120 % V, ±40 % H for zoomlinser."
@@ -4983,6 +5954,52 @@
     "vertikal_pct": 35,
     "horisontal_pct": 20,
     "status": "forhandlerdata"
+   }
+  },
+  {
+   "navn": "TLD+ 1.2 (fast)",
+   "delenummer": "R9840775",
+   "merke": "Barco",
+   "type": "fast",
+   "fokallengde_mm": null,
+   "vekt_kg": null,
+   "kompatibilitet": [
+    {
+     "projektorfamilie": "Barco UDX-W / HDX (WUXGA 0,96\")",
+     "kastforhold_oppgitt": "1.14",
+     "formel": {
+      "form": "L_m = a * bildebredde_m + b",
+      "a_min": 1.14,
+      "b_min_m": null,
+      "a_maks": 1.14,
+      "b_maks_m": null,
+      "merknad": "Kun kastforhold publisert; b ukjent"
+     },
+     "kastforhold_effektivt": [
+      1.14,
+      1.14
+     ],
+     "kilde": [
+      "BA_TLD114",
+      "BA_TLD114_SPEC",
+      "RX_R9840775"
+     ],
+     "merknad": "'1.2' er SXGA+-navnet (1,23:1); Barco oppgir 1,14:1 på WUXGA ('TLD+ lens (1.14:1 WUXGA) (1.23:1 SXGA+)'). Kun kastforhold publisert; b ukjent."
+    }
+   ],
+   "avstand_maales_fra": "Ikke oppgitt i Barcos nåværende dokumentasjon; Barco henviser til lens calculator (±5 % toleranse). Eldre Barco TLD-formeldokument (2006) målte PD fra kabinettfront/ringen rundt linsen (SLM). UDX laseravstandsmåler måler fra prosjektorens front. Barco publiserer ikke offset b - behandles som b=0 (ren kastforhold x bredde).",
+   "status": "bekreftet",
+   "kilder": [
+    "BA_TLD114",
+    "BA_TLD114_SPEC",
+    "BA_UDXW32",
+    "BA_HDX_LENSES",
+    "RX_R9840775",
+    "AG_BARCO"
+   ],
+   "merknad": "Utgått hos Barco, men står i linselista for UDX-W32 og HDX ('1.2:1'). Kun WUXGA-modeller; 4K-UDX-spec lister den ikke. Barcos HDX-manual skriver delenummer R9840776; Barcos supportside og forhandlere skriver R9840775.",
+   "linseforskyvning": {
+    "merknad": "Ikke publisert for UDX/HDX (Barco oppgir HDX-forskyvning bare for zoomlinser, maks ±40 % H). Barcos linse-spec (2016) gjelder SLM: G5/G8 ±64 % H, +100/−20 % V; R6/R8 ±59 % H, +84/−20 % V. Audio General: ±52 % H, −10/+110 % V (over prosjektorens ±40 % H)."
    }
   },
   {
@@ -5643,23 +6660,24 @@
    "kompatibilitet": [
     {
      "projektorfamilie": "Barco F80 (0,67\" WQXGA+)",
-     "kastforhold_oppgitt": "0.85-1.06",
+     "kastforhold_oppgitt": "0.80-1.00",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 0.85,
+      "a_min": 0.8,
       "b_min_m": null,
-      "a_maks": 1.06,
+      "a_maks": 1.0,
       "b_maks_m": null,
       "merknad": "Kun kastforhold publisert; b ukjent"
      },
      "kastforhold_effektivt": [
-      0.85,
-      1.06
+      0.8,
+      1.0
      ],
      "kilde": [
       "BA_F80_LENSES",
       "BA_F80"
-     ]
+     ],
+     "merknad": "Barco oppgir 0,85-1,06 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent."
     }
    ],
    "avstand_maales_fra": "Ikke oppgitt i Barcos nåværende dokumentasjon; Barco henviser til lens calculator (±5 % toleranse). Eldre Barco TLD-formeldokument (2006) målte PD fra kabinettfront/ringen rundt linsen (SLM). UDX laseravstandsmåler måler fra prosjektorens front. Barco publiserer ikke offset b - behandles som b=0 (ren kastforhold x bredde).",
@@ -5668,7 +6686,7 @@
     "BA_F80_LENSES",
     "BA_F80"
    ],
-   "merknad": "F80-produktsiden lister også avvikende GLD-områder (0,8-1,0 / 1,0-1,35 / 1,35-2,0 / 2,0-3,0).",
+   "merknad": "Navnet og 0,85-1,06 gjelder 2560 × 1600-feltet. F80-produktsiden oppgir 0,80-1,00 for hele 2716-brikken, og det er dette kalkulatoren regner med.",
    "linseforskyvning": "F80-lensoversikten har shift-tall (±100-125 % V, ±45-53 % H) men koblingen til linse kunne ikke leses ut"
   },
   {
@@ -5681,23 +6699,24 @@
    "kompatibilitet": [
     {
      "projektorfamilie": "Barco F80 (0,67\" WQXGA+)",
-     "kastforhold_oppgitt": "1.06-1.43",
+     "kastforhold_oppgitt": "1.00-1.35",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 1.06,
+      "a_min": 1.0,
       "b_min_m": null,
-      "a_maks": 1.43,
+      "a_maks": 1.35,
       "b_maks_m": null,
       "merknad": "Kun kastforhold publisert; b ukjent"
      },
      "kastforhold_effektivt": [
-      1.06,
-      1.43
+      1.0,
+      1.35
      ],
      "kilde": [
       "BA_F80_LENSES",
       "BA_F80"
-     ]
+     ],
+     "merknad": "Barco oppgir 1,06-1,43 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent."
     }
    ],
    "avstand_maales_fra": "Ikke oppgitt i Barcos nåværende dokumentasjon; Barco henviser til lens calculator (±5 % toleranse). Eldre Barco TLD-formeldokument (2006) målte PD fra kabinettfront/ringen rundt linsen (SLM). UDX laseravstandsmåler måler fra prosjektorens front. Barco publiserer ikke offset b - behandles som b=0 (ren kastforhold x bredde).",
@@ -5706,7 +6725,7 @@
     "BA_F80_LENSES",
     "BA_F80"
    ],
-   "merknad": "F80-produktsiden lister også avvikende GLD-områder (0,8-1,0 / 1,0-1,35 / 1,35-2,0 / 2,0-3,0).",
+   "merknad": "Navnet og 1,06-1,43 gjelder 2560 × 1600-feltet. F80-produktsiden oppgir 1,00-1,35 for hele 2716-brikken, og det er dette kalkulatoren regner med.",
    "linseforskyvning": "F80-lensoversikten har shift-tall (±100-125 % V, ±45-53 % H) men koblingen til linse kunne ikke leses ut"
   },
   {
@@ -5719,23 +6738,24 @@
    "kompatibilitet": [
     {
      "projektorfamilie": "Barco F80 (0,67\" WQXGA+)",
-     "kastforhold_oppgitt": "1.43-2.12",
+     "kastforhold_oppgitt": "1.35-2.00",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 1.43,
+      "a_min": 1.35,
       "b_min_m": null,
-      "a_maks": 2.12,
+      "a_maks": 2.0,
       "b_maks_m": null,
       "merknad": "Kun kastforhold publisert; b ukjent"
      },
      "kastforhold_effektivt": [
-      1.43,
-      2.12
+      1.35,
+      2.0
      ],
      "kilde": [
       "BA_F80_LENSES",
       "BA_F80"
-     ]
+     ],
+     "merknad": "Barco oppgir 1,43-2,12 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent."
     }
    ],
    "avstand_maales_fra": "Ikke oppgitt i Barcos nåværende dokumentasjon; Barco henviser til lens calculator (±5 % toleranse). Eldre Barco TLD-formeldokument (2006) målte PD fra kabinettfront/ringen rundt linsen (SLM). UDX laseravstandsmåler måler fra prosjektorens front. Barco publiserer ikke offset b - behandles som b=0 (ren kastforhold x bredde).",
@@ -5744,7 +6764,7 @@
     "BA_F80_LENSES",
     "BA_F80"
    ],
-   "merknad": "F80-produktsiden lister også avvikende GLD-områder (0,8-1,0 / 1,0-1,35 / 1,35-2,0 / 2,0-3,0).",
+   "merknad": "Navnet og 1,43-2,12 gjelder 2560 × 1600-feltet. F80-produktsiden oppgir 1,35-2,00 for hele 2716-brikken, og det er dette kalkulatoren regner med.",
    "linseforskyvning": "F80-lensoversikten har shift-tall (±100-125 % V, ±45-53 % H) men koblingen til linse kunne ikke leses ut"
   },
   {
@@ -5757,23 +6777,24 @@
    "kompatibilitet": [
     {
      "projektorfamilie": "Barco F80 (0,67\" WQXGA+)",
-     "kastforhold_oppgitt": "2.12-3.18",
+     "kastforhold_oppgitt": "2.00-3.00",
      "formel": {
       "form": "L_m = a * bildebredde_m + b",
-      "a_min": 2.12,
+      "a_min": 2.0,
       "b_min_m": null,
-      "a_maks": 3.18,
+      "a_maks": 3.0,
       "b_maks_m": null,
       "merknad": "Kun kastforhold publisert; b ukjent"
      },
      "kastforhold_effektivt": [
-      2.12,
-      3.18
+      2.0,
+      3.0
      ],
      "kilde": [
       "BA_F80_LENSES",
       "BA_F80"
-     ]
+     ],
+     "merknad": "Barco oppgir 2,12-3,18 for 2560 × 1600-feltet; her regnet mot hele brikken (2716 px). Kun kastforhold publisert; b ukjent."
     }
    ],
    "avstand_maales_fra": "Ikke oppgitt i Barcos nåværende dokumentasjon; Barco henviser til lens calculator (±5 % toleranse). Eldre Barco TLD-formeldokument (2006) målte PD fra kabinettfront/ringen rundt linsen (SLM). UDX laseravstandsmåler måler fra prosjektorens front. Barco publiserer ikke offset b - behandles som b=0 (ren kastforhold x bredde).",
@@ -5782,7 +6803,7 @@
     "BA_F80_LENSES",
     "BA_F80"
    ],
-   "merknad": "F80-produktsiden lister også avvikende GLD-områder (0,8-1,0 / 1,0-1,35 / 1,35-2,0 / 2,0-3,0).",
+   "merknad": "Navnet og 2,12-3,18 gjelder 2560 × 1600-feltet. F80-produktsiden oppgir 2,00-3,00 for hele 2716-brikken, og det er dette kalkulatoren regner med.",
    "linseforskyvning": "F80-lensoversikten har shift-tall (±100-125 % V, ±45-53 % H) men koblingen til linse kunne ikke leses ut"
   }
  ],
@@ -5928,10 +6949,6 @@
    "url": "https://www.barco.com/manuals/R5917035/sagd2qjrg6er.html"
   },
   {
-   "id": "BA_TLD187",
-   "url": "https://www.barco.com/en/product/tld-plus-187---256"
-  },
-  {
    "id": "BA_G62_LENSES",
    "url": "https://www.barco.com/manuals/R5914654/b1zbfwp8l4o5.html"
   },
@@ -6026,6 +7043,138 @@
   {
    "id": "BA_TLD067",
    "url": "https://www.barco.com/nl/support/tld-067"
+  },
+  {
+   "id": "PA_RQ22K_SPEC",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/document/2024-04/rq22k_spec_en.pdf"
+  },
+  {
+   "id": "PA_REZ12",
+   "url": "https://docs.connect.panasonic.com/projector/products/rez12/spec/"
+  },
+  {
+   "id": "PA_D3LEW600",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/173259"
+  },
+  {
+   "id": "PA_C1T900",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/189484"
+  },
+  {
+   "id": "PA_C1T900_WEB",
+   "url": "https://ap.pnd.panasonic.com/ph/en/download-specifications/266"
+  },
+  {
+   "id": "PA_C1U200",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/174109"
+  },
+  {
+   "id": "PA_C1U200_MAN",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/176920"
+  },
+  {
+   "id": "PA_D3LEW60",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/2024-04/et-d3lew60_spec_en.pdf"
+  },
+  {
+   "id": "PA_D3LET80",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/2024-04/et-d3let80_spec_en.pdf"
+  },
+  {
+   "id": "PA_D3LES20",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/2024-04/et-d3les20_spec_en.pdf"
+  },
+  {
+   "id": "PA_D3LEW50",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/2024-04/et-d3lew50_spec_en.pdf"
+  },
+  {
+   "id": "PA_D3LEW10",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/document/2024-04/et-d3lew10_spec_en_4.pdf"
+  },
+  {
+   "id": "PA_D3LET30",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media/2024-04/et-d3let30_spec_en.pdf"
+  },
+  {
+   "id": "PA_RQ45K_SPEC",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/180747"
+  },
+  {
+   "id": "PA_REQ15",
+   "url": "https://docs.connect.panasonic.com/projector/products/req15/spec/"
+  },
+  {
+   "id": "PA_REZ15",
+   "url": "https://docs.connect.panasonic.com/projector/products/rez15/spec/"
+  },
+  {
+   "id": "PA_RQ32K_SPEC",
+   "url": "https://www.fullcompass.com/common/files/29703-PanasonicPTRQ32KUSpecFiles.pdf"
+  },
+  {
+   "id": "PA_RQ22K_SPEC_BP",
+   "url": "https://bizpartner.panasonic.net/public/ppr/file_view/178042"
+  },
+  {
+   "id": "PA_D3LE_APP",
+   "url": "https://eu.connect.panasonic.com/sites/default/files/media//2024-04/ET-D3LEU100_LEW200%28DPQX1394ZB_X1%29_E%2BAppendix_3.pdf"
+  },
+  {
+   "id": "PA_D3LEU100_EU",
+   "url": "https://eu.connect.panasonic.com/de/en/et-d3leu100"
+  },
+  {
+   "id": "PA_D3LEW201",
+   "url": "https://bizpartner.panasonic.net/public/ppr/file_view/214037"
+  },
+  {
+   "id": "PA_C1_OI",
+   "url": "https://inquirecontent2.ingrammicro.com/User-Manual/1077656629.pdf"
+  },
+  {
+   "id": "PA_C1U100_J",
+   "url": "https://content.connect.panasonic.com/jp-ja/fai/file/56839"
+  },
+  {
+   "id": "PA_C1T800_OI",
+   "url": "https://pim-api.connect.panasonic.com/mediaStream/174228"
+  },
+  {
+   "id": "EP_L17XX_EN",
+   "url": "https://download3.ebz.epson.net/dsc/f/03/00/14/88/75/adf399b3ab3b55af5cca15cb037cad323c72f5d7/Specifications_EBL1755U_EN_Rev05.pdf"
+  },
+  {
+   "id": "EP_PU2010_JA",
+   "url": "https://www2.epson.jp/support/manual/data/elp/setup/specifications_ebpu2010series_ja_rev07.pdf"
+  },
+  {
+   "id": "BA_UDMW22",
+   "url": "https://www.barco.com/en/product/udm-w22"
+  },
+  {
+   "id": "BA_UDMW22_MAN",
+   "url": "https://www.barco.com/manuals/R5911443/js44o2adwy2a.html"
+  },
+  {
+   "id": "BA_UDMW22_SPEC",
+   "url": "https://assets.barco.com/m/467da972b341cb32/original/UDM-W22-en-Spec-sheet.pdf"
+  },
+  {
+   "id": "BA_TLD114",
+   "url": "https://www.barco.com/en/support/tld-111"
+  },
+  {
+   "id": "BA_TLD114_SPEC",
+   "url": "https://www.rentex.com/wp-content/uploads/2016/07/Barco-TLD-1141-WUXGA-1231-SXGA-Lens-Spec.pdf"
+  },
+  {
+   "id": "RX_R9840775",
+   "url": "https://www.rentex.com/rental-products/barco-tld-fixed-focus-short-throw-lens-r9840775/"
+  },
+  {
+   "id": "BA_HDX_LENSES",
+   "url": "https://www.barco.com/manuals/R5905032/cy8hwu1g03yd.html"
   }
  ]
 }

@@ -11,26 +11,29 @@
   var innebygd = [
     { id: 'uni-xs26', navn: 'Unilumin XS 2.6', b: 500, h: 500, px: 192, py: 192, kg: 7.7, maks: 150, snitt: 45, pitch: 2.6 },
     { id: 'uni-xs39', navn: 'Unilumin XS 3.9', b: 500, h: 500, px: 128, py: 128, kg: 7.7, maks: 150, snitt: 45, pitch: 3.9 },
-    { id: 'uni-upad4-26', navn: 'Unilumin Upad IV 2.6', b: 500, h: 500, px: 192, py: 192, kg: 7.2, maks: 160, snitt: 55, pitch: 2.6 },
+    // Unilumin Upad IV 2.6 (8-scan): databladene 2023/5 V1.0 (72 mm, 7,2 kg) og V1.3 oppgir 160/165 W maks og 55/58 W snitt; høyeste brukt.
+    { id: 'uni-upad4-26', navn: 'Unilumin Upad IV 2.6', b: 500, h: 500, px: 192, py: 192, kg: 7.2, maks: 165, snitt: 58, pitch: 2.6 },
     // Unilumin URM III (inne). 2.6: V3R2-databladet 2023/5 (8 kg, 140/45 W), litt over nyere XC-utgave (7,9 kg, 130/45 W).
     // 3.9: V3R2-databladet 2023/5 V2.8.
     { id: 'uni-urm3-26', navn: 'Unilumin URM III 2.6 inne', b: 500, h: 500, px: 192, py: 192, kg: 8, maks: 140, snitt: 45, pitch: 2.604 },
     { id: 'uni-urm3-39-2h', navn: 'Unilumin URM III 3.9 inne', fam: 'urm3-39-inne', b: 500, h: 1000, px: 128, py: 256, kg: 14, maks: 248, snitt: 72, pitch: 3.906 },
     { id: 'uni-urm3-39', navn: 'Unilumin URM III 3.9 inne', fam: 'urm3-39-inne', b: 500, h: 500, px: 128, py: 128, kg: 8, maks: 124, snitt: 36, pitch: 3.906 },
-    // Glux BAtn 6: oppløsning bekreftet av Martin; vekt fra BAtn-serien, effekt anslått fra BAtn 10-databladet (270/135 W per panel)
-    { id: 'glux-batn6', navn: 'Glux BAtn 6', b: 500, h: 1000, px: 72, py: 144, kg: 4.8, maks: 270, snitt: 135, pitch: 6.94 },
-    // Uniview UR Pro (ledwallcentral.com). 50 × 100 er «2H»-panelene. Pixel Logic oppgir 12,5 kg for 50 × 100, så sjekk vekten mot databladet.
+    // Glux BAtn 6: oppløsning bekreftet av Martin; vekt og effekt fra Glux-presentasjonen 2013 (BAtn6: 4,8 kg, 300/150 W per panel). Glux' BAtn-brosjyre oppgir også maks ≤300 W per panel.
+    { id: 'glux-batn6', navn: 'Glux BAtn 6', b: 500, h: 1000, px: 72, py: 144, kg: 4.8, maks: 300, snitt: 150, pitch: 6.94 },
+    // Uniview UR Pro (ledwallcentral.com). 50 × 100 er «2H»-panelene. Inne 50 × 50 er 8,8 kg (univiewled.com, 11.11.2026; Pixel Logic oppgir 8,5 kg, ledwallcentral 6,8 kg).
+    // 50 × 100: ledwallcentral 11,4 kg, Uniview 10,6/10,8 kg, Pixel Logic 12,5 kg, så sjekk mot databladet.
+    // Ute-effekt 700/235 W/m² (univiewled.com og den franske Uniview-siden, november 2026; ledwallcentral 680/220), høyeste brukt.
     // fam: paneler med samme fam har samme bredde og pitch og kan blandes i samme vegg (store + små).
     { id: 'univ-urpro26-2h', navn: 'Uniview UR Pro 2.6 inne', fam: 'urpro26-inne', b: 500, h: 1000, px: 192, py: 384, kg: 11.4, maks: 300, snitt: 100, pitch: 2.604 },
-    { id: 'univ-urpro26', navn: 'Uniview UR Pro 2.6 inne', fam: 'urpro26-inne', b: 500, h: 500, px: 192, py: 192, kg: 6.8, maks: 150, snitt: 50, pitch: 2.604 },
+    { id: 'univ-urpro26', navn: 'Uniview UR Pro 2.6 inne', fam: 'urpro26-inne', b: 500, h: 500, px: 192, py: 192, kg: 8.8, maks: 150, snitt: 50, pitch: 2.604 },
     { id: 'univ-urpro29-2h', navn: 'Uniview UR Pro 2.9 inne', fam: 'urpro29-inne', b: 500, h: 1000, px: 168, py: 336, kg: 11.4, maks: 300, snitt: 100, pitch: 2.976 },
-    { id: 'univ-urpro29', navn: 'Uniview UR Pro 2.9 inne', fam: 'urpro29-inne', b: 500, h: 500, px: 168, py: 168, kg: 6.8, maks: 150, snitt: 50, pitch: 2.976 },
+    { id: 'univ-urpro29', navn: 'Uniview UR Pro 2.9 inne', fam: 'urpro29-inne', b: 500, h: 500, px: 168, py: 168, kg: 8.8, maks: 150, snitt: 50, pitch: 2.976 },
     { id: 'univ-urpro39-2h', navn: 'Uniview UR Pro 3.9 inne', fam: 'urpro39-inne', b: 500, h: 1000, px: 128, py: 256, kg: 11.4, maks: 300, snitt: 100, pitch: 3.906 },
-    { id: 'univ-urpro39', navn: 'Uniview UR Pro 3.9 inne', fam: 'urpro39-inne', b: 500, h: 500, px: 128, py: 128, kg: 6.8, maks: 150, snitt: 50, pitch: 3.906 },
-    { id: 'univ-urpro29-2h-ute', navn: 'Uniview UR Pro 2.9 ute', fam: 'urpro29-ute', b: 500, h: 1000, px: 168, py: 336, kg: 12, maks: 340, snitt: 110, pitch: 2.976 },
-    { id: 'univ-urpro29-ute', navn: 'Uniview UR Pro 2.9 ute', fam: 'urpro29-ute', b: 500, h: 500, px: 168, py: 168, kg: 9, maks: 170, snitt: 55, pitch: 2.976 },
-    { id: 'univ-urpro39-2h-ute', navn: 'Uniview UR Pro 3.9 ute', fam: 'urpro39-ute', b: 500, h: 1000, px: 128, py: 256, kg: 12, maks: 340, snitt: 110, pitch: 3.906 },
-    { id: 'univ-urpro39-ute', navn: 'Uniview UR Pro 3.9 ute', fam: 'urpro39-ute', b: 500, h: 500, px: 128, py: 128, kg: 9, maks: 170, snitt: 55, pitch: 3.906 },
+    { id: 'univ-urpro39', navn: 'Uniview UR Pro 3.9 inne', fam: 'urpro39-inne', b: 500, h: 500, px: 128, py: 128, kg: 8.8, maks: 150, snitt: 50, pitch: 3.906 },
+    { id: 'univ-urpro29-2h-ute', navn: 'Uniview UR Pro 2.9 ute', fam: 'urpro29-ute', b: 500, h: 1000, px: 168, py: 336, kg: 12, maks: 350, snitt: 117.5, pitch: 2.976 },
+    { id: 'univ-urpro29-ute', navn: 'Uniview UR Pro 2.9 ute', fam: 'urpro29-ute', b: 500, h: 500, px: 168, py: 168, kg: 9, maks: 175, snitt: 58.75, pitch: 2.976 },
+    { id: 'univ-urpro39-2h-ute', navn: 'Uniview UR Pro 3.9 ute', fam: 'urpro39-ute', b: 500, h: 1000, px: 128, py: 256, kg: 12, maks: 350, snitt: 117.5, pitch: 3.906 },
+    { id: 'univ-urpro39-ute', navn: 'Uniview UR Pro 3.9 ute', fam: 'urpro39-ute', b: 500, h: 500, px: 128, py: 128, kg: 9, maks: 175, snitt: 58.75, pitch: 3.906 },
 
     // Absen Polaris (absen.com / usabsen.com). PL2.5 Pro V10: 8,8 kg i siste datablad (V20221215), eldre 8,6 kg.
     { id: 'absen-pl25pro-v2', navn: 'Absen PL2.5 Pro V2', b: 500, h: 500, px: 200, py: 200, kg: 7.8, maks: 170, snitt: 57.5, pitch: 2.5 },
@@ -60,7 +63,8 @@
       merk: 'ROE Black Quartz: vekten for 50 × 100 cm er med støtteramme, slik ROE oppgir den (17,8 kg uten).', merkEn: 'ROE Black Quartz: the 50 × 100 cm weight includes the support frame, as ROE lists it (17.8 kg without it).' },
     { id: 'roe-bq46-half', navn: 'ROE Black Quartz BQ4.6', fam: 'bq46', b: 500, h: 500, px: 108, py: 108, kg: 9.8, maks: 190, snitt: 85, pitch: 4.63 },
     // Carbon CB5 (første versjon): hvit utgave 500/250 W (halv 250/130 W), Black HB 650/330 W (halv 330/170 W). Black HB er brukt.
-    { id: 'roe-cb5', navn: 'ROE Carbon CB5', fam: 'cb5', b: 600, h: 1200, px: 104, py: 208, kg: 13.85, maks: 650, snitt: 330, pitch: 5.77,
+    // ROE-håndboka (V2.1 og V3.1) tillater maks 5 hele CB5 per 16 A-strømkabel ved 220 V (maksKjede); ingen tall for halve paneler.
+    { id: 'roe-cb5', navn: 'ROE Carbon CB5', fam: 'cb5', b: 600, h: 1200, px: 104, py: 208, kg: 13.85, maks: 650, snitt: 330, pitch: 5.77, maksKjede: 5,
       merk: 'ROE Carbon CB5 (første versjon): effekten er regnet ut fra Black HB-utgaven, maks 650 W per panel (330 W for 60 × 60 cm). Den vanlige hvite trekker opptil 500 W (250 W).', merkEn: 'ROE Carbon CB5 (first version): power is based on the Black HB version, max 650 W per panel (330 W for 60 × 60 cm). The standard white one draws up to 500 W (250 W).' },
     { id: 'roe-cb5-half', navn: 'ROE Carbon CB5', fam: 'cb5', b: 600, h: 600, px: 104, py: 104, kg: 7.95, maks: 330, snitt: 170, pitch: 5.77,
       merk: 'ROE Carbon CB5 (første versjon): effekten er regnet ut fra Black HB-utgaven, maks 650 W per panel (330 W for 60 × 60 cm). Den vanlige hvite trekker opptil 500 W (250 W).', merkEn: 'ROE Carbon CB5 (first version): power is based on the Black HB version, max 650 W per panel (330 W for 60 × 60 cm). The standard white one draws up to 500 W (250 W).' },

@@ -27,6 +27,7 @@ def gruppe(p):
 def frem(p):
     m=p['modell']
     if 'PU22' in m or 'PU21' in m: return 'PU2200'
+    if 'PQ22' in m: return 'PU2200'   # samme kabinett og samme fremspringstabell i Epsons PQ2220-spec
     if 'PU2010' in m: return 'PU2010'
     if 'PU100' in m: return 'PU1000'
     if 'EB-L1' in m: return 'L17xx'
@@ -70,7 +71,7 @@ for p in d['projektorer']:
                 if g in l['f'] and re.search(re.escape(base)+r'(?![0-9])', l['n']): ps[i]=shift(e)
     P.append({'m':p['merke'],'n':p['modell'],'g':g,'res':p['opplosning_px'],'asp':p['aspekt'],'lm':p['lumen'],'lmNote':p.get('lumen_merknad'),
       'panel':p.get('panel_diagonal_tommer'),'kg':p.get('vekt_kg'),'kgNote':p.get('vekt_merknad'),'shift':shift(p['linseforskyvning'].get('generelt') or {}),'ls':ps,
-      'frem':frem(p),'st':p.get('status'),'note':p.get('merknad'),'k':p.get('kilder') or []})
+      'frem':frem(p),'L1':p.get('linsefremspring_L1_m_per_linse'),'st':p.get('status'),'note':p.get('merknad'),'k':p.get('kilder') or []})
 for p in P:
     n=sum(1 for l in L if p['g'] in l['f'])
     print(p['n'],'linser:',n,'shift-linser:',len(p['ls']))

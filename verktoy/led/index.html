@@ -141,7 +141,7 @@ details[open] summary { margin-bottom: 14px; }
           </select>
         </div>
         <div class="row">
-          <div class="field"><label for="kap">Px per port (60 Hz, 8 bit)</label><input id="kap" type="number" step="1000" value="655360"></div>
+          <div class="field"><label for="kap">Px per port (60 Hz, 8 bit)</label><input id="kap" type="number" step="1000" value="650000"></div>
           <div class="field"><label for="ppp" data-en="Ports per processor">Porter per prosessor</label><input id="ppp" type="number" min="1" value="16"></div>
         </div>
         <div class="row">
@@ -345,27 +345,43 @@ details[open] summary { margin-bottom: 14px; }
 
   var sisteTekst = '';
   var prosessorer = {
-    nova: { kap: 655360, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'NovaStar: 655 360 px per port ved 60 Hz og 8 bit (nyere MX-serie: ca. 659 000). 10 og 12 bit halverer kapasiteten.', noteEn: 'NovaStar: 655,360 px per port at 60 Hz and 8 bit (newer MX series: approx. 659,000). 10 and 12 bit halve the capacity.' },
+    nova: { kap: 650000, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'NovaStar: 650 000 px per port ved 60 Hz og 8 bit (nyere MX-serie: ca. 659 000). 10 og 12 bit halverer kapasiteten.', noteEn: 'NovaStar: 650,000 px per port at 60 Hz and 8 bit (newer MX series: approx. 659,000). 10 and 12 bit halve the capacity.' },
     'nova-pro': { kap: 659722, ppp: 20, bit: { 8: 1, 10: 0.75, 12: 0.5 }, note: 'NovaStar MX med A10s/A8s Pro-kort: 659 722 px ved 8 bit og 494 792 px ved 10 bit (60 Hz). 12 bit er regnet som halv kapasitet.', noteEn: 'NovaStar MX with A10s/A8s Pro cards: 659,722 px at 8 bit and 494,792 px at 10 bit (60 Hz). 12 bit is counted as half capacity.' },
-    colorlight: { kap: 650000, ppp: 16, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'Colorlight: ca. 650 000 px per 1G-port ved 60 Hz og 8 bit (X- og Z-serien). Porter per prosessor: X8 = 8, X16 = 16. 10 og 12 bit er regnet som halv kapasitet; sjekk i LEDVISION.', noteEn: 'Colorlight: approx. 650,000 px per 1G port at 60 Hz and 8 bit (X and Z series). Ports per processor: X8 = 8, X16 = 16. 10 and 12 bit are counted as half capacity; check in LEDVISION.' },
-    brompton: { kap: 525000, ppp: 8, bit: { 8: 1, 10: 1, 12: 1 }, note: 'Brompton Tessera: ca. 525 000 px per 1G-port ved 60 Hz. Bitdybde er ikke regnet inn her, så sjekk portlasten i Tessera.', noteEn: 'Brompton Tessera: approx. 525,000 px per 1G port at 60 Hz. Bit depth is not included here, so check the port load in Tessera.' },
+    colorlight: { kap: 650000, ppp: 16, hoyFaktor: 64 / 65, bit: { 8: 1, 10: 0.5, 12: 0.5 }, note: 'Colorlight: ca. 650 000 px per 1G-port ved 60 Hz og 8 bit, 320 000 ved 120 Hz (X- og Z-serien; 100 Hz regnet som 384 000). Porter per prosessor: X8 = 8, X16 = 16. 10 og 12 bit er regnet som halv kapasitet; sjekk i LEDVISION.', noteEn: 'Colorlight: approx. 650,000 px per 1G port at 60 Hz and 8 bit, 320,000 at 120 Hz (X and Z series; 100 Hz counted as 384,000). Ports per processor: X8 = 8, X16 = 16. 10 and 12 bit are counted as half capacity; check in LEDVISION.' },
+    brompton: { kap: 525000, ppp: 8, maksPx: 4500000, bit: { 8: 1, 10: 0.8, 12: 2 / 3 }, note: 'Brompton Tessera: ca. 525 000 px per 1G-port ved 60 Hz og 8 bit, 420 000 ved 10 bit og 350 000 ved 12 bit. Tessera S8: 8 porter, maks 4,5 mill. px per prosessor.', noteEn: 'Brompton Tessera: approx. 525,000 px per 1G port at 60 Hz and 8 bit, 420,000 at 10 bit and 350,000 at 12 bit. Tessera S8: 8 ports, max 4.5 million px per processor.' },
     egen: { note: 'Skriv inn kapasitet per port ved 60 Hz og 8 bit. 10 og 12 bit er regnet som halv kapasitet.', noteEn: 'Enter the capacity per port at 60 Hz and 8 bit. 10 and 12 bit are counted as half capacity.' , bit: { 8: 1, 10: 0.5, 12: 0.5 } }
   };
 
   function data(p, c, r, n) {
     var pr = prosessorer[$('prosessor').value];
     var hz = +$('hz').value, bit = +$('bit').value;
-    var kap = Math.floor(Math.max(0, +$('kap').value || 655360) * (60 / hz) * pr.bit[bit]);
+    // Colorlight oppgir litt mindre enn rent forholdstall over 60 Hz (320 000 ved 120 Hz), derfor hoyFaktor.
+    var kap = Math.floor(Math.max(0, +$('kap').value || 650000) * (60 / hz) * (hz > 60 && pr.hoyFaktor ? pr.hoyFaktor : 1) * pr.bit[bit]);
     var pxPanel = p.px * p.py;
     var perPort = Math.floor(kap / pxPanel);
     var kabling = $('kabling').value;
     if (kabling === 'kol' && perPort >= r) perPort = Math.floor(perPort / r) * r;
     if (kabling === 'rad' && perPort >= c) perPort = Math.floor(perPort / c) * c;
-    var porter = perPort ? Math.ceil(n / perPort) : Infinity;
+    // Porter telles fra selve kablingsplanen: får ikke en hel kolonne (eller rad) plass på én port, deles hver kolonne
+    // for seg, og da blir det flere porter enn panelene delt på kapasiteten.
+    var plan = perPort ? kjeder(c, r, perPort, kabling, $('start').value === 'nede') : [];
+    var porter = perPort ? plan.length : Infinity;
     var backup = $('backup').value;
     var ppp = Math.max(1, +$('ppp').value || 1);
     var backupPorter = backup === 'ingen' ? 0 : porter;
     var antProsessorer = backup === 'port' ? Math.ceil((porter * 2) / ppp) : Math.ceil(porter / ppp) * (backup === 'prosessor' ? 2 : 1);
+    // Tessera S8 tar maks 4,5 mill. px totalt. En port kan ikke deles på to prosessorer, så portene pakkes (største først)
+    // på prosessorer med høyst så mange hovedporter og piksler. Gjelder bare med 8 porter per prosessor (SX40 med XD-er har høyere grense).
+    if (pr.maksPx && perPort && ppp === pr.ppp) {
+      var maksPorter = backup === 'port' ? Math.max(1, Math.floor(ppp / 2)) : ppp;
+      var bokser = [];
+      plan.map(function (kj) { return kj.length * pxPanel; }).sort(function (a, b) { return b - a; }).forEach(function (last) {
+        var boks = bokser.filter(function (bx) { return bx.porter < maksPorter && bx.px + last <= pr.maksPx; })[0];
+        if (!boks) { boks = { porter: 0, px: 0 }; bokser.push(boks); }
+        boks.porter++; boks.px += last;
+      });
+      antProsessorer = Math.max(antProsessorer, bokser.length * (backup === 'prosessor' ? 2 : 1));
+    }
     $('data-note').textContent = T_(pr.note, pr.noteEn);
     // Får ikke ett panel plass på en port, finnes det ikke noe fornuftig antall porter: vis strek i stedet for ∞
     if (!perPort) { porter = '–'; backupPorter = backup === 'ingen' ? 0 : '–'; antProsessorer = '–'; }
@@ -449,14 +465,17 @@ details[open] summary { margin-bottom: 14px; }
       return w / (Math.sqrt(3) * 230);
     };
     // Panelene står mellom fase og N (TN) eller mellom to faser (IT), altså 230 V per panel i begge tilfeller.
-    var perKurs = Math.max(1, Math.floor(kurs * 230 * margin / p.maks));
+    // En strømkjede går gjennom panelenes powerCON TRUE1, som tåler 16 A. På 32 og 63 A deles kursen derfor i
+    // flere strømkjeder à 16 A i fordelingen, og perKurs er da paneler per strømkjede.
+    var perKurs = Math.max(1, Math.floor(Math.min(kurs, 16) * 230 * margin / p.maks));
     // Noen paneler tåler bare et visst antall i samme strømkjede (paneler.js: maksKjede)
     if (p.maksKjede) perKurs = Math.min(perKurs, p.maksKjede);
-    var kurser = Math.ceil(n / perKurs);
+    var kjederPerKurs = kurs > 16 ? Math.max(1, Math.min(Math.floor(kurs / 16), Math.floor(kurs * 230 * margin / (perKurs * p.maks)))) : 1;
     var d = data(p, c, r, n);
     // Kurser etter kablingsforslaget (hele kolonner kan gi én kurs mer enn rent regnestykke)
-    var kj = kablingsforslag(p, c, r, d, perKurs, kurs, nett);
-    kurser = kj.strom.length;
+    var kj = kablingsforslag(p, c, r, d, perKurs, kurs, nett, kjederPerKurs);
+    var antKjeder = kj.strom.length;
+    var kurser = Math.ceil(antKjeder / kjederPerKurs);
     var pitch = p.pitch || (p.b / p.px);
 
     $('k-maal').textContent = nf(bmm / 1000, 2) + ' × ' + nf(hmm / 1000, 2) + ' m';
@@ -475,7 +494,8 @@ details[open] summary { margin-bottom: 14px; }
       [T_('Effekt maks', 'Max power'), nf(maks / 1000, 2) + ' kW'],
       [T_('Effekt snitt', 'Average power'), nf(snitt / 1000, 2) + ' kW'],
       [faser === 1 ? T_('Strøm maks (230 V)', 'Max current (230 V)') : T_('Strøm maks per fase (jevnt fordelt)', 'Max current per phase (evenly balanced)'), nf(fase(maks), 1) + ' A'],
-      [T_('Paneler per ' + kurs + ' A kurs', 'Panels per ' + kurs + ' A circuit'), perKurs + (p.maksKjede && perKurs === p.maksKjede ? T_('  (maks per strømkjede)', '  (max per power link)') : '  (' + nf(margin * 100, 0) + T_(' % last)', ' % load)'))],
+      [kurs > 16 ? T_('Paneler per strømkjede à 16 A', 'Panels per 16 A power link') : T_('Paneler per ' + kurs + ' A kurs', 'Panels per ' + kurs + ' A circuit'), perKurs + (p.maksKjede && perKurs === p.maksKjede ? T_('  (maks per strømkjede)', '  (max per power link)') : '  (' + nf(margin * 100, 0) + T_(' % last)', ' % load)'))]
+    ].concat(kurs > 16 ? [[T_('Strømkjeder à 16 A', '16 A power links'), antKjeder + T_('  (' + kjederPerKurs + ' per kurs)', '  (' + kjederPerKurs + ' per circuit)')]] : []).concat([
       [T_('Kurser à ' + kurs + ' A', kurs + ' A circuits'), kurser],
       [T_('Datamengde', 'Data rate'), nf(W * H * d.hz * d.bit * 3 / 1e9, 2) + ' Gbit/s'],
       [T_('Kapasitet per port', 'Capacity per port'), nf(d.kap, 0) + ' px  (' + d.hz + ' Hz, ' + d.bit + ' bit)'],
@@ -484,7 +504,7 @@ details[open] summary { margin-bottom: 14px; }
       [T_('Backup-porter', 'Backup ports'), d.backupPorter],
       [T_('Prosessorer', 'Processors'), d.prosessorer + (d.backup === 'prosessor' ? T_('  (halvparten backup)', '  (half of them backup)') : '')],
       [T_('Vekt per kolonne', 'Weight per column'), nf(sum('kg'), 1) + ' kg']
-    ];
+    ]);
     var t = $('tabell'); t.innerHTML = '';
     rader.forEach(function (x) {
       var tr = document.createElement('tr');
@@ -520,7 +540,7 @@ details[open] summary { margin-bottom: 14px; }
       T_('Oppløsning: ', 'Resolution: ') + W + ' × ' + H + ' px\n' +
       T_('Vekt: ', 'Weight: ') + nf(kg, 0) + T_(' kg (bare paneler)\n', ' kg (panels only)\n') +
       T_('Effekt: maks ', 'Power: max ') + nf(maks / 1000, 2) + T_(' kW, snitt ', ' kW, average ') + nf(snitt / 1000, 2) + ' kW\n' +
-      T_('Kurser: ', 'Circuits: ') + kurser + ' × ' + kurs + ' A (' + perKurs + T_(' paneler per kurs)\n', perKurs === 1 ? ' panel per circuit)\n' : ' panels per circuit)\n') +
+      T_('Kurser: ', 'Circuits: ') + kurser + ' × ' + kurs + ' A (' + (kurs > 16 ? T_(antKjeder + (antKjeder === 1 ? ' strømkjede' : ' strømkjeder') + ' à 16 A, ' + perKurs + (perKurs === 1 ? ' panel' : ' paneler') + ' per kjede)\n', antKjeder + (antKjeder === 1 ? ' × 16 A power link, ' : ' × 16 A power links, ') + perKurs + (perKurs === 1 ? ' panel per link)\n' : ' panels per link)\n')) : perKurs + T_(' paneler per kurs)\n', perKurs === 1 ? ' panel per circuit)\n' : ' panels per circuit)\n')) +
       'Data: ' + d.hz + ' Hz, ' + d.bit + ' bit, ' + d.perPort + T_(' paneler per port\n', d.perPort === 1 ? ' panel per port\n' : ' panels per port\n') +
       T_('Porter: ', 'Ports: ') + d.porter + T_(' hoved', ' main') + (d.backupPorter ? ' + ' + d.backupPorter + ' backup' : '') + ', ' + d.prosessorer + T_(' prosessor', ' processor') + (d.prosessorer === 1 ? '' : T_('er', 's')) +
       merknader.map(function (m) { return '\n' + m; }).join('');
@@ -583,8 +603,9 @@ details[open] summary { margin-bottom: 14px; }
   }
   var r0 = 0;
 
-  function kablingsforslag(p, c, r, d, perKurs, kurs, nett) {
+  function kablingsforslag(p, c, r, d, perKurs, kurs, nett, kpk) {
     r0 = r;
+    kpk = kpk || 1;   // strømkjeder à 16 A per kurs (over 1 bare på 32 og 63 A)
     var fraBunn = $('start').value === 'nede';
     var modus = $('kabling').value;
     var dk = d.perPort ? kjeder(c, r, d.perPort, modus, fraBunn) : [];
@@ -598,12 +619,17 @@ details[open] summary { margin-bottom: 14px; }
     h += '</ul>';
 
     var fasestrom = fasenavn.map(function () { return 0; });
-    h += HaptSprak.en() ? '<h3>Power (' + sk.length + ' × ' + kurs + ' A circuit' + (sk.length === 1 ? '' : 's') + ')</h3><ul>' : '<h3>Strøm (' + sk.length + ' kurs' + (sk.length === 1 ? '' : 'er') + ' à ' + kurs + ' A)</h3><ul>';
+    var antKurs = Math.ceil(sk.length / kpk);
+    if (kpk > 1) h += HaptSprak.en() ? '<h3>Power (' + sk.length + ' × 16 A power link' + (sk.length === 1 ? '' : 's') + ' on ' + antKurs + ' × ' + kurs + ' A circuit' + (antKurs === 1 ? '' : 's') + ')</h3><ul>' : '<h3>Strøm (' + sk.length + ' strømkjede' + (sk.length === 1 ? '' : 'r') + ' à 16 A på ' + antKurs + ' kurs' + (antKurs === 1 ? '' : 'er') + ' à ' + kurs + ' A)</h3><ul>';
+    else h += HaptSprak.en() ? '<h3>Power (' + sk.length + ' × ' + kurs + ' A circuit' + (sk.length === 1 ? '' : 's') + ')</h3><ul>' : '<h3>Strøm (' + sk.length + ' kurs' + (sk.length === 1 ? '' : 'er') + ' à ' + kurs + ' A)</h3><ul>';
+    // Kursen (og dermed fasen) for strømkjede i
+    var fasenr = function (i) { return Math.floor(i / kpk) % fasenavn.length; };
     sk.forEach(function (kj, i) {
-      var f = i % fasenavn.length;
+      var f = fasenr(i);
       fasestrom[f] += kj.length * p.maks / 230;
       var soca = kurs === 16 ? ', Soca ' + (Math.floor(i / 6) + 1) + T_(' kurs ', ' circuit ') + (i % 6 + 1) : '';
-      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>' + T_('Kurs ', 'Circuit ') + (i + 1) + ' (' + fasenavn[f] + soca + '): ' + esc(beskriv(kj, modus === 'fri' ? 'kol' : modus)) + T_(', maks ', ', max ') + nf(kj.length * p.maks / 230, 1) + ' A</span></li>';
+      var tittel = kpk > 1 ? T_('Kurs ', 'Circuit ') + (Math.floor(i / kpk) + 1) + T_(', kjede ', ', link ') + (i % kpk + 1) + ' (' + fasenavn[f] + ')' : T_('Kurs ', 'Circuit ') + (i + 1) + ' (' + fasenavn[f] + soca + ')';
+      h += '<li><i style="background:' + kjedeFarger[i % kjedeFarger.length] + '"></i><span>' + tittel + ': ' + esc(beskriv(kj, modus === 'fri' ? 'kol' : modus)) + T_(', maks ', ', max ') + nf(kj.length * p.maks / 230, 1) + ' A</span></li>';
     });
     h += '</ul>';
 
@@ -613,7 +639,7 @@ details[open] summary { margin-bottom: 14px; }
       if (HaptSprak.en()) h += '<p>' + soca + ' Socapex breakout' + (soca === 1 ? '' : 's') + ' (6 × 16 A circuits per Soca' + (nett === '1' ? '' : ', two circuits per phase') + ').' + (sk.length % 6 ? ' The last Soca has ' + (sk.length % 6) + ' circuit' + (sk.length % 6 === 1 ? '' : 's') + ' in use.' : '') + '</p>';
       else h += '<p>' + soca + ' Socapex-breakout' + (soca === 1 ? '' : 's') + ' (6 kurser à 16 A per Soca' + (nett === '1' ? '' : ', to kurser per fase') + ').' + (sk.length % 6 ? ' Siste Soca har ' + (sk.length % 6) + ' kurs' + (sk.length % 6 === 1 ? '' : 'er') + ' i bruk.' : '') + '</p>';
     } else {
-      h += '<p>' + T_('Kurser på ' + kurs + ' A går ikke i Socapex (den er for 16 A-kurser). Bruk CEE eller egne fordelinger.', kurs + ' A circuits do not go on Socapex (it is for 16 A circuits). Use CEE or separate distros.') + '</p>';
+      h += '<p>' + T_('Kurser på ' + kurs + ' A går ikke i Socapex (den er for 16 A-kurser). Bruk CEE eller egne fordelinger.', kurs + ' A circuits do not go on Socapex (it is for 16 A circuits). Use CEE or separate distros.') + (kpk > 1 ? ' ' + T_('Panelenes powerCON TRUE1 tåler 16 A, så hver kurs deles i opptil ' + kpk + ' strømkjeder à 16 A i fordelingen.', 'The panels\' powerCON TRUE1 is rated 16 A, so each circuit is split into up to ' + kpk + ' power links of 16 A at the distro.') : '') + '</p>';
     }
     var maksFase;
     if (nett === '3tn' || nett === '1') {
@@ -623,7 +649,7 @@ details[open] summary { margin-bottom: 14px; }
       // IT: hver kurs ligger mellom to faser (trekant). Linjestrømmen er vektorsummen av de to kursgruppene som deler fasen:
       // I = √(a² + b² + ab), som blir √3 · a når lasten er lik.
       var par = [0, 0, 0];
-      sk.forEach(function (kj, i) { par[i % 3] += kj.length * p.maks / 230; });
+      sk.forEach(function (kj, i) { par[fasenr(i)] += kj.length * p.maks / 230; });
       var linje = function (a, b) { return Math.sqrt(a * a + b * b + a * b); };
       var lin = [linje(par[0], par[2]), linje(par[0], par[1]), linje(par[1], par[2])];
       maksFase = Math.max.apply(null, lin);
@@ -635,7 +661,7 @@ details[open] summary { margin-bottom: 14px; }
     h += '<h3>' + T_('Kabler', 'Cables') + '</h3><p>Data: ' + dk.length + T_(' hjemkabler', dk.length === 1 ? ' home run' : ' home runs') + (d.backupPorter ? ' + ' + dk.length + ' backup' : '') + T_(' og ', ' and ') + (c * r - dk.length) + T_(' panelkabler. Strøm: ', c * r - dk.length === 1 ? ' panel jumper. Power: ' : ' panel jumpers. Power: ') + sk.length + T_(' tilførsler og ', sk.length === 1 ? ' feed and ' : ' feeds and ') + (c * r - sk.length) + T_(' panelkabler.', c * r - sk.length === 1 ? ' panel jumper.' : ' panel jumpers.') + '</p>';
     h += '<p class="note">' + (HaptSprak.en() ? 'The plan snakes ' + (modus === 'rad' ? 'row by row' : 'column by column') + ' from the ' + (fraBunn ? 'bottom' : 'top') + ', so the chains stay short and even. Check that the panels can take power chains this long (the max number through powerCON is in the datasheet).' : 'Forslaget går i slange ' + (modus === 'rad' ? 'rad for rad' : 'kolonne for kolonne') + ' fra ' + (fraBunn ? 'bunnen' : 'toppen') + ', så kjedene blir korte og like. Sjekk at panelene tåler så lange strømkjeder (maks antall gjennom powerCON står i databladet).') + '</p>';
     $('kabling-ut').innerHTML = h;
-    return { data: dk, strom: sk };
+    return { data: dk, strom: sk, kpk: kpk };
   }
 
   function tegn(p, c, raderP, kj) {
@@ -677,7 +703,9 @@ details[open] summary { margin-bottom: 14px; }
         var rr = Math.min(cw, ch) * 0.2;
         var ma = midt(a), mz = midt(z);
         s += '<circle cx="' + ma[0] + '" cy="' + ma[1] + '" r="' + rr + '" fill="' + f + '"/>';
-        s += '<text x="' + ma[0] + '" y="' + ma[1] + '" fill="#0c0d0f" font-size="' + rr * 1.1 + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + (visTegning === 'data' ? 'P' : T_('K', 'C')) + (i + 1) + '</text>';
+        // Strømkjeder på delte kurser merkes kurs.kjede (K1.2 = kurs 1, kjede 2), så de ikke forveksles med fasene L1–L3
+        var merke = visTegning === 'data' ? 'P' + (i + 1) : T_('K', 'C') + (kj.kpk > 1 ? (Math.floor(i / kj.kpk) + 1) + '.' + (i % kj.kpk + 1) : (i + 1));
+        s += '<text x="' + ma[0] + '" y="' + ma[1] + '" fill="#0c0d0f" font-size="' + rr * 1.1 * Math.min(1, 3 / merke.length) + '" font-weight="500" text-anchor="middle" dominant-baseline="central">' + merke + '</text>';
         if (k.length > 1) s += '<circle cx="' + mz[0] + '" cy="' + mz[1] + '" r="' + rr * 0.45 + '" fill="none" stroke="' + f + '" stroke-width="' + sw + '"/>';
       });
     }
@@ -699,6 +727,8 @@ details[open] summary { margin-bottom: 14px; }
       var s = JSON.parse(localStorage.getItem('hapt-led') || 'null');
       if (!s) return;
       ['kol', 'rad', 'mb', 'mh', 'fb', 'ff', 'nett', 'kurs', 'margin', 'prosessor', 'kap', 'ppp', 'hz', 'bit', 'kabling', 'backup', 'start'].forEach(function (k) { if (s[k] != null) $(k).value = s[k]; });
+      // NovaStar-standarden var 655 360 før november 2026 og ble lagret automatisk; bytt til dagens 650 000
+      if (s.prosessor === 'nova' && +s.kap === 655360) $('kap').value = 650000;
       if (s.panel && HaptPaneler.finn(s.panel)) fyllPaneler(s.panel);
       if (s.bland != null) $('bland').checked = !!s.bland;
       if (s.smaPlass) $('smaPlass').value = s.smaPlass;
